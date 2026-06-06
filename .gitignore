@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Test artifacts
+test-results/
+tests/playwright/results.json
+tests/screenshots/
+playwright-report/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

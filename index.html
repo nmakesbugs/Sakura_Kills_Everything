@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Sakura Kills Everything</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg-surface: #111410;
+      --text: #f5f0e8;
+      --text-muted: #9a9488;
+      --accent: #4a7c4e;
+      --accent-hover: #5a9460;
+      --accent-text: #d4f0d8;
+      --border: #2a2a22;
+      --danger: #7c2d12;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1rem;
+    }
+
+    .screen {
+      width: 100%;
+      max-width: 420px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 0 3rem;
+    }
+
+    /* Status line */
+    .status-line {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .status-line.alert {
+      color: #c97c3a;
+    }
+
+    /* Title block */
+    .title-block {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .game-title {
+      font-size: clamp(2rem, 8vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--text);
+      margin: 0.75rem 0 0.5rem;
+    }
+
+    .game-subtitle {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+    }
+
+    /* Mode select */
+    .mode-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .mode-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .mode-btn {
+      display: block;
+      width: 100%;
+      padding: 0.9rem 1.1rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      text-decoration: none;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.12s, background 0.12s;
+      position: relative;
+    }
+
+    .mode-btn:hover,
+    .mode-btn:focus-visible {
+      background: #181c16;
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .mode-btn .btn-label {
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    .mode-btn .btn-sub {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .mode-btn .btn-arrow {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
+    .mode-btn.canon {
+      border-left: 3px solid var(--accent);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+    }
+
+    .footer p::before {
+      content: '▸ ';
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="screen">
+
+    <div class="title-block">
+      <p class="status-line alert">⚠ The backyard is not safe.</p>
+      <h1 class="game-title">Sakura Kills Everything</h1>
+      <p class="game-subtitle">A backyard legend.</p>
+      <span class="status-badge">Sakura has entered the hunting grounds.</span>
+    </div>
+
+    <p class="mode-label">Select Hunting Mode</p>
+
+    <nav class="mode-list" aria-label="Game modes">
+      <a href="src/modes/duck-hunt/index.html" class="mode-btn" data-mode="duck-hunt">
+        <span class="btn-label">Duck Hunt</span>
+        <span class="btn-sub">Classic aerial engagement. High feather count expected.</span>
+        <span class="btn-arrow">›</span>
+      </a>
+
+      <a href="src/modes/side-scroller/index.html" class="mode-btn" data-mode="patrol">
+        <span class="btn-label">Patrol</span>
+        <span class="btn-sub">Perimeter sweep. Report all fence line anomalies.</span>
+        <span class="btn-arrow">›</span>
+      </a>
+
+      <a href="src/modes/rpg/index.html" class="mode-btn" data-mode="rpg-hunt">
+        <span class="btn-label">RPG Hunt</span>
+        <span class="btn-sub">Strategic campaign. Build reputation. Interrogate squirrels.</span>
+        <span class="btn-arrow">›</span>
+      </a>
+
+      <a href="src/modes/chaos/index.html" class="mode-btn" data-mode="chaos-mode">
+        <span class="btn-label">Chaos Mode</span>
+        <span class="btn-sub">Unstructured. Several squirrels were involved.</span>
+        <span class="btn-arrow">›</span>
+      </a>
+
+      <a href="src/modes/canon/index.html" class="mode-btn canon" data-mode="sakura-canon">
+        <span class="btn-label">Sakura Canon</span>
+        <span class="btn-sub">Verified incident reports. Primary source material.</span>
+        <span class="btn-arrow">›</span>
+      </a>
+    </nav>
+
+    <footer class="footer">
+      <p>Reports of vorg activity remain unconfirmed.</p>
+      <p>All rabbits are presumed suspicious.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Confirm no console errors on load — no functionality yet
+    window.addEventListener('load', () => {
+      document.title = 'Sakura Kills Everything';
+    });
+  </script>
+
+</body>
+</html>
