@@ -17,7 +17,7 @@
 ---
 
 ## Duck Hunt
-**Status:** 🟢 Playable (Stage 0.2)
+**Status:** 🟢 Playable (since Stage 0.2; files reports since 0.3)
 **Location:** `src/modes/duck-hunt/`
 
 The first true playable. A short run (16 targets) of tap-to-engage backyard warfare. Targets
@@ -34,7 +34,7 @@ engine and the run ends in an **after-action report** with the official-vs-reali
 ---
 
 ## Sakura Canon
-**Status:** 🟦 Live (Stage 0.2)
+**Status:** 🟦 Live (since Stage 0.2; Permanent Record + stats since 0.3)
 **Location:** `src/modes/canon/`
 
 An in-game archive portal — no longer a placeholder. Departments link to the full canon

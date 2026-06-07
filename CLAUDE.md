@@ -23,7 +23,7 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ---
 
-## Current Status (Stage 0.2)
+## Current Status (Stage 0.3.1)
 
 | Stage | Status | Scope |
 |---|---|---|
@@ -31,7 +31,7 @@ The first audience is the family — specifically Tanisha, the original Witness.
 | Canon 0.1 | ✅ Complete | ~21k-word worldbuilding bible (canon library under `docs/canon/`) |
 | 0.2 — Game Platform | ✅ Complete | Incident platform, canon data layer, Duck Hunt first playable, Canon Archive portal |
 | **0.3 — Incident Memory + Patrol** | ✅ **This stage** | **Persistent incident archive (`ske-incidents-v1`), Duck Hunt report filing, Canon saved-incident view + stats, Patrol prototype** |
-| 0.4 — TBD | ⚪ Next | Patrol polish + zone map, OR Sakura sprite/photo animation pipeline v0.1 |
+| 0.4 — Patrol Polish | ⚪ Next | Patrol polish + zone map + archive usability (filters/detail). Not started. |
 
 **Playable now:** Duck Hunt (a real, short, replayable run that generates incidents).
 **Prototype now:** Patrol (sector select → encounter-by-encounter surveillance sweep → report).

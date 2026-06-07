@@ -5,7 +5,7 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.2-4a7c4e) ![Build](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Stage](https://img.shields.io/badge/stage-0.3.1-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype-c97c3a) ![Tests](https://img.shields.io/badge/tests-45_passing-4a7c4e)
 
 ---
 
@@ -68,10 +68,16 @@ npm run test:headed        # watch it in a real browser window
 npm run test:report        # open the last HTML report
 ```
 
-- Specs: `tests/playwright/` (`home`, `duck-hunt`, `canon`, `data-layer`).
+- Specs: `tests/playwright/` (`home`, `duck-hunt`, `canon`, `patrol`, `storage`, `data-layer`) —
+  **45 tests** at Stage 0.3.1.
 - Results JSON: `tests/playwright/results.json` (git-ignored).
 - Screenshots: `tests/screenshots/` (git-ignored). Nick keeps these as learning artifacts —
   they are produced by the QA helper scripts and on failures.
+
+> **Clean-clone note:** `node_modules` is **not** committed — never trust it from a zip. Run
+> `npm install`, then `npx playwright install` once to fetch the Chromium browser (separate
+> from the npm package). Test results and screenshots stay git-ignored unless intentionally
+> promoted. No server, bundler, or backend is required — tests run against `file://`.
 
 ---
 
@@ -113,8 +119,9 @@ Full canon: [`docs/canon/sakura-canon-bible.md`](docs/canon/sakura-canon-bible.m
 
 - **Stage 0.3 — Incident Memory + Patrol:** ✅ done — persistent incident history, Duck Hunt
   report filing, Canon Permanent Record + stats, and a first Patrol prototype.
-- **Stage 0.4 — TBD:** likely either *Patrol polish + a zone map*, or a *Sakura sprite/photo
-  animation pipeline v0.1*. Not started.
+- **Stage 0.4 — Patrol Polish + Zone Map + Archive Usability:** deepen Patrol, add a backyard
+  zone map for sector selection, and make the Permanent Record more usable (filters / detail).
+  Not started.
 
 ---
 

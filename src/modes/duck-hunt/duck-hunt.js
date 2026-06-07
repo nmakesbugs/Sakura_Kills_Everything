@@ -1,5 +1,5 @@
 /* =============================================================
-   Duck Hunt — Stage 0.2 First Playable
+   Duck Hunt — first playable (Stage 0.2; files reports since 0.3)
    A short, replayable, incident-generating run. Tap targets to launch
    Sakura. Outcomes resolve through the incident engine, producing the
    sacred dual layer (official interpretation vs. likely reality), and

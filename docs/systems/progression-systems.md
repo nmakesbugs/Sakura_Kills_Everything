@@ -1,8 +1,9 @@
 # Progression Systems
 
-> Status: **Partially implemented (Stage 0.2).** Per-run prestige + prestige ranks are live
-> (`incident-engine.summarizeRun`); persistent cross-run progression (`ske-progress-v1`,
-> `ske-incidents-v1`) is the headline feature of Stage 0.3.
+> Status: **Partially implemented.** Per-run prestige + prestige ranks are live
+> (`incident-engine.summarizeRun`); the **persistent incident record (`ske-incidents-v1`) shipped
+> in Stage 0.3** (`src/utils/storage.js` + Canon Permanent Record + stats). Broader cross-run
+> progression (zone unlocks, vorg-investigation tracker, `ske-progress-v1`) remains future.
 
 ---
 

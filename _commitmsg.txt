@@ -1,0 +1,25 @@
+Stage 0.3.1: stabilization + drift cleanup
+
+No new gameplay or features. Brings labels, docs, and package metadata into
+alignment with the implemented Stage 0.3 reality.
+
+- package.json: version 0.2.0 -> 0.3.1
+- README.md: stage badge -> 0.3.1; added Patrol + tests badges; spec list now
+  includes patrol + storage (45 tests); added clean-clone note (node_modules not
+  committed; npx playwright install fetches Chromium; artifacts git-ignored)
+- CLAUDE.md: heading -> Current Status (Stage 0.3.1); 0.4 row named
+  (Patrol Polish + zone map + archive usability)
+- src/modes/duck-hunt/index.html: build chip -> "Stage 0.3 - playable - files
+  official reports"
+- src/modes/duck-hunt/duck-hunt.js: header comment de-drifted
+- docs/design/mode-overview.md: Duck Hunt/Canon status notes -> "since 0.2" +
+  0.3 additions
+- docs/systems/progression-systems.md: persistence marked shipped in 0.3
+- docs/technical/performance-budget.md: 0.2 -> 0.3 status; Patrol noted DOM-based
+
+Verified hygiene (already clean): node_modules untracked, test artifacts
+git-ignored, npm scripts test/test:headed/test:report present.
+
+Tests: full Playwright suite 45/45 passing (unchanged count).
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>

@@ -40,13 +40,14 @@
 
 ---
 
-## Stage 0.2 Status
+## Stage 0.3 Status
 
 Within budget. The home screen adds one real Sakura photo (~207kb JPG, lazy on a single
-screen). Duck Hunt is **DOM/CSS-based** (no heavy canvas, no physics): targets are elements,
-effects are short CSS animations using `transform`/`opacity`, particles are removed after
-~650ms. The data + engine + ui layer is small plain JS with no dependencies. No frameworks, no
-bundler, no network calls after load, no audio/video this pass.
+screen). Duck Hunt and Patrol are both **DOM/CSS-based** (no heavy canvas, no physics): targets
+and encounters are elements, effects are short CSS animations using `transform`/`opacity`,
+particles are removed after ~650ms. The data + engine + ui + storage layer is small plain JS
+with no dependencies. Persistence is `localStorage` only (capped at 200 incidents). No
+frameworks, no bundler, no network calls after load, no audio/video this pass.
 
 | Area | Status |
 |---|---|
