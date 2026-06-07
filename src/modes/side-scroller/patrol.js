@@ -350,6 +350,12 @@
     dom.hudProgress = document.getElementById('hud-progress');
     dom.hudPrestige = document.getElementById('hud-prestige');
 
+    // Static Sakura portrait on the report header (shared presence pipeline).
+    if (window.SakuraPresence) {
+      var repSlot = document.getElementById('report-portrait');
+      if (repSlot) repSlot.appendChild(window.SakuraPresence.portrait({ src: '../../assets/sakura/sakura-home.jpg', size: 44, alt: 'Sakura' }));
+    }
+
     renderZones();
 
     // action buttons

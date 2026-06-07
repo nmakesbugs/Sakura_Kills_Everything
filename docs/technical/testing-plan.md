@@ -89,6 +89,18 @@ Reality; grouping (sector/outcome/source) renders group headers; territory stats
 
 **`home`** — Stage 0.4 build line; Patrol marked Prototype+ ; Duck Hunt Playable; Canon Live.
 
+## Stage 0.5 — Runtime Feel + SakuraPresence Coverage
+
+**`presence.spec.js`** — `window.SakuraPresence` exposes the v0.1 API (`portrait/token/outcomeFx/
+strike`); the Duck Hunt HUD shows a static `.sp-portrait` image; **policy test:** the Duck Hunt
+play field (`#field`) contains **no `<img>`** even mid-run (no animated gameplay photo);
+`outcomeFx` renders `.sp-fx` effects into a container; the Patrol report carries a portrait
+badge; no console errors on the presence-enabled pages.
+
+**Note:** tests assert the *policy and plumbing* (no field photo, presence exists, effects
+render). They cannot judge *feel* — see `docs/qa/stage-runtime-recovery-playtest-notes.md` for
+the manual playtest checklist that must accompany any runtime change.
+
 ---
 
 ## Per-Build Testing Standard

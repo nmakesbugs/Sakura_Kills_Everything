@@ -6,7 +6,10 @@
   <title>Patrol — Sakura Kills Everything</title>
   <link rel="stylesheet" href="../../ui/theme.css">
   <link rel="stylesheet" href="../../ui/components.css">
+  <link rel="stylesheet" href="../../ui/sakura-presence.css">
   <style>
+    .report-head { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem; }
+    .report-head .rh-text { flex:1; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem 2.5rem; }
     .screen { width: 100%; max-width: var(--screen-max); }
@@ -134,8 +137,13 @@
 
     <!-- Summary -->
     <section id="panel-summary" hidden>
-      <h2 id="summary-title" style="font-size:1.2rem;font-weight:900;text-transform:uppercase;">Patrol Report</h2>
-      <p class="rank" id="summary-rank"></p>
+      <div class="report-head">
+        <div id="report-portrait"></div>
+        <div class="rh-text">
+          <h2 id="summary-title" style="font-size:1.2rem;font-weight:900;text-transform:uppercase;">Patrol Report</h2>
+          <p class="rank" id="summary-rank" style="text-align:left;margin:0;"></p>
+        </div>
+      </div>
       <div class="summary-grand">
         <div class="official"><span class="ic-label">Official interpretation</span><p id="summary-official"></p></div>
         <div class="reality"><span class="ic-label">Likely reality</span><p id="summary-reality"></p></div>
@@ -161,6 +169,7 @@
   <script src="../../engine/voice-engine.js"></script>
   <script src="../../engine/incident-engine.js"></script>
   <script src="../../ui/incident-card.js"></script>
+  <script src="../../ui/sakura-presence.js"></script>
   <script src="../../utils/storage.js"></script>
   <script src="patrol.js"></script>
 </body>

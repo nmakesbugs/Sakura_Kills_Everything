@@ -23,7 +23,7 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ---
 
-## Current Status (Stage 0.4.1)
+## Current Status (Stage 0.5.0)
 
 | Stage | Status | Scope |
 |---|---|---|
@@ -32,8 +32,9 @@ The first audience is the family — specifically Tanisha, the original Witness.
 | 0.2 — Game Platform | ✅ Complete | Incident platform, canon data layer, Duck Hunt first playable, Canon Archive portal |
 | 0.3 — Incident Memory + Patrol | ✅ Complete | Persistent incident archive, Duck Hunt report filing, Canon saved view + stats, Patrol prototype |
 | 0.4 — Patrol Polish + Archive Usability | ✅ Complete | Backyard zone map; archive filters + grouping + counts; incident detail modal; territory stats |
-| **0.4.1 — Runtime Rescue** | ✅ **This stage** | **Rebuilt Duck Hunt (clean range); removed cursed in-game Sakura photo → symbolic Strike + HUD portrait; summary-first readable report** |
-| 0.5 — Sakura Animation | ⚪ Next | Sakura sprite/photo pipeline v0.1 — only after a human playtest confirms runtime feel; must honor the runtime visual policy. Not started. |
+| 0.4.1 — Runtime Rescue | ✅ Complete | Rebuilt Duck Hunt; removed cursed in-game photo; summary-first report |
+| **0.5.0 — Runtime Feel + Visual Pipeline** | ✅ **This stage** | **Duck Hunt scene/pacing elevation; reusable `SakuraPresence` (portraits + token + effects); sprite-pipeline-v0.1 contract** |
+| Next — real Sakura sprites | ⚪ | Only after a phone playtest; must satisfy `docs/assets/sakura-sprite-pipeline-v0.1.md`. Not started. |
 
 > **Hard lesson (0.4):** automated tests passed while the human playtest failed. **Passing
 > tests ≠ good product.** Always look at / play the runtime before declaring a stage done.
@@ -119,6 +120,10 @@ in Playwright without a dev server.
   `summarizeRun` (enforces canon).
 - `window.SakuraUI` — `renderIncidentCard`, `renderInto` (full cards); `renderIncidentRow`,
   `renderRowsInto` (compact browsable rows); `openIncidentDetail`/`closeIncidentDetail` (detail modal).
+- `window.SakuraPresence` — runtime visual system: `portrait()` (safe static photo),
+  `token()` (symbolic gameplay marker), effects + `outcomeFx()`. **The only sanctioned way to
+  show Sakura at runtime.** Real photo = static portraits only; gameplay = symbolic. See the
+  runtime visual policy.
 - `window.SakuraStorage` — persistent record: `saveIncidents(incidents, ctx)`, `loadIncidents()`,
   `clearIncidents()`, `getStats()` (now incl. `byZone`/`byZoneId`/`byCreature`/`mostCommonCreature`),
   `countByZoneId()`. Key `ske-incidents-v1`, capped at 200, newest first.

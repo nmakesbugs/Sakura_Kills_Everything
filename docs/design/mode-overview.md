@@ -20,11 +20,11 @@
 **Status:** 🟢 Playable (since 0.2; files reports since 0.3; **rebuilt 0.4.1**)
 **Location:** `src/modes/duck-hunt/`
 
-The first true playable, **rebuilt in 0.4.1** after a playtest found the original noisy and the
-animated Sakura photo cursed. Now a clean target range: **one target breaks cover at a time**
-as a circular chip with a telegraph ring; tap it to send Sakura. Feedback is **symbolic** — a
-"Sakura Strike" paw + a colored outcome ring (no in-game photo; a small static portrait sits in
-the HUD only). Outcomes resolve through the incident engine; the run ends in a **summary-first
+The first true playable, **rebuilt in 0.4.1** and **elevated in 0.5.0**. A clean target range
+with a dignified dusk backyard (moon, fence-line silhouette, bushes): **one target breaks cover
+at a time** as a large circular chip with a telegraph ring; tap it to send Sakura. Pacing is
+generous (12 targets, gentle lead-in). Feedback is **symbolic via `SakuraPresence`** — a "Sakura
+Strike" paw + a colored outcome ring (no in-game photo; static portraits in the HUD/report only). Outcomes resolve through the incident engine; the run ends in a **summary-first
 after-action report** (Official Interpretation prominent, Likely Reality the punchline,
 incidents collapsed behind a toggle). See `docs/assets/sakura-runtime-visual-policy.md`.
 

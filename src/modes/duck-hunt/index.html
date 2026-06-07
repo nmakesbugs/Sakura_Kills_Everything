@@ -6,91 +6,87 @@
   <title>Duck Hunt — Sakura Kills Everything</title>
   <link rel="stylesheet" href="../../ui/theme.css">
   <link rel="stylesheet" href="../../ui/components.css">
+  <link rel="stylesheet" href="../../ui/sakura-presence.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.25rem 1rem 2rem; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.1rem 1rem 1.6rem; }
     .screen { width: 100%; max-width: var(--screen-max); }
-    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
     .back { color: var(--accent); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.08em; }
     .back:hover { color: var(--accent-hover); }
     .mode-tag { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
-    h1 { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0.1rem 0 0.7rem; }
+    h1 { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; margin: 0.05rem 0 0.6rem; }
 
     /* HUD */
-    .hud { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid var(--accent); flex: none; background: var(--bg-surface); }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 26%; display: block; }
+    .hud { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.55rem; }
+    #hud-avatar { flex: none; }
     .hud .stats { display: flex; gap: 0.4rem; flex: 1; }
-    .hud .stat { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.35rem 0.3rem; text-align: center; }
+    .hud .stat { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.32rem 0.3rem; text-align: center; }
     .hud .num { display: block; font-size: 1rem; font-weight: 800; }
-    .hud .lbl { display: block; font-size: 0.46rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.05rem; }
+    .hud .lbl { display: block; font-size: 0.44rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.05rem; }
 
-    /* Field */
-    .stage { position: relative; width: 100%; aspect-ratio: 3/4; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; touch-action: manipulation; }
+    /* Field — a clean, dignified backyard at dusk */
+    .stage { position: relative; width: 100%; aspect-ratio: 4/5; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; touch-action: manipulation; }
     .field { position: absolute; inset: 0; background:
-        radial-gradient(140% 90% at 50% -10%, #2b3a52 0%, #1d2636 45%, #223021 78%, #18230f 100%); }
-    .field::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 22%;
-      background: linear-gradient(180deg, #25331c, #1a2613); border-top: 2px solid rgba(74,124,78,0.45); }
+        radial-gradient(120% 90% at 50% -10%, #2c3c56 0%, #1e2738 42%, #243223 74%, #18230f 100%); }
+    .field .moon { position: absolute; top: 7%; right: 12%; width: 38px; height: 38px; border-radius: 50%;
+      background: radial-gradient(circle at 38% 38%, #f3eede, #cfc7ad); box-shadow: 0 0 26px rgba(243,238,222,0.35); opacity: 0.9; }
+    .field .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 26%;
+      background: linear-gradient(180deg, #25331c, #19250f); }
+    .field .fence { position: absolute; left: 0; right: 0; bottom: 26%; height: 22px;
+      background: repeating-linear-gradient(90deg, rgba(40,52,30,0.9) 0 7px, transparent 7px 18px);
+      border-bottom: 2px solid rgba(74,124,78,0.45); opacity: 0.8; }
+    .field .bush { position: absolute; bottom: 22%; width: 64px; height: 30px; border-radius: 50% 50% 0 0;
+      background: rgba(28,40,22,0.9); }
+    .field .bush.l { left: -10px; }
+    .field .bush.r { right: -12px; width: 80px; height: 36px; }
 
-    /* Target chip */
+    /* Target chip — large, legible, obviously tappable */
     .target {
       position: absolute; z-index: 4;
-      width: 78px; height: 78px; margin: -39px 0 0 -39px;
+      width: 88px; height: 88px; margin: -44px 0 0 -44px;
       display: flex; align-items: center; justify-content: center;
       border-radius: 50%;
-      border: 2px solid rgba(245,240,232,0.25);
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.10), rgba(0,0,0,0.18));
-      font-size: 38px; line-height: 1;
-      cursor: pointer; padding: 0; color: inherit;
+      border: 2px solid rgba(245,240,232,0.3);
+      background: radial-gradient(circle at 50% 38%, rgba(255,255,255,0.14), rgba(0,0,0,0.22));
+      box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+      font-size: 44px; line-height: 1; cursor: pointer; padding: 0; color: inherit;
       -webkit-tap-highlight-color: transparent;
       animation: spawn 0.22s ease-out;
-      box-shadow: 0 0 0 6px rgba(201,124,58,0.0);
     }
-    .target::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(201,124,58,0.7); animation: telegraph 0.7s ease-out 1; }
-    .target[data-kind="bird"]       { border-color: rgba(120,170,210,0.5); }
-    .target[data-kind="squirrel"]   { border-color: rgba(210,150,90,0.5); }
-    .target[data-kind="rabbit"]     { border-color: rgba(120,180,120,0.5); }
-    .target[data-kind="falseAlarm"] { border-color: rgba(150,150,140,0.45); }
-    .target[data-kind="vorg"]       { border-color: rgba(150,110,190,0.6); box-shadow: 0 0 14px rgba(124,90,160,0.5); }
+    .target::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid rgba(201,124,58,0.75); animation: telegraph 0.8s ease-out 1; }
+    .target[data-kind="bird"]       { border-color: rgba(120,170,210,0.6); }
+    .target[data-kind="squirrel"]   { border-color: rgba(210,150,90,0.6); }
+    .target[data-kind="rabbit"]     { border-color: rgba(120,180,120,0.6); }
+    .target[data-kind="falseAlarm"] { border-color: rgba(150,150,140,0.5); }
+    .target[data-kind="vorg"]       { border-color: rgba(150,110,190,0.7); box-shadow: 0 0 18px rgba(124,90,160,0.55); }
     @keyframes spawn { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    @keyframes telegraph { 0% { transform: scale(0.7); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
+    @keyframes telegraph { 0% { transform: scale(0.65); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
     .target.leaving { animation: leave 0.2s ease-in forwards; }
     @keyframes leave { to { transform: scale(0.4); opacity: 0; } }
 
-    /* Sakura Strike + outcome FX (symbolic — no photo) */
-    .fx { position: absolute; z-index: 6; pointer-events: none; }
-    .strike { font-size: 40px; transform: translate(-50%, -50%); animation: strike 0.42s ease-out forwards; }
-    @keyframes strike { 0% { transform: translate(-50%,-50%) scale(0.4) rotate(-15deg); opacity: 0; } 35% { opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1.5) rotate(8deg); opacity: 0; } }
-    .ring-fx { width: 20px; height: 20px; border-radius: 50%; transform: translate(-50%,-50%); border: 3px solid var(--accent); animation: ringfx 0.5s ease-out forwards; }
-    .ring-fx[data-tone="gold"] { border-color: #c9a83a; }
-    .ring-fx[data-tone="warn"] { border-color: var(--warn); }
-    .ring-fx[data-tone="blue"] { border-color: #6a9ec0; }
-    .ring-fx[data-tone="vorg"] { border-color: #9a7ad0; }
-    @keyframes ringfx { 0% { width: 20px; height: 20px; opacity: 0.9; } 100% { width: 120px; height: 120px; opacity: 0; } }
-    .streak { font-size: 26px; transform: translate(-50%,-50%); animation: streak 0.5s ease-in forwards; }
-    @keyframes streak { 0% { opacity: 0.9; } 100% { transform: translate(40px,-50%); opacity: 0; } }
-    .particle { font-size: 18px; will-change: transform, opacity; }
-    @keyframes burst { to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
-
-    .status { min-height: 1.3rem; margin-top: 0.7rem; font-size: 0.88rem; color: var(--accent-text); text-align: center; font-weight: 600; }
-    .hint { margin-top: 0.3rem; font-size: 0.66rem; color: var(--text-muted); text-align: center; }
+    .status { min-height: 1.25rem; margin-top: 0.6rem; font-size: 0.9rem; color: var(--accent-text); text-align: center; font-weight: 700; }
+    .hint { margin-top: 0.25rem; font-size: 0.64rem; color: var(--text-muted); text-align: center; }
 
     /* Panels */
-    .panel { position: absolute; inset: 0; z-index: 8; background: rgba(12,13,10,0.92); display: flex; flex-direction: column; padding: 1.2rem; overflow-y: auto; }
+    .panel { position: absolute; inset: 0; z-index: 8; background: rgba(12,13,10,0.93); display: flex; flex-direction: column; padding: 1.1rem; overflow-y: auto; }
     .panel[hidden] { display: none; }
     .panel-start { align-items: center; justify-content: center; text-align: center; }
-    .panel-start h2 { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem; }
-    .panel-start .lead { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.2rem; }
+    .panel-start .sp-portrait { margin: 0 auto 0.7rem; }
+    .panel-start h2 { font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.45rem; }
+    .panel-start .lead { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.1rem; }
 
     /* After-action report */
-    .report-rank { text-align: center; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.2rem; }
-    .report-title { text-align: center; font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.8rem; }
-    .report-official { background: var(--bg-surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 0.85rem; margin-bottom: 0.6rem; }
+    .report-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; }
+    .report-head .rh-text { flex: 1; }
+    .report-rank { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-text); }
+    .report-title { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; }
+    .report-official { background: var(--bg-surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 0.85rem; margin-bottom: 0.55rem; }
     .report-official .lab { display: block; font-size: 0.56rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.25rem; }
     .report-official p { font-size: 0.95rem; line-height: 1.45; }
-    .report-reality { text-align: center; font-size: 0.9rem; font-style: italic; color: var(--text-muted); line-height: 1.45; margin-bottom: 0.9rem; }
+    .report-reality { text-align: center; font-size: 0.9rem; font-style: italic; color: var(--text-muted); line-height: 1.45; margin-bottom: 0.85rem; }
     .report-reality .lab { display: block; font-size: 0.5rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--warn); margin-bottom: 0.2rem; font-style: normal; }
-    .scoreboard { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+    .scoreboard { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.85rem; }
     .scoreboard .chip { flex: 1 1 28%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.45rem 0.3rem; text-align: center; }
     .scoreboard .chip .n { display: block; font-size: 1.05rem; font-weight: 800; }
     .scoreboard .chip .k { display: block; font-size: 0.46rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.05rem; }
@@ -111,7 +107,7 @@
     <h1>Duck Hunt</h1>
 
     <div class="hud">
-      <div class="avatar"><img src="../../assets/sakura/sakura-home.jpg" alt="Sakura, on duty" onerror="this.parentNode.style.display='none'"></div>
+      <div id="hud-avatar"></div>
       <div class="stats">
         <div class="stat"><span class="num" id="hud-score">0</span><span class="lbl">Prestige</span></div>
         <div class="stat"><span class="num" id="hud-targets">0/0</span><span class="lbl">Targets</span></div>
@@ -120,17 +116,29 @@
     </div>
 
     <div class="stage" id="stage">
-      <div class="field" id="field"></div>
+      <div class="field" id="field">
+        <div class="moon"></div>
+        <div class="fence"></div>
+        <div class="ground"></div>
+        <div class="bush l"></div>
+        <div class="bush r"></div>
+      </div>
 
       <div class="panel panel-start" id="panel-start">
+        <div id="start-portrait"></div>
         <h2>The Backyard Awaits</h2>
         <p class="lead">Targets break cover one at a time. Tap one to send Sakura. Birds can be neutralized. Squirrels always escape — they always do. The far corner cannot be confirmed.</p>
         <button class="ske-btn" id="btn-start">Begin Operation</button>
       </div>
 
       <div class="panel" id="panel-summary" hidden>
-        <p class="report-rank" id="summary-rank"></p>
-        <p class="report-title" id="summary-title">After-Action Report</p>
+        <div class="report-head">
+          <div id="report-portrait"></div>
+          <div class="rh-text">
+            <p class="report-rank" id="summary-rank"></p>
+            <p class="report-title" id="summary-title">After-Action Report</p>
+          </div>
+        </div>
         <div class="report-official"><span class="lab">Official interpretation</span><p id="summary-official"></p></div>
         <p class="report-reality"><span class="lab">Likely reality</span><span id="summary-reality"></span></p>
         <div class="scoreboard" id="summary-scoreboard"></div>
@@ -158,8 +166,9 @@
   <script src="../../engine/random.js"></script>
   <script src="../../engine/voice-engine.js"></script>
   <script src="../../engine/incident-engine.js"></script>
-  <!-- UI + persistence -->
+  <!-- UI + presence + persistence -->
   <script src="../../ui/incident-card.js"></script>
+  <script src="../../ui/sakura-presence.js"></script>
   <script src="../../utils/storage.js"></script>
   <!-- Mode -->
   <script src="duck-hunt.js"></script>

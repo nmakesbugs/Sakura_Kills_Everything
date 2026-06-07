@@ -19,12 +19,14 @@
   var UI = window.SakuraUI;
 
   var CONFIG = {
-    budget: 14,        // targets per run
-    lifeMin: 1300,     // ms a target stays before escaping
-    lifeMax: 1700,
-    gapMin: 420,       // ms between targets
-    gapMax: 640
+    budget: 12,        // targets per run (~30-40s total)
+    lifeMin: 1700,     // ms a target stays before escaping (generous to learn)
+    lifeMax: 2200,
+    gapMin: 520,       // clean pause between targets
+    gapMax: 760,
+    firstDelay: 700    // gentle lead-in to the first target
   };
+  var SP = window.SakuraPresence;
 
   var KINDS = {
     bird:       { weight: 0.30, glyphs: ['🐦', '🐤'], creatures: ['captain-flit', 'the-robin', 'sparrow-squadron'], zones: ['great-patio', 'open-field', 'tree-line'] },
@@ -104,7 +106,7 @@
     if (dom.panelSummary) dom.panelSummary.hidden = true;
     syncHud();
     setStatus(Voice ? Voice.getLine('runStart') : 'Operation begins.');
-    scheduleNext(420);
+    scheduleNext(CONFIG.firstDelay);
   }
 
   function scheduleNext(delay) {
@@ -167,12 +169,12 @@
       inc = makeIncident(t.kind, didHit, t.creatureId, t.zoneId);
       registerIncident(inc);
       setStatus(Voice ? Voice.formatIncidentLine(inc) : '');
-      playFx(inc, didHit, x, y);
+      if (SP) SP.outcomeFx(dom.field, x, y, inc.outcomeType, didHit);
     } else {
       setStatus(t.kind === 'vorg'
         ? (Voice ? Voice.getLine('vorgAlert') : 'Something was there.')
         : (Voice ? Voice.getLine('falseAlarm') : 'It was nothing.'));
-      if (didHit) { strike(x, y); ring(x, y, ''); }
+      if (SP) { if (didHit) SP.strike(dom.field, x, y); SP.ring(dom.field, x, y, t.kind === 'vorg' ? 'vorg' : 'blue'); }
     }
 
     if (state.spawned < state.budget) scheduleNext();
@@ -185,52 +187,7 @@
     if (state.spawned >= state.budget && !current) endRun();
   }
 
-  // ---- Feedback FX (symbolic, restrained) ----
-  function fxNode(cls, glyph, x, y) {
-    if (!dom.field) return null;
-    var n = document.createElement('span');
-    n.className = 'fx ' + cls;
-    if (glyph != null) n.textContent = glyph;
-    n.style.left = x + 'px';
-    n.style.top = y + 'px';
-    dom.field.appendChild(n);
-    return n;
-  }
-  function removeLater(node, ms) { if (node) setTimeout(function () { if (node.parentNode) node.parentNode.removeChild(node); }, ms); }
-  function strike(x, y) { removeLater(fxNode('strike', '🐾', x, y), 450); }
-  function ring(x, y, tone) { var n = fxNode('ring-fx', null, x, y); if (n && tone) n.setAttribute('data-tone', tone); removeLater(n, 520); }
-  function streak(x, y) { removeLater(fxNode('streak', '💨', x, y), 520); }
-  function feathers(x, y) {
-    for (var i = 0; i < 5; i++) {
-      var p = fxNode('particle', i % 2 ? '🪶' : '✨', x, y);
-      if (!p) continue;
-      p.style.setProperty('--dx', rint(-44, 44) + 'px');
-      p.style.setProperty('--dy', rint(-54, -12) + 'px');
-      p.style.animation = 'burst 0.6s ease-out forwards';
-      removeLater(p, 650);
-    }
-  }
-  function dust(x, y) {
-    for (var i = 0; i < 3; i++) {
-      var p = fxNode('particle', '·', x, y);
-      if (!p) continue;
-      p.style.setProperty('--dx', rint(-26, 26) + 'px');
-      p.style.setProperty('--dy', rint(-22, -4) + 'px');
-      p.style.animation = 'burst 0.5s ease-out forwards';
-      removeLater(p, 550);
-    }
-  }
-  function playFx(inc, didHit, x, y) {
-    switch (inc.outcomeType) {
-      case 'confirmedCatch': strike(x, y); ring(x, y, 'gold'); feathers(x, y); break;
-      case 'featherEvent': strike(x, y); ring(x, y, ''); feathers(x, y); break;
-      case 'squirrelEscape': if (didHit) strike(x, y); ring(x, y, 'warn'); streak(x, y); break;
-      case 'escape': ring(x, y, ''); dust(x, y); break;
-      case 'falseAlarm': if (didHit) strike(x, y); ring(x, y, 'blue'); break;
-      case 'vorgNonConfirmation': ring(x, y, 'vorg'); break;
-      default: dust(x, y);
-    }
-  }
+  // Feedback FX live in the shared SakuraPresence pipeline (src/ui/sakura-presence.js).
 
   // ---- After-action report (summary-first, incidents collapsed) ----
   function endRun() {
@@ -325,6 +282,17 @@
     dom.btnIncidents = document.getElementById('btn-incidents');
     dom.btnFile = document.getElementById('btn-file');
     dom.fileConfirm = document.getElementById('file-confirm');
+
+    // Static Sakura portraits via the shared presence pipeline (safe, framed, no animation).
+    var PHOTO = '../../assets/sakura/sakura-home.jpg';
+    if (SP) {
+      var hudSlot = document.getElementById('hud-avatar');
+      if (hudSlot) hudSlot.appendChild(SP.portrait({ src: PHOTO, size: 40, alt: 'Sakura, on duty' }));
+      var startSlot = document.getElementById('start-portrait');
+      if (startSlot) startSlot.appendChild(SP.portrait({ src: PHOTO, size: 64, alt: 'Sakura' }));
+      var repSlot = document.getElementById('report-portrait');
+      if (repSlot) repSlot.appendChild(SP.portrait({ src: PHOTO, size: 44, alt: 'Sakura' }));
+    }
 
     var startBtn = document.getElementById('btn-start');
     var againBtn = document.getElementById('btn-again');

@@ -1,0 +1,51 @@
+/* =============================================================
+   Sakura Presence v0.1 — shared runtime visual system
+   Portrait (safe static photo), symbolic Token (gameplay), and a small
+   set of lightweight DOM/CSS action effects. Built on theme.css tokens.
+
+   POLICY (docs/assets/sakura-runtime-visual-policy.md):
+   - The real photo is allowed ONLY as a static, cleanly-framed portrait
+     (home / HUD / report). It is NEVER animated as a gameplay body and
+     NEVER pasted into the play field.
+   - In gameplay, Sakura is symbolic: a token + action effects.
+   - "It is better to show less Sakura than to show bad Sakura."
+   ============================================================= */
+
+/* ---- Portrait (static photo, framed) ---- */
+.sp-portrait { position: relative; overflow: hidden; flex: none; background: var(--bg-surface); border: 2px solid var(--accent); }
+.sp-portrait--circle { border-radius: 50%; }
+.sp-portrait--round  { border-radius: var(--radius); }
+.sp-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* CSS silhouette fallback (shown if the photo is missing) */
+.sp-portrait.is-fallback { display: flex; align-items: center; justify-content: center; }
+.sp-portrait.is-fallback img { display: none; }
+.sp-portrait .sp-fallback-glyph { font-size: 60%; opacity: 0.7; }
+
+/* ---- Symbolic token (gameplay presence) ---- */
+.sp-token {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--accent); color: #06140a;
+  border: 2px solid var(--accent-hover); box-shadow: 0 0 0 4px rgba(74,124,78,0.18);
+  line-height: 1; flex: none;
+}
+
+/* ---- Action effects (appended to a position:relative container) ---- */
+.sp-fx { position: absolute; z-index: 6; pointer-events: none; }
+.sp-strike { font-size: 40px; transform: translate(-50%, -50%); animation: sp-strike 0.42s ease-out forwards; }
+@keyframes sp-strike { 0% { transform: translate(-50%,-50%) scale(0.4) rotate(-15deg); opacity: 0; } 35% { opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1.5) rotate(8deg); opacity: 0; } }
+
+.sp-ring { width: 22px; height: 22px; border-radius: 50%; transform: translate(-50%,-50%); border: 3px solid var(--accent); animation: sp-ring 0.5s ease-out forwards; }
+.sp-ring[data-tone="gold"] { border-color: #c9a83a; }
+.sp-ring[data-tone="warn"] { border-color: var(--warn); }
+.sp-ring[data-tone="blue"] { border-color: #6a9ec0; }
+.sp-ring[data-tone="vorg"] { border-color: #9a7ad0; }
+@keyframes sp-ring { 0% { width: 22px; height: 22px; opacity: 0.9; } 100% { width: 128px; height: 128px; opacity: 0; } }
+
+.sp-particle { will-change: transform, opacity; }
+@keyframes sp-burst { to { transform: translate(var(--dx), var(--dy)) rotate(var(--rot, 0deg)); opacity: 0; } }
+
+.sp-streak { font-size: 26px; transform: translate(-50%,-50%); animation: sp-streak 0.5s ease-in forwards; }
+@keyframes sp-streak { 0% { opacity: 0.9; } 100% { transform: translate(46px,-50%); opacity: 0; } }
+
+.sp-pulse { width: 30px; height: 30px; border-radius: 50%; transform: translate(-50%,-50%); border: 2px solid rgba(154,122,208,0.8); animation: sp-pulse 0.7s ease-out forwards; }
+@keyframes sp-pulse { 0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0.9; } 100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; } }

@@ -58,3 +58,26 @@ When a real Sakura sprite/photo pipeline is built, it must:
   presence above.
 
 Until that exists and passes a human playtest, **symbolic Sakura is the standard.**
+
+---
+
+## The SakuraPresence component (v0.1, Stage 0.5)
+
+The policy is now enforced by a small shared module so modes stop hand-rolling visuals:
+
+- **`src/ui/sakura-presence.css`** + **`src/ui/sakura-presence.js`** → `window.SakuraPresence`.
+
+API:
+- `SakuraPresence.portrait({ src, size, shape='circle', objectPosition, alt })` → a **static**,
+  cleanly-framed photo element with a CSS silhouette fallback. The ONLY sanctioned way to show
+  the real photo in-app (home / HUD / briefing / report). Never animated as a body.
+- `SakuraPresence.token({ size, glyph='🐾' })` → the symbolic gameplay presence (accent disc +
+  paw). Used by Patrol's trail and anywhere a "Sakura is here" marker is needed.
+- Effects (append to a `position:relative` container, `x`/`y` in px): `strike`, `ring(tone)`,
+  `featherBurst`, `dust`, `escapeStreak`, `alertPulse`.
+- `SakuraPresence.outcomeFx(container, x, y, outcomeType, didHit)` → the canonical per-incident
+  effect combo (the "Sakura Strike"). This is what Duck Hunt calls on every resolution.
+
+Consumers (Stage 0.5): Duck Hunt (HUD/start/report portraits + all field FX via `outcomeFx`),
+Patrol (report portrait; trail token consistent with `.sp-token`). Adding presence to a new mode
+means linking the two files and calling these — no bespoke visual code, no photo-in-field.

@@ -5,14 +5,16 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.4.1-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-rebuilt-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Stage](https://img.shields.io/badge/stage-0.5.0-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
-> **Stage 0.4.1 (rescue):** Stage 0.4 added strong usability *systems* but a human playtest
-> revealed the runtime felt bad — Duck Hunt was noisy and the real Sakura photo, animated as a
-> gameplay sprite, looked cursed. 0.4.1 rebuilt Duck Hunt as a clean target range, replaced the
-> in-game photo with symbolic "Sakura Strike" feedback + a HUD portrait, and made the report
-> readable. Systems success ≠ product success — that distinction is now tracked in
-> `docs/qa/stage-0.4.1-playtest-notes.md`.
+> **Stage 0.5.0 (runtime feel + Sakura visual pipeline v0.1):** Stage 0.4 had strong *systems*
+> but a human playtest found the runtime bad — Duck Hunt noisy, the animated photo cursed. 0.4.1
+> rescued it; **0.5.0 elevates it**: Duck Hunt's field now has dignity (dusk scene, fence,
+> moon), bigger/clearer targets, generous pacing, and a reusable **`SakuraPresence`** visual
+> system (static portraits + symbolic "Sakura Strike" effects — never an animated gameplay
+> photo). The lesson stands: systems success ≠ product success. See
+> `docs/qa/stage-runtime-recovery-playtest-notes.md` and
+> `docs/assets/sakura-runtime-visual-policy.md`.
 
 ---
 
@@ -97,6 +99,7 @@ tooling. Load order on a gameplay page: **data → engine → ui → mode**.
 src/data/      zones, creatures, incidents, voice-lines   → window.SakuraData
 src/engine/    random, voice-engine, incident-engine      → window.SakuraIncident / SakuraVoice / SakuraRandom
 src/ui/        theme.css, components.css, incident-card.js → window.SakuraUI
+src/ui/        sakura-presence.{css,js}                   → window.SakuraPresence (portraits, token, FX)
 src/utils/     storage.js (ske-incidents-v1)              → window.SakuraStorage
 src/modes/     duck-hunt (playable), side-scroller=Patrol (prototype), canon (live), rpg/chaos (future)
 docs/          canon (the bible) · systems · design · technical
@@ -129,9 +132,12 @@ Full canon: [`docs/canon/sakura-canon-bible.md`](docs/canon/sakura-canon-bible.m
 - **Stage 0.4 — Patrol Polish + Zone Map + Archive Usability:** ✅ done — backyard zone map for
   sector selection, archive filters + grouping + counts, incident detail view, territory stats.
 - **Stage 0.4.1 — Runtime Experience Rescue:** ✅ done — rebuilt Duck Hunt, removed the cursed
-  in-game Sakura photo (symbolic presence + HUD portrait), summary-first readable report.
-- **Stage 0.5 — Sakura Sprite / Photo Animation Pipeline v0.1:** next, *only if the runtime now
-  feels acceptable in a human playtest*. Must honor `docs/assets/sakura-runtime-visual-policy.md`.
+  in-game Sakura photo, summary-first readable report.
+- **Stage 0.5.0 — Runtime Feel + Sakura Visual Pipeline v0.1:** ✅ done — Duck Hunt scene/pacing
+  elevation + reusable `SakuraPresence` (portraits, token, effects), `sakura-sprite-pipeline-v0.1`
+  contract.
+- **Next — real Sakura sprite art:** only after a phone playtest of 0.5.0; must satisfy
+  `docs/assets/sakura-sprite-pipeline-v0.1.md` and beat the symbolic system in a human playtest.
 
 ---
 
