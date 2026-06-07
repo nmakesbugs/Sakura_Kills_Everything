@@ -1,6 +1,9 @@
 # Creature AI
 
-> Status: Placeholder — Build 1. Philosophy only, no implementation.
+> Status: **Partially encoded (Stage 0.2).** Creature behavior traits now live as data in
+> `src/data/creatures.js` (`movementStyle`, `behaviorTags`, `catchable`, `threatLevel`), and
+> Duck Hunt expresses them through spawn behavior and outcome bias. Full per-creature movement
+> AI is a future-mode concern. The philosophy below remains the design intent.
 
 ---
 

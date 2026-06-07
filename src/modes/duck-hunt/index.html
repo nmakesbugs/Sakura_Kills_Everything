@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Duck Hunt — Sakura Kills Everything</title>
   <link rel="stylesheet" href="../../ui/theme.css">
+  <link rel="stylesheet" href="../../ui/components.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -15,96 +16,157 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem 2.5rem;
     }
     .screen { width: 100%; max-width: var(--screen-max); }
-    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 1.5rem; }
+    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 1rem; }
     .back:hover { color: var(--accent-hover); }
-    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
-    h1 { font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
+    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+    h1 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin: 0.2rem 0 0.4rem; }
+    .build-chip { display:inline-block; font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent-text); border:1px solid var(--border); border-radius:999px; padding:0.15rem 0.5rem; margin-bottom:0.9rem; }
 
     /* HUD */
-    .hud {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .hud .stat {
-      flex: 1;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 0.5rem 0.4rem;
-      text-align: center;
-    }
-    .hud .stat .num { display: block; font-size: 1.25rem; font-weight: 800; color: var(--text); }
-    .hud .stat .lbl { display: block; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.15rem; }
+    .hud { display:flex; gap:0.5rem; margin-bottom:0.6rem; }
+    .hud .stat { flex:1; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.45rem 0.3rem; text-align:center; }
+    .hud .num { display:block; font-size:1.15rem; font-weight:800; color:var(--text); }
+    .hud .lbl { display:block; font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
 
-    /* Canvas stage */
-    .stage {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--bg-surface);
-      touch-action: manipulation;
-      cursor: crosshair;
+    /* Stage / field */
+    .stage { position:relative; width:100%; aspect-ratio:3/4; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--bg-surface); touch-action:manipulation; }
+    .field {
+      position:absolute; inset:0;
+      background:
+        radial-gradient(120% 60% at 50% 0%, #2a3950 0%, #1b2330 40%, #20281e 70%, #182415 100%);
     }
-    .stage canvas { display: block; width: 100%; height: 100%; }
+    .field::after { /* grass band */
+      content:''; position:absolute; left:0; right:0; bottom:0; height:26%;
+      background:linear-gradient(180deg, #24331c, #1a2614);
+      border-top:2px solid rgba(74,124,78,0.5);
+    }
 
-    .message {
-      min-height: 1.4rem;
-      margin-top: 0.75rem;
-      font-size: 0.85rem;
-      color: var(--accent-text);
-      text-align: center;
-      letter-spacing: 0.02em;
+    /* Sakura presence */
+    .hunter { position:absolute; left:50%; bottom:2%; width:34%; max-width:130px; transform:translateX(-50%); z-index:3; pointer-events:none; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.6)); transition:transform 0.18s ease-out; }
+    .hunter img { width:100%; display:block; border-radius:8px; }
+    .hunter.pounce { transform:translateX(-50%) translateY(-22%) scale(1.08); }
+
+    /* Targets */
+    .target {
+      position:absolute; z-index:4;
+      width:62px; height:62px; margin:-31px 0 0 -31px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:40px; line-height:1;
+      background:none; border:none; cursor:pointer; padding:0;
+      animation: pop 0.18s ease-out, bob 1.8s ease-in-out 0.18s infinite;
+      -webkit-tap-highlight-color: transparent;
     }
-    .hint {
-      margin-top: 0.5rem;
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      text-align: center;
-      letter-spacing: 0.05em;
+    .target::before { /* alert ring */
+      content:''; position:absolute; inset:2px; border-radius:50%;
+      border:2px solid rgba(201,124,58,0.0);
+      animation: alert 0.6s ease-out 1;
     }
-    .shell-tag {
-      display: inline-block;
-      background: #1a1a12;
-      border: 1px solid var(--border-warm);
-      border-radius: var(--radius-sm);
-      padding: 0.25rem 0.6rem;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--warn);
-      margin-bottom: 1.25rem;
-    }
+    .target[data-kind="vorg"] { filter:drop-shadow(0 0 8px #7c5aa0); }
+    @keyframes pop { from { transform:scale(0.2); opacity:0; } to { transform:scale(1); opacity:1; } }
+    @keyframes bob { 0%,100% { translate:0 0; } 50% { translate:0 -4px; } }
+    @keyframes alert { 0% { border-color:rgba(201,124,58,0.8); transform:scale(0.6); } 100% { border-color:rgba(201,124,58,0); transform:scale(1.6); } }
+
+    /* Effects */
+    .fx { position:absolute; z-index:6; pointer-events:none; font-size:20px; }
+    .fx-particle { position:absolute; left:0; top:0; will-change:transform,opacity; }
+    @keyframes burst { to { transform:translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity:0; } }
+    .gold-flash { position:absolute; inset:0; z-index:5; background:radial-gradient(circle at center, rgba(201,168,58,0.35), transparent 60%); opacity:0; pointer-events:none; }
+    .gold-flash.show { animation: flash 0.5s ease-out 1; }
+    @keyframes flash { 0% { opacity:1; } 100% { opacity:0; } }
+    .stage.shake { animation: shake 0.18s; }
+    @keyframes shake { 0%,100%{transform:translate(0,0);} 25%{transform:translate(-2px,1px);} 75%{transform:translate(2px,-1px);} }
+
+    /* Panels (start / summary) */
+    .panel { position:absolute; inset:0; z-index:8; background:rgba(10,10,10,0.86); display:flex; flex-direction:column; padding:1.1rem; overflow-y:auto; }
+    .panel[hidden] { display:none; }
+    .panel h2 { font-size:1.2rem; font-weight:900; text-transform:uppercase; margin-bottom:0.4rem; }
+    .panel .lead { font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:1rem; }
+    .panel-start { align-items:center; justify-content:center; text-align:center; }
+
+    .summary-grand { background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); padding:0.9rem; margin-bottom:0.9rem; }
+    .summary-grand .ic-label { display:block; font-size:0.56rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.15rem; }
+    .summary-grand .official .ic-label { color:var(--accent-text); }
+    .summary-grand .reality .ic-label { color:var(--warn); }
+    .summary-grand p { font-size:0.86rem; line-height:1.45; margin-bottom:0.7rem; }
+    .summary-grand .reality p { color:var(--text-muted); font-style:italic; margin-bottom:0; }
+
+    .scoreboard { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.9rem; }
+    .scoreboard .chip { flex:1 1 30%; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.5rem 0.3rem; text-align:center; }
+    .scoreboard .chip .n { display:block; font-size:1.1rem; font-weight:800; }
+    .scoreboard .chip .k { display:block; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
+    .rank { text-align:center; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent-text); margin-bottom:0.9rem; }
+    .archive-head { font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.5rem; }
+    .summary-actions { display:flex; gap:0.5rem; margin-top:0.4rem; }
+    .summary-actions .ske-btn { flex:1; }
+
+    .message { min-height:1.3rem; margin-top:0.7rem; font-size:0.85rem; color:var(--accent-text); text-align:center; }
+    .hint { margin-top:0.4rem; font-size:0.66rem; color:var(--text-muted); text-align:center; }
   </style>
 </head>
 <body>
   <div class="screen">
     <a href="../../../index.html" class="back">← Back to hunting grounds</a>
-    <p class="mode-tag">Mode 01</p>
+    <p class="mode-tag">Mode 01 · Playable</p>
     <h1>Duck Hunt</h1>
-    <span class="shell-tag">Build 2 — playable shell</span>
+    <span class="build-chip">Stage 0.2 · first playable</span>
 
     <div class="hud">
-      <div class="stat"><span class="num" id="hud-attempts">0</span><span class="lbl">Attempts</span></div>
-      <div class="stat"><span class="num" id="hud-escapes">0</span><span class="lbl">Got away</span></div>
+      <div class="stat"><span class="num" id="hud-score">0</span><span class="lbl">Prestige</span></div>
+      <div class="stat"><span class="num" id="hud-targets">0/0</span><span class="lbl">Targets</span></div>
       <div class="stat"><span class="num" id="hud-catches">0</span><span class="lbl">Confirmed</span></div>
     </div>
 
     <div class="stage" id="stage">
-      <canvas id="yard"></canvas>
+      <div class="field" id="field"></div>
+      <div class="hunter" id="hunter">
+        <img src="../../assets/sakura/sakura-home.jpg" alt="Sakura, in position" onerror="this.parentNode.style.display='none'">
+      </div>
+      <div class="gold-flash" id="goldflash"></div>
+
+      <!-- Start panel -->
+      <div class="panel panel-start" id="panel-start">
+        <h2>The Backyard Awaits</h2>
+        <p class="lead">Tap targets to launch Sakura. Birds may be neutralized. Squirrels will escape — they always do. Anomalies at the corner cannot be confirmed.</p>
+        <button class="ske-btn" id="btn-start">Begin Operation</button>
+      </div>
+
+      <!-- Summary panel -->
+      <div class="panel" id="panel-summary" hidden>
+        <h2 id="summary-title">After-Action Report</h2>
+        <p class="rank" id="summary-rank"></p>
+        <div class="summary-grand">
+          <div class="official"><span class="ic-label">Official interpretation</span><p id="summary-official"></p></div>
+          <div class="reality"><span class="ic-label">Likely reality</span><p id="summary-reality"></p></div>
+        </div>
+        <div class="scoreboard" id="summary-scoreboard"></div>
+        <p class="archive-head">Incidents filed this run</p>
+        <div id="summary-incidents"></div>
+        <div class="summary-actions">
+          <button class="ske-btn" id="btn-again">Play Again</button>
+          <a class="ske-btn ske-btn--ghost" href="../canon/index.html">Canon Archive</a>
+        </div>
+      </div>
     </div>
 
-    <p class="message" id="message">Sakura has entered the hunting grounds.</p>
+    <p class="message" id="message">Sakura is in position.</p>
     <p class="hint">Tap the yard to engage. The squirrels are not afraid of you.</p>
   </div>
 
-  <script src="../../engine/index.js"></script>
+  <!-- Data layer -->
+  <script src="../../data/zones.js"></script>
+  <script src="../../data/creatures.js"></script>
+  <script src="../../data/incidents.js"></script>
+  <script src="../../data/voice-lines.js"></script>
+  <!-- Engine -->
+  <script src="../../engine/random.js"></script>
+  <script src="../../engine/voice-engine.js"></script>
+  <script src="../../engine/incident-engine.js"></script>
+  <!-- UI -->
+  <script src="../../ui/incident-card.js"></script>
+  <!-- Mode -->
   <script src="duck-hunt.js"></script>
 </body>
 </html>

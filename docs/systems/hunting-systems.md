@@ -1,6 +1,9 @@
 # Hunting Systems
 
-> Status: Placeholder — Build 1. Concepts only, no implementation.
+> Status: **Implemented for Duck Hunt (Stage 0.2).** The three questions below are realized in
+> code: spawn weights in `src/modes/duck-hunt/duck-hunt.js` (`KINDS`), outcome enforcement in
+> `src/engine/incident-engine.js` (`resolveOutcome`). See `core-gameplay-loop.md` and
+> `incident-system.md`.
 
 ---
 
@@ -15,34 +18,32 @@ The hunting system answers three questions:
 
 ---
 
-## Appearance Logic (To Be Designed)
+## Appearance Logic (Implemented — Duck Hunt)
 
 Creatures appear based on:
-- **Zone** — Rabbits appear in the Garden Sector. Squirrels use the Fence Line.
-- **Time pressure** — How long until the creature escapes or disappears?
-- **Spawn weight** — Squirrels appear more often. Vorgs: conditional.
+- **Zone** — Rabbits appear in the Garden Sector. Squirrels use the Fence Line. (`src/data/zones.js`)
+- **Time pressure** — Targets live ~1.7–2.6s, then escape. Up to 3 concurrent, 16 per run.
+- **Spawn weight** — squirrel 0.30, bird 0.28, rabbit 0.18, false-alarm 0.16, vorg 0.08.
 
 ---
 
-## Engagement Model (To Be Designed)
+## Engagement Model (Implemented — tap to engage)
 
-Options under consideration:
-- Tap-to-chase: player taps creature, Sakura launches
-- Swipe-to-direct: player swipes toward target
-- Timing window: tap in the right moment during approach
-- Auto-pursue with player-guided steering
-
-The correct model may differ by game mode. Duck Hunt uses one input model; Patrol might use another.
+Duck Hunt uses **tap-to-engage**: tap a target to commit Sakura (pounce + impact effect); an
+untapped target times out (escape). Mobile-simple, no physics, fully testable. Other modes may
+use a different input model (Patrol may use steering), but all resolve through the same engine.
 
 ---
 
-## Outcome Determination (To Be Designed)
+## Outcome Determination (Implemented — `resolveOutcome`)
 
-Outcomes should never be purely random. They should feel earned or appropriately absurd:
-- **Engagement success** — Creature routed, zone secured
-- **Close miss** — Creature escaped to fence line, area cleared anyway
-- **Spectacular failure** — Sakura committed fully; the squirrel was simply faster; honor preserved
-- **Vorg event** — Something else happened. Not a squirrel.
+Centralized in `window.SakuraIncident.resolveOutcome(kind, didHit, creature)`, the single
+chokepoint where canon is enforced. Returns `{ outcomeType, violenceLevel, comedyType, points }`.
+Outcomes feel earned or appropriately absurd:
+- **Feather event / confirmed catch** — birds; airspace cleared by force
+- **Close miss** — rabbit hit becomes a near miss; bird miss escapes
+- **Squirrel escape** — always; honor preserved, institution embarrassed
+- **Vorg non-confirmation** — something else happened; never a squirrel, never confirmed
 
 ---
 

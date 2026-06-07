@@ -10,8 +10,17 @@ Every mechanic must be grounded in real Sakura behavior. If Sakura would not do 
 ### 2. The Hunt is Earnest
 Sakura does not wink at the camera. She is genuinely trying to catch these squirrels. The humor comes from commitment, not irony.
 
-### 3. Family Audience
-A 7-year-old and a grandparent should be able to play together. No violence that isn't cartoon-safe. No themes that require explanation. All fun should be the kind that gets described at dinner.
+### 3. Family Audience (Allowed to Bite)
+A 7-year-old and a grandparent should be able to play together. The game is called *Sakura
+Kills Everything* — cartoon-mythic violence (feather bursts, dust clouds, "bird neutralized,"
+"kill mode") is welcome; realistic gore, cruelty, and animal suffering are not. All fun should
+be the kind that gets described at dinner. See `tone-and-voice.md`.
+
+### 6. Incidents Are the Atomic Unit
+The game is not mainly about score — it is about **generating incidents**, each carrying the
+sacred dual layer (official interpretation vs. likely reality). Every mode is an incident
+factory; the Canon Archive preserves them. See `docs/systems/incident-system.md` and
+`core-gameplay-loop.md`.
 
 ### 4. Failure is Funny, Not Punishing
 Sakura will fail to catch squirrels. This is expected. The game should celebrate spectacular misses as much as occasional victories.
@@ -24,13 +33,13 @@ The game is played on a phone, probably while the real Sakura is outside doing s
 ## Core Loop (Conceptual)
 
 ```
-Sakura enters the backyard
-→ Creatures appear based on zone and time-of-day
-→ Player directs Sakura toward target
-→ Chase / engagement plays out
-→ Outcome logged to incident record
-→ Sakura returns to patio, ready for next hunt
+Briefing → Detection → Stalking → Pounce → Outcome
+→ Official Interpretation + Likely Reality → Incident Report
+→ Reputation/Memory → Next Hunt
 ```
+
+The full ten-beat loop is specified in `docs/systems/core-gameplay-loop.md`. Implemented in
+Stage 0.2 via `src/engine/incident-engine.js`.
 
 ---
 
@@ -48,10 +57,11 @@ See `mode-overview.md` for full descriptions.
 
 ## What This Game Is Not
 
-- Not a violent game. Sakura does not hurt animals.
-- Not a collection game where you "kill" things.
+- Not grim or gory. Violence is cartoon-mythic (feathers, dust, medals) — never realistic
+  harm, cruelty, or suffering.
+- Not a cold collection grind. The product is *incidents and stories*, not a kill count.
 - Not a generic mobile arcade game with a dog skin.
-- Not a game where Sakura can fail permanently.
+- Not a game where Sakura can fail permanently. Failure is funny, not punishing.
 - Not a game where the backyard is abstract or generic.
 
 ---

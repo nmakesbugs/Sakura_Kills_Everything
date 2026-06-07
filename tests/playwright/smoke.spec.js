@@ -26,6 +26,21 @@ test.describe('Home screen', () => {
     await expect(page.getByRole('link', { name: /Sakura Canon/i })).toBeVisible();
   });
 
+  test('Duck Hunt is marked playable', async ({ page }) => {
+    await page.goto(HOME);
+    const duckHunt = page.getByRole('link', { name: /Duck Hunt/i });
+    await expect(duckHunt).toContainText(/Playable/i);
+  });
+
+  test('future modes are visible and Canon Archive is accessible', async ({ page }) => {
+    await page.goto(HOME);
+    // Future modes still shown.
+    await expect(page.getByRole('link', { name: /Patrol/i })).toContainText(/Future/i);
+    // Canon links to the archive page.
+    const canon = page.getByRole('link', { name: /Sakura Canon/i });
+    await expect(canon).toHaveAttribute('href', /modes\/canon\/index\.html/);
+  });
+
   test('no console errors on load', async ({ page }) => {
     const errors = [];
     page.on('console', msg => {

@@ -3,79 +3,117 @@ const path = require('path');
 
 const DUCK_HUNT = `file://${path.resolve(__dirname, '../../src/modes/duck-hunt/index.html')}`;
 
-test.describe('Duck Hunt', () => {
+test.describe('Duck Hunt — first playable', () => {
 
-  test('loads with title, back link, and canvas', async ({ page }) => {
+  test('page loads with title, back link, and field', async ({ page }) => {
     await page.goto(DUCK_HUNT);
     await expect(page).toHaveTitle(/Duck Hunt/);
-    await expect(page.getByRole('heading', { level: 1 }))
-      .toContainText('Duck Hunt', { ignoreCase: true });
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Duck Hunt', { ignoreCase: true });
     await expect(page.getByRole('link', { name: /Back to hunting grounds/i })).toBeVisible();
-    await expect(page.locator('canvas#yard')).toBeVisible();
+    await expect(page.locator('#field')).toBeVisible();
   });
 
-  test('engine helpers and test seam are exposed', async ({ page }) => {
+  test('platform globals and test seam are present', async ({ page }) => {
     await page.goto(DUCK_HUNT);
     const ok = await page.evaluate(() => {
-      const E = window.SakuraEngine;
-      const D = window.__duckHunt;
-      return !!(E
-        && typeof E.fitCanvas === 'function'
-        && typeof E.loop === 'function'
-        && typeof E.pointerPos === 'function'
-        && D
-        && typeof D.spawn === 'function'
-        && D.state);
+      return !!(window.SakuraData && window.SakuraIncident && window.SakuraVoice
+        && window.SakuraRandom && window.SakuraUI
+        && window.__duckHunt && typeof window.__duckHunt.startRun === 'function'
+        && typeof window.__duckHunt.simulate === 'function');
     });
     expect(ok).toBe(true);
   });
 
-  test('spawn() creates a target deterministically', async ({ page }) => {
+  test('a run can start and targets spawn', async ({ page }) => {
     await page.goto(DUCK_HUNT);
-    const result = await page.evaluate(() => {
-      const t = window.__duckHunt.spawn('squirrel');
-      return {
-        type: t.type,
-        hasTarget: !!window.__duckHunt.state.target,
-        catchable: t.def.catchable
-      };
+    await page.evaluate(() => window.__duckHunt.startRun());
+    const id = await page.evaluate(() => window.__duckHunt.spawn('bird'));
+    expect(typeof id).toBe('string');
+    await expect(page.locator('.target')).toHaveCount(1);
+    const phase = await page.evaluate(() => window.__duckHunt.state.phase);
+    expect(phase).toBe('playing');
+  });
+
+  test('a bird can be neutralized (feather event or confirmed catch)', async ({ page }) => {
+    await page.goto(DUCK_HUNT);
+    const outcome = await page.evaluate(() => window.__duckHunt.simulate('bird', true).outcomeType);
+    expect(['featherEvent', 'confirmedCatch']).toContain(outcome);
+  });
+
+  test('a squirrel can NEVER be confirmed caught (canon)', async ({ page }) => {
+    await page.goto(DUCK_HUNT);
+    const results = await page.evaluate(() => {
+      var outs = [];
+      for (var i = 0; i < 40; i++) outs.push(window.__duckHunt.simulate('squirrel', true).outcomeType);
+      return outs;
     });
-    expect(result.type).toBe('squirrel');
-    expect(result.hasTarget).toBe(true);
-    expect(result.catchable).toBe(false);
+    // Every squirrel resolution is an escape; none is any kind of catch.
+    expect(results.every(o => o === 'squirrelEscape')).toBe(true);
+    expect(results.some(o => o === 'confirmedCatch' || o === 'featherEvent' || o === 'suspectedCatch')).toBe(false);
   });
 
-  test('canon holds: bird is catchable, squirrel is not', async ({ page }) => {
+  test('vorg produces a non-confirmation, never a catch', async ({ page }) => {
     await page.goto(DUCK_HUNT);
-    const r = await page.evaluate(() => ({
-      squirrel: window.__duckHunt.TARGETS.squirrel.catchable,
-      bird: window.__duckHunt.TARGETS.bird.catchable
-    }));
-    expect(r.squirrel).toBe(false);
-    expect(r.bird).toBe(true);
+    const outcome = await page.evaluate(() => window.__duckHunt.simulate('vorg', true).outcomeType);
+    expect(outcome).toBe('vorgNonConfirmation');
   });
 
-  test('tapping the yard registers an attempt without errors', async ({ page }) => {
+  test('an escape/miss produces narration text', async ({ page }) => {
+    await page.goto(DUCK_HUNT);
+    await page.evaluate(() => { window.__duckHunt.startRun(); window.__duckHunt.simulate('rabbit', false); });
+    const msg = await page.locator('#message').textContent();
+    expect(msg && msg.trim().length).toBeGreaterThan(0);
+  });
+
+  test('tapping a spawned target resolves it without errors', async ({ page }) => {
     const errors = [];
-    page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', err => errors.push(err.message));
-
+    page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+    page.on('pageerror', e => errors.push(e.message));
     await page.goto(DUCK_HUNT);
-    await page.evaluate(() => window.__duckHunt.spawn('squirrel'));
-    const before = await page.evaluate(() => window.__duckHunt.state.attempts);
-    await page.locator('#stage').click({ position: { x: 20, y: 20 } });
-    const after = await page.evaluate(() => window.__duckHunt.state.attempts);
-
-    expect(after).toBe(before + 1);
+    await page.evaluate(() => window.__duckHunt.startRun());
+    await page.evaluate(() => window.__duckHunt.spawn('bird'));
+    await page.locator('.target').first().click({ force: true });
+    await expect(page.locator('.target')).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 
-  test('no console errors on load', async ({ page }) => {
-    const errors = [];
-    page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', err => errors.push(err.message));
+  test('a run ends with an after-action report (official + likely reality)', async ({ page }) => {
     await page.goto(DUCK_HUNT);
-    await page.waitForTimeout(500);
+    await page.evaluate(() => {
+      window.__duckHunt.startRun();
+      // file a few incidents, then end the run
+      window.__duckHunt.simulate('bird', true);
+      window.__duckHunt.simulate('squirrel', true);
+      window.__duckHunt.simulate('rabbit', true);
+      window.__duckHunt.endRun();
+    });
+    await expect(page.locator('#panel-summary')).toBeVisible();
+    const official = await page.locator('#summary-official').textContent();
+    const reality = await page.locator('#summary-reality').textContent();
+    expect(official && official.trim().length).toBeGreaterThan(0);
+    expect(reality && reality.trim().length).toBeGreaterThan(0);
+    // The summary should also render incident cards.
+    await expect(page.locator('#summary-incidents .incident-card').first()).toBeVisible();
+  });
+
+  test('the summary shows both an Official interpretation and a Likely reality label', async ({ page }) => {
+    await page.goto(DUCK_HUNT);
+    await page.evaluate(() => { window.__duckHunt.startRun(); window.__duckHunt.simulate('bird', true); window.__duckHunt.endRun(); });
+    await expect(page.locator('#panel-summary')).toContainText(/Official interpretation/i);
+    await expect(page.locator('#panel-summary')).toContainText(/Likely reality/i);
+  });
+
+  test('no console errors across a full simulated run', async ({ page }) => {
+    const errors = [];
+    page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto(DUCK_HUNT);
+    await page.evaluate(() => {
+      window.__duckHunt.startRun();
+      ['bird', 'squirrel', 'rabbit', 'falseAlarm', 'vorg'].forEach(k => window.__duckHunt.simulate(k, true));
+      window.__duckHunt.endRun();
+    });
+    await page.waitForTimeout(300);
     expect(errors).toEqual([]);
   });
 

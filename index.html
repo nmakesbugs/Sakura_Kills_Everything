@@ -227,6 +227,35 @@
       border-left: 3px solid var(--accent);
     }
 
+    /* Mode status pill */
+    .mode-status {
+      position: absolute;
+      right: 2.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.52rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .mode-status.playable { color: #06140a; background: var(--accent); border-color: var(--accent); }
+    .mode-status.live { color: var(--accent-text); border-color: var(--accent); }
+    .mode-status.future { color: var(--text-muted); }
+    .mode-btn.is-future { opacity: 0.72; }
+    .mode-btn.is-future .btn-arrow { color: var(--text-muted); }
+
+    .build-line {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
     /* Footer */
     .footer {
       margin-top: auto;
@@ -269,31 +298,36 @@
     <nav class="mode-list" aria-label="Game modes">
       <a href="src/modes/duck-hunt/index.html" class="mode-btn" data-mode="duck-hunt">
         <span class="btn-label">Duck Hunt</span>
-        <span class="btn-sub">Classic aerial engagement. High feather count expected.</span>
+        <span class="btn-sub">Aerial engagement. Neutralize birds. Generate incidents.</span>
+        <span class="mode-status playable">Playable</span>
         <span class="btn-arrow">›</span>
       </a>
 
-      <a href="src/modes/side-scroller/index.html" class="mode-btn" data-mode="patrol">
+      <a href="src/modes/side-scroller/index.html" class="mode-btn is-future" data-mode="patrol">
         <span class="btn-label">Patrol</span>
         <span class="btn-sub">Perimeter sweep. Report all fence line anomalies.</span>
+        <span class="mode-status future">Future</span>
         <span class="btn-arrow">›</span>
       </a>
 
-      <a href="src/modes/rpg/index.html" class="mode-btn" data-mode="rpg-hunt">
+      <a href="src/modes/rpg/index.html" class="mode-btn is-future" data-mode="rpg-hunt">
         <span class="btn-label">RPG Hunt</span>
         <span class="btn-sub">Strategic campaign. Build reputation. Interrogate squirrels.</span>
+        <span class="mode-status future">Future</span>
         <span class="btn-arrow">›</span>
       </a>
 
-      <a href="src/modes/chaos/index.html" class="mode-btn" data-mode="chaos-mode">
+      <a href="src/modes/chaos/index.html" class="mode-btn is-future" data-mode="chaos-mode">
         <span class="btn-label">Chaos Mode</span>
         <span class="btn-sub">Unstructured. Several squirrels were involved.</span>
+        <span class="mode-status future">Future</span>
         <span class="btn-arrow">›</span>
       </a>
 
       <a href="src/modes/canon/index.html" class="mode-btn canon" data-mode="sakura-canon">
         <span class="btn-label">Sakura Canon</span>
-        <span class="btn-sub">Verified incident reports. Primary source material.</span>
+        <span class="btn-sub">The living archive. Official record vs. likely reality.</span>
+        <span class="mode-status live">Live</span>
         <span class="btn-arrow">›</span>
       </a>
     </nav>
@@ -301,6 +335,7 @@
     <footer class="footer">
       <p>Reports of vorg activity remain unconfirmed.</p>
       <p>All rabbits are presumed suspicious.</p>
+      <p class="build-line">Stage 0.2 · Duck Hunt playable · Canon archive live</p>
     </footer>
 
   </div>

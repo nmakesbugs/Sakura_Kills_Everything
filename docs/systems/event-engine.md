@@ -1,6 +1,9 @@
 # Event Engine
 
-> Status: Placeholder — Build 1. Architecture concept only.
+> Status: **Realized in Stage 0.2** as the incident engine + voice engine. The proposed event
+> taxonomy below remains the design target; the working API is `window.SakuraIncident` and
+> `window.SakuraVoice`. A data-driven `src/data/events.js` table is planned for 0.3. See
+> `incident-system.md`.
 
 ---
 
@@ -36,22 +39,21 @@ The event engine generates random backyard incidents that inject narrative varie
 
 ---
 
-## Architecture (To Be Implemented)
+## Architecture (Realized in Stage 0.2)
+
+The working engine is incident-centric. A mode spawns a target, then resolves it into an
+incident:
 
 ```
-EventEngine.roll(zone, season, timeOfDay)
-  → returns: Event | null
-  
-Event {
-  type: 'standard' | 'anomaly' | 'vorg' | 'seasonal'
-  creature: CreatureType
-  zone: Zone
-  message: string  // canonical copy
-  duration: number // milliseconds until escape
-}
+SakuraIncident.resolveOutcome(kind, didHit, creature)  → outcome descriptor (canon-enforced)
+SakuraIncident.createIncident({ kind, didHit, zoneId, creatureId, runId })  → incident
+SakuraIncident.summarizeRun(incidents, stats)  → after-action report (official vs likely)
+SakuraVoice.getLine(category) / formatIncidentLine(incident)  → narration
 ```
 
-Event tables will live in `src/data/events.js` once implemented.
+A data-driven `src/data/events.js` table (triggers, weights, seasonal gating) is planned for
+Stage 0.3 so designers can add events without touching engine code; it will feed the same
+`createIncident` pipeline and inherit canon enforcement for free.
 
 ---
 

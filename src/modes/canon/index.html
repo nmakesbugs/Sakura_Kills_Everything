@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Sakura Canon — Sakura Kills Everything</title>
   <link rel="stylesheet" href="../../ui/theme.css">
+  <link rel="stylesheet" href="../../ui/components.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -15,34 +16,117 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem 3rem;
     }
     .screen { width: 100%; max-width: var(--screen-max); }
-    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 2rem; }
+    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 1.25rem; }
     .back:hover { color: var(--accent-hover); }
-    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
-    h1 { font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem; }
-    .subtitle { font-size: 0.9rem; font-style: italic; color: var(--text-muted); margin-bottom: 1.5rem; }
-    .canon-entry { background: var(--bg-surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
-    .canon-entry h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .canon-entry p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
-    .empty-state { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
-    .empty-state p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
-    .empty-state p + p { margin-top: 0.75rem; }
+    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
+    h1 { font-size: 1.9rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .subtitle { font-size: 0.85rem; font-style: italic; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.6rem; }
+    .disclaimer { font-size: 0.72rem; color: var(--warn); line-height: 1.5; border-left: 2px solid var(--warn); padding-left: 0.6rem; margin-bottom: 1.5rem; }
+
+    .section-label { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin: 1.5rem 0 0.7rem; }
+
+    .portal { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .portal-card {
+      display: block; text-decoration: none; color: var(--text);
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.8rem 0.8rem 0.9rem;
+      transition: border-color 0.12s, background 0.12s;
+    }
+    .portal-card:hover, .portal-card:focus-visible { border-color: var(--accent); background: var(--bg-raised); outline: none; }
+    .portal-card .pc-icon { font-size: 1.3rem; }
+    .portal-card .pc-title { display: block; font-size: 0.82rem; font-weight: 800; margin: 0.3rem 0 0.2rem; }
+    .portal-card .pc-desc { display: block; font-size: 0.68rem; color: var(--text-muted); line-height: 1.4; }
+    .portal-card.wide { grid-column: 1 / -1; }
+
+    .footer-note { font-size: 0.68rem; color: var(--text-muted); line-height: 1.5; margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
   </style>
 </head>
 <body>
   <div class="screen">
     <a href="../../../index.html" class="back">← Back to hunting grounds</a>
-    <p class="mode-tag">Archive</p>
+    <p class="mode-tag">The Archive</p>
     <h1>Sakura Canon</h1>
-    <p class="subtitle">Verified incident reports. Primary source material.</p>
+    <p class="subtitle">The collected history of a tiny backyard civilization. Verified incident reports. Primary source material.</p>
+    <p class="disclaimer">This archive exists because eyewitness testimony has proven unreliable — especially Sakura’s. The paperwork has, at last, caught up.</p>
 
-    <div class="empty-state">
-      <p>The incident archive is awaiting its first entries.</p>
-      <p>Real Sakura stories, confirmed backyard events, and documented creature encounters will be added here as canon is established.</p>
-      <p>All incidents are subject to family verification before being entered into the official record.</p>
+    <p class="section-label">The Record · Departments</p>
+    <div class="portal">
+      <a class="portal-card" href="../../../docs/canon/sakura-dossier.md">
+        <span class="pc-icon">🐕</span>
+        <span class="pc-title">Sakura Dossier</span>
+        <span class="pc-desc">Hero of the backyard. Tiny predator, historic consequences.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/family-cast.md">
+        <span class="pc-icon">👪</span>
+        <span class="pc-title">Family Cast</span>
+        <span class="pc-desc">The war room. Witnesses, believers, skeptics, and chaos.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/backyard-map.md">
+        <span class="pc-icon">🗺️</span>
+        <span class="pc-title">Backyard Map</span>
+        <span class="pc-desc">28 named territories. Boundaries are behavioral, not physical.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/creature-catalog.md">
+        <span class="pc-icon">🐿️</span>
+        <span class="pc-title">Creature Catalog</span>
+        <span class="pc-desc">30 recurring characters. Allies, rivals, mysteries.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/incident-archive.md">
+        <span class="pc-icon">📋</span>
+        <span class="pc-title">Incident Archive</span>
+        <span class="pc-desc">The history of the realm. Official record vs. likely reality.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/vorg-mythology.md">
+        <span class="pc-icon">👁️</span>
+        <span class="pc-title">Vorg Dossier</span>
+        <span class="pc-desc">Reports of vorg activity remain unconfirmed. The mystery only grows.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/organizations.md">
+        <span class="pc-icon">🏛️</span>
+        <span class="pc-title">Organizations</span>
+        <span class="pc-desc">11 factions. The backyard has a foreign policy.</span>
+      </a>
+      <a class="portal-card" href="../../../docs/canon/seasonal-world.md">
+        <span class="pc-icon">🍂</span>
+        <span class="pc-title">Seasonal Intelligence</span>
+        <span class="pc-desc">The realm turns with the year. The war turns with it.</span>
+      </a>
+      <a class="portal-card wide" href="../../../docs/canon/expansion-seeds.md">
+        <span class="pc-icon">🌱</span>
+        <span class="pc-title">Expansion Seeds</span>
+        <span class="pc-desc">60+ story hooks. The shelf is meant to be drawn down and refilled forever.</span>
+      </a>
     </div>
+
+    <p class="section-label">Selected Incidents · From the Permanent Collection</p>
+    <div id="archive-incidents"></div>
+
+    <p class="footer-note">
+      The archive is alive. Each run of Duck Hunt files new incidents; the museum pieces above are the foundational record.
+      Squirrels remain uncaught. Birds remain accountable. The far corner remains unexplained.
+    </p>
   </div>
+
+  <script src="../../data/zones.js"></script>
+  <script src="../../data/creatures.js"></script>
+  <script src="../../data/incidents.js"></script>
+  <script src="../../ui/incident-card.js"></script>
+  <script>
+    (function () {
+      var container = document.getElementById('archive-incidents');
+      var data = window.SakuraData;
+      if (!container || !data || !data.incidents || !window.SakuraUI) return;
+      // Show a curated, varied subset: the Bird Incident, a squirrel escape,
+      // a false alarm / glorious failure, a vorg non-confirmation, a victory.
+      var pickIds = ['INC-001', 'INC-006', 'INC-013', 'INC-027', 'INC-024'];
+      var chosen = pickIds
+        .map(function (id) { return data.incidentById(id); })
+        .filter(Boolean);
+      window.SakuraUI.renderInto(container, chosen);
+    })();
+  </script>
 </body>
 </html>

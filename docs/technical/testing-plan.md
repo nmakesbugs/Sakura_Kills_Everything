@@ -6,10 +6,15 @@
 
 **Playwright** — headless Chromium, `file://` protocol, no dev server.
 
-Install: `npm install`  
-Run: `npx playwright test`  
-Config: `playwright.config.js`  
-Results: `tests/playwright/results.json` + console output
+```bash
+npm install
+npx playwright install     # first time only — downloads Chromium
+npm test                   # = playwright test
+npm run test:headed        # watch in a real browser
+npm run test:report        # open the last HTML report
+```
+
+Config: `playwright.config.js` · Results: `tests/playwright/results.json` + console output.
 
 ---
 
@@ -26,12 +31,24 @@ File: `tests/playwright/smoke.spec.js`
 
 ---
 
-## Build 2 — Duck Hunt Tests (Planned)
+## Stage 0.2 — Platform Coverage
 
-- Duck Hunt screen loads from home screen link
-- Canvas element renders
-- Tap interaction logs expected response
-- Back navigation returns to home screen
+Specs live in `tests/playwright/`:
+
+**`smoke.spec.js` (Home)** — loads, title visible, all five modes present, Duck Hunt marked
+playable, Canon accessible, no console errors.
+
+**`duck-hunt.spec.js`** — page loads; engines + `window.__duckHunt` seam exist; a run can
+start; targets spawn; a bird resolves to a catch (feather/confirmed); **a squirrel can never
+be confirmed caught**; misses/escapes produce text; a run can end; the after-action summary
+appears with both **official interpretation** and **likely reality**; no console errors.
+
+**`canon.spec.js`** — archive loads; shows department sections; mentions the Vorg; renders
+incident cards from the data layer; no console errors.
+
+**`data-layer.spec.js`** — via page evaluation: creatures/zones/incidents data exist;
+`the-squirrel.catchable === false`; curated incidents carry `officialInterpretation` and
+`likelyReality`; at least one vorg incident is `unconfirmed`.
 
 ---
 
@@ -46,7 +63,10 @@ Every build must:
 
 ## Screenshot Capture
 
-Playwright saves screenshots to `tests/screenshots/` on test failure. This directory is not committed to version control but is useful for debugging.
+Screenshots are saved to `tests/screenshots/` (git-ignored). Nick keeps these as learning
+artifacts. They are produced on failure and by QA helper scripts that capture the home screen,
+a Duck Hunt run, the after-action report, and the Canon Archive. Generated screenshots are
+referenced in the stage's final report.
 
 ---
 

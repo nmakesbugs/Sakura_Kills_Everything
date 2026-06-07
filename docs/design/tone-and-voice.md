@@ -29,8 +29,30 @@ Rabbits do not get the benefit of the doubt. The copy treats every rabbit as a p
 ### 4. Vorgs Are Treated Seriously
 Reports of vorg activity are logged with the same gravity as confirmed squirrel sightings. The uncertainty is noted, but it is not mocked. Something is back there.
 
-### 5. Family-Safe Always
-No crude language. No dark outcomes. No violence beyond cartoon-safe enthusiasm. A grandparent reads this and smiles.
+### 5. Family-Safe, But Allowed to Bite (Stage 0.2)
+The game is titled *Sakura Kills Everything*. Take it seriously. The tone can be **more
+violent than a generic family-safe game** — cartoon-mythic, not grim. Do not over-sanitize
+the premise.
+
+**Allowed (cartoon-mythic violence):**
+- "Bird neutralized." · "Feather evidence recovered." · "Airspace cleared by force."
+- "The rabbit survived. For now." · "Sakura has entered kill mode." · "The backyard trembles."
+- "No squirrel has ever been captured. This remains an institutional embarrassment."
+- "Tiny predator. Historic consequences." · "The bird was last seen becoming feathers."
+- "confirmed kill" used as **mythic comedy**, never graphic depiction.
+
+**Never:**
+- Realistic gore · blood sprays · cruelty for cruelty's sake · animal suffering ·
+  mean-spiritedness toward Sakura · grim realism.
+
+**Preferred violence style:** cartoon impact, feather bursts, dust clouds, dramatic
+silhouettes, medals, incident reports, absurd official language.
+
+Sakura may be vicious. The game still loves her, completely. No crude language. A grandparent
+still smiles — because it is obviously a cartoon, and obviously affectionate.
+
+**Key distinction:** "confirmed kill (mythic)" means the *official record considers the matter
+closed* — feathers, paperwork, a medal. It never means gore.
 
 ---
 
@@ -47,6 +69,9 @@ These are examples of correct game voice:
 - "The garden has been inspected. The rabbits were not there. They were recently there."
 - "Chaos Mode initiated. Several squirrels were involved. Details to follow."
 - "Incident logged. Canon updated."
+- "Bird neutralized. Feather evidence recovered."
+- "The squirrel escaped, as required by canon."
+- "Anomaly at the far corner. Confirmation withheld, as always."
 
 ---
 

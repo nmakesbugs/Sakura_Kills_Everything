@@ -40,12 +40,24 @@
 
 ---
 
-## Build 1 Status
+## Stage 0.2 Status
 
-Home screen is pure HTML/CSS/JS, no images, no external resources. Current estimated weight: ~10kb. Well within budget.
+Within budget. The home screen adds one real Sakura photo (~207kb JPG, lazy on a single
+screen). Duck Hunt is **DOM/CSS-based** (no heavy canvas, no physics): targets are elements,
+effects are short CSS animations using `transform`/`opacity`, particles are removed after
+~650ms. The data + engine + ui layer is small plain JS with no dependencies. No frameworks, no
+bundler, no network calls after load, no audio/video this pass.
+
+| Area | Status |
+|---|---|
+| No runtime dependencies | ✅ (Playwright is dev-only) |
+| `transform`/`opacity` animations only | ✅ |
+| DOM node budget per run | ✅ (≤3 concurrent targets + transient particles) |
+| Offline after load | ✅ (no network) |
 
 ---
 
 ## Monitoring
 
-Performance is not formally monitored in Build 1. Add Lighthouse CI integration when the first gameplay mode is complete.
+Still no formal Lighthouse CI. Reassess when a second playable mode (Patrol, 0.3) lands or if
+the photo asset budget grows. Keep images optimized before adding.
