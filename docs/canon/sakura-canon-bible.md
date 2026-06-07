@@ -61,9 +61,27 @@ See `backyard-map.md` for full map. Key zones:
 
 ## Canonical Incidents
 
-*To be populated with real family stories. Each incident should be dated, named, and described in one paragraph. These incidents become game events.*
+*Real family stories. Each incident is dated (or marked as undated legend), named, and
+described. These incidents become game events. Nothing here is invented — all are
+verified by family consensus.*
 
-**Incident format:**
+### The Bird Incident
+Date: Approximate — undated, a foundational family legend
+Location: The Backyard
+Witness: Tanisha (discovered the aftermath)
+Creatures involved: One bird (deceased)
+Outcome: Tanisha stepped outside and noticed Sakura had blood on her nose. Investigating,
+she found the bird — already dead. Sakura had caught it clean out of the air, thrashed it
+thoroughly, and then rolled in it. She was extremely pleased with herself and saw no
+reason not to be.
+Canonical truth: One confirmed aerial catch. Her single greatest achievement. Birds must die.
+
+> **Game note:** This incident is the canonical basis for Duck Hunt's *bird* target —
+> the only quarry Sakura has ever confirmed catching. (Squirrels remain at zero.)
+
+---
+
+**Incident format** (for future entries):
 ```
 ### The [Event Name]
 Date: [approximate]

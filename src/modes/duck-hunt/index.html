@@ -2,29 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Duck Hunt — Sakura Kills Everything</title>
+  <link rel="stylesheet" href="../../ui/theme.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #0a0a0a;
-      color: #f5f0e8;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2rem 1rem;
     }
-    .screen { width: 100%; max-width: 420px; }
-    .back { color: #4a7c4e; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 2rem; }
-    .back:hover { color: #5a9460; }
-    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #9a9488; margin-bottom: 0.5rem; }
+    .screen { width: 100%; max-width: var(--screen-max); }
+    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 1.5rem; }
+    .back:hover { color: var(--accent-hover); }
+    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
     h1 { font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
-    .status { background: #111410; border: 1px solid #2a2a22; border-radius: 4px; padding: 1.5rem; margin-top: 2rem; }
-    .status p { font-size: 0.85rem; color: #9a9488; line-height: 1.6; }
-    .status p + p { margin-top: 0.75rem; }
-    .not-built { display: inline-block; background: #1a1a12; border: 1px solid #3a3a2a; border-radius: 3px; padding: 0.25rem 0.6rem; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c97c3a; margin-bottom: 1.5rem; }
+
+    /* HUD */
+    .hud {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .hud .stat {
+      flex: 1;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.4rem;
+      text-align: center;
+    }
+    .hud .stat .num { display: block; font-size: 1.25rem; font-weight: 800; color: var(--text); }
+    .hud .stat .lbl { display: block; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* Canvas stage */
+    .stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-surface);
+      touch-action: manipulation;
+      cursor: crosshair;
+    }
+    .stage canvas { display: block; width: 100%; height: 100%; }
+
+    .message {
+      min-height: 1.4rem;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--accent-text);
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    .hint {
+      margin-top: 0.5rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    .shell-tag {
+      display: inline-block;
+      background: #1a1a12;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warn);
+      margin-bottom: 1.25rem;
+    }
   </style>
 </head>
 <body>
@@ -32,12 +88,23 @@
     <a href="../../../index.html" class="back">← Back to hunting grounds</a>
     <p class="mode-tag">Mode 01</p>
     <h1>Duck Hunt</h1>
-    <span class="not-built">Not yet built — Build 2</span>
-    <div class="status">
-      <p>Aerial engagement protocols are being finalized.</p>
-      <p>Sakura has been briefed. She has opinions about the birds. The birds are unaware of this briefing.</p>
-      <p>One confirmed aerial intercept is already on record. The details are classified by family consensus.</p>
+    <span class="shell-tag">Build 2 — playable shell</span>
+
+    <div class="hud">
+      <div class="stat"><span class="num" id="hud-attempts">0</span><span class="lbl">Attempts</span></div>
+      <div class="stat"><span class="num" id="hud-escapes">0</span><span class="lbl">Got away</span></div>
+      <div class="stat"><span class="num" id="hud-catches">0</span><span class="lbl">Confirmed</span></div>
     </div>
+
+    <div class="stage" id="stage">
+      <canvas id="yard"></canvas>
+    </div>
+
+    <p class="message" id="message">Sakura has entered the hunting grounds.</p>
+    <p class="hint">Tap the yard to engage. The squirrels are not afraid of you.</p>
   </div>
+
+  <script src="../../engine/index.js"></script>
+  <script src="duck-hunt.js"></script>
 </body>
 </html>

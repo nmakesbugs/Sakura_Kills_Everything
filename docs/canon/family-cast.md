@@ -16,10 +16,10 @@
 
 ---
 
-### [Family Member 1]
-**Role:** Primary witness  
-**Function in game:** Narrator? Quest giver? Incident reporter?  
-**Notes:** *To be filled in with real person and real role.*
+### Tanisha
+**Role:** Primary witness — The Witness / The Archivist  
+**Function in game:** Incident reporter. Discovers and documents the aftermath of Sakura's operations.  
+**Canonical truth:** Witnessed the aftermath of **The Bird Incident** — found Sakura with blood on her nose and the confirmed catch nearby. The first entry in the official record traces to her. See `sakura-canon-bible.md` → Canonical Incidents.
 
 ---
 

@@ -4,23 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Sakura Kills Everything</title>
+  <link rel="stylesheet" href="src/ui/theme.css">
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-
-    :root {
-      --bg: #0a0a0a;
-      --bg-surface: #111410;
-      --text: #f5f0e8;
-      --text-muted: #9a9488;
-      --accent: #4a7c4e;
-      --accent-hover: #5a9460;
-      --accent-text: #d4f0d8;
-      --border: #2a2a22;
-      --danger: #7c2d12;
     }
 
     html, body {
@@ -30,7 +19,7 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-family: var(--font);
       font-size: 16px;
       line-height: 1.5;
       min-height: 100vh;
@@ -60,7 +49,7 @@
     }
 
     .status-line.alert {
-      color: #c97c3a;
+      color: var(--warn);
     }
 
     /* Title block */
@@ -69,6 +58,77 @@
       padding-bottom: 2rem;
       border-bottom: 1px solid var(--border);
     }
+
+    /* Sakura portrait */
+    .sakura-portrait {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;            /* reserve space — no layout shift */
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-surface);
+      margin-bottom: 1.25rem;
+    }
+
+    .sakura-portrait img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 30%;       /* frame her face + radar ears */
+      position: relative;
+      z-index: 1;
+    }
+
+    .sakura-portrait .caption {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0.9rem 0.7rem 0.5rem;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      background: linear-gradient(to top, rgba(10, 10, 10, 0.88), rgba(10, 10, 10, 0));
+    }
+
+    /* CSS silhouette fallback (shown only if the photo is missing) */
+    .sakura-fallback {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sakura-fallback .head {
+      position: relative;
+      width: 44%;
+      aspect-ratio: 1;
+      background: var(--text-muted);
+      border-radius: 48% 48% 46% 46%;
+      opacity: 0.45;
+    }
+
+    .sakura-fallback .head::before,
+    .sakura-fallback .head::after {
+      content: '';
+      position: absolute;
+      top: -38%;
+      width: 0;
+      height: 0;
+      border-left: 1.4em solid transparent;
+      border-right: 1.4em solid transparent;
+      border-bottom: 3.4em solid var(--text-muted);
+    }
+
+    .sakura-fallback .head::before { left: 6%;  transform: rotate(-12deg); }
+    .sakura-fallback .head::after  { right: 6%; transform: rotate(12deg); }
 
     .game-title {
       font-size: clamp(2rem, 8vw, 2.8rem);
@@ -136,7 +196,7 @@
 
     .mode-btn:hover,
     .mode-btn:focus-visible {
-      background: #181c16;
+      background: var(--bg-raised);
       border-color: var(--accent);
       outline: none;
     }
@@ -192,10 +252,16 @@
   <div class="screen">
 
     <div class="title-block">
+      <figure class="sakura-portrait">
+        <div class="sakura-fallback" aria-hidden="true"><div class="head"></div></div>
+        <img src="src/assets/sakura/sakura-home.jpg"
+             alt="Sakura, apex backyard predator, ears at full alert"
+             onerror="this.style.display='none'">
+        <figcaption class="caption">Sakura has entered the hunting grounds.</figcaption>
+      </figure>
       <p class="status-line alert">⚠ The backyard is not safe.</p>
       <h1 class="game-title">Sakura Kills Everything</h1>
       <p class="game-subtitle">A backyard legend.</p>
-      <span class="status-badge">Sakura has entered the hunting grounds.</span>
     </div>
 
     <p class="mode-label">Select Hunting Mode</p>
