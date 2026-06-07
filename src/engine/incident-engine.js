@@ -84,6 +84,10 @@
       official: ['Sakura neutralized an intruder in {zone} with decisive force.'],
       likely: ['It was {falseAlarmNoun}. The threat was, on review, foliage. Victory claimed anyway.']
     },
+    environmentalMisidentification: {
+      official: ['Sakura identified and engaged a hostile presence in {zone}. The sector was held.'],
+      likely: ['On closer inspection it was {falseAlarmNoun}. Sakura maintains it was acting suspiciously.']
+    },
     vorgNonConfirmation: {
       official: ['Sakura contained an unconfirmed anomaly at {zone}. The frontier holds.'],
       likely: ['Something may have been at the corner. Confirmation withheld, as always. The mystery grew.']
@@ -158,7 +162,9 @@
       case 'squirrelEscape': return 'The Squirrel Escaped Again';
       case 'escape': return 'Hostile Withdrawal from ' + ctx.zone;
       case 'falseAlarm': return 'Threat Reassessed: ' + (ctx.falseAlarmNoun.charAt(0).toUpperCase() + ctx.falseAlarmNoun.slice(1));
+      case 'environmentalMisidentification': return 'Misidentification in ' + ctx.zone;
       case 'vorgNonConfirmation': return 'Anomaly at the Far Corner';
+      case 'patrolSuccess': return 'Sector Secured: ' + ctx.zone;
       default: return 'Incident at ' + ctx.zone;
     }
   }
@@ -253,8 +259,49 @@
     return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
   }
 
+  // ---- Patrol outcome resolution ------------------------------------------
+  // Patrol is surveillance, not reaction. Encounter kind + chosen action
+  // ('investigate' | 'stalk' | 'pounce' | 'report') produce an outcome.
+  // Canon is still enforced: squirrels never caught, vorg never confirmed.
+  // Encounter kinds: squirrel | rabbit | bird | falseAlarm | environmental
+  //                  | vorg | victory
+  function resolvePatrol(kind, action) {
+    var rnd = R();
+    switch (kind) {
+      case 'squirrel':
+        return { outcomeType: 'squirrelEscape', violenceLevel: 'chased', comedyType: 'institutional-embarrassment', success: false, points: 0 };
+
+      case 'rabbit':
+        var engaged = (action === 'pounce' || action === 'stalk');
+        return { outcomeType: 'escape', violenceLevel: 'startled', comedyType: 'found-victory', success: false, nearMiss: action === 'pounce', points: engaged ? 8 : 4 };
+
+      case 'bird':
+        if (action === 'pounce' || action === 'stalk') {
+          var mythic = action === 'pounce' && rnd.chance(0.25);
+          return { outcomeType: mythic ? 'confirmedCatch' : 'featherEvent', violenceLevel: mythic ? 'confirmedKillMythic' : 'featherBurst', comedyType: 'mythic-understatement', success: true, points: mythic ? 100 : 55 };
+        }
+        return { outcomeType: 'escape', violenceLevel: 'startled', comedyType: 'found-victory', success: false, points: 5 };
+
+      case 'falseAlarm':
+        return { outcomeType: 'falseAlarm', violenceLevel: 'harmless', comedyType: 'found-victory', success: true, points: 12 };
+
+      case 'environmental':
+        return { outcomeType: 'environmentalMisidentification', violenceLevel: 'harmless', comedyType: 'found-victory', success: true, points: 10 };
+
+      case 'vorg':
+        return { outcomeType: 'vorgNonConfirmation', violenceLevel: 'unknown', comedyType: 'ominous-footnote', success: false, points: 0, vorgEvidence: true };
+
+      case 'victory':
+        return { outcomeType: 'patrolSuccess', violenceLevel: 'harmless', comedyType: 'wholesome', success: true, points: 25 };
+
+      default:
+        return { outcomeType: 'falseAlarm', violenceLevel: 'harmless', comedyType: 'found-victory', success: false, points: 0 };
+    }
+  }
+
   global.SakuraIncident = {
     resolveOutcome: resolveOutcome,
+    resolvePatrol: resolvePatrol,
     createIncident: createIncident,
     summarizeRun: summarizeRun,
     getOfficialInterpretation: function (inc) { return inc ? inc.officialInterpretation : ''; },

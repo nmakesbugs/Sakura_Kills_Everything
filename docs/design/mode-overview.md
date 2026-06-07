@@ -48,15 +48,20 @@ An in-game archive portal — no longer a placeholder. Departments link to the f
 ---
 
 ## Patrol
-**Status:** ⚪ Future
-**Location:** `src/modes/side-scroller/`
+**Status:** 🟦 Playable Prototype (Stage 0.3)
+**Location:** `src/modes/side-scroller/` (user-facing name: **Patrol**)
 
-Side-scrolling perimeter sweep. Sakura moves along the fence line, detecting and responding to
-threats across zones.
+Surveillance, not reaction. The player picks a **sector** (zone), then Sakura sweeps it
+encounter by encounter (6 per patrol). Each encounter offers four actions — **Investigate,
+Stalk, Pounce, Report** — and resolves through the **shared** incident engine
+(`SakuraIncident.resolvePatrol`). The patrol ends in an after-action report that can be filed
+to the permanent record.
 
-- **Produces:** exploration incidents.
-- **Core feel:** methodical urgency — a security sweep that keeps finding more problems.
-- **Reuses:** the same incident + voice engines, with detection/positioning beats stretched.
+- **Produces:** exploration incidents — squirrel escapes, rabbit chases, false alarms,
+  environmental misidentifications, vorg non-confirmations, and the occasional legit victory.
+- **Core feel:** methodical, investigative; slower than Duck Hunt.
+- **Reuses:** the same incident + voice + storage layer. No separate data model. It is a
+  prototype, deliberately — not a finished side-scroller.
 
 ---
 
@@ -88,5 +93,6 @@ Unpredictable, unstructured, loud. Many loops at once; incidents cascade and int
 ## How modes relate
 
 Every mode calls `window.SakuraIncident` and `window.SakuraVoice`, renders results with
-`window.SakuraUI`, and pulls from `window.SakuraData`. Build gameplay once in the platform;
-dress it per mode. Canon preserves whatever the modes produce.
+`window.SakuraUI`, pulls from `window.SakuraData`, and files results through
+`window.SakuraStorage`. Build gameplay once in the platform; dress it per mode. The Canon
+Archive's Permanent Record preserves whatever the modes file (`ske-incidents-v1`).

@@ -50,6 +50,23 @@ incident cards from the data layer; no console errors.
 `the-squirrel.catchable === false`; curated incidents carry `officialInterpretation` and
 `likelyReality`; at least one vorg incident is `unconfirmed`.
 
+## Stage 0.3 — Persistence + Patrol Coverage
+
+**`storage.spec.js`** — `window.SakuraStorage` exists; save/load/clear round-trips; the
+permanent record persists across a page reload; cap and newest-first ordering hold; the
+squirrel capture rate stays `0%`; filed incidents preserve official + likely.
+
+**`duck-hunt.spec.js` (added)** — after a run, **File Official Report** saves the run's
+incidents to `SakuraStorage` and the button shows a confirmation state.
+
+**`canon.spec.js` (added)** — the Permanent Record empty-state shows when storage is empty;
+after filing, saved cards appear and stats update; **Purge Field Reports** clears the record.
+
+**`patrol.spec.js`** — page loads; a patrol can start from a sector; an encounter appears; the
+player can resolve an encounter (incident card appears); a squirrel encounter never confirms a
+catch; a vorg encounter only non-confirms; the patrol ends with an after-action report; the
+patrol report can be filed; no console errors.
+
 ---
 
 ## Per-Build Testing Standard

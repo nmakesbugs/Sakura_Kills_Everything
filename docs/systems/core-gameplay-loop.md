@@ -49,8 +49,10 @@ each, but the spine is constant.
    feathers were discovered.") The gap between 6 and 7 is the whole game.
 8. **Incident Report** — Beats 5–7 are packaged into a canon-shaped incident object and
    filed. `incident-engine.createIncident`.
-9. **Reputation / Memory** — The incident updates run stats (prestige, counts) now, and is
-   designed to persist into a player-facing archive later (Stage 0.3).
+9. **Reputation / Memory** — The incident updates run stats (prestige, counts), and at the end
+   of a run the player files the report via **"File Official Report"** → it persists to the
+   permanent record (`window.SakuraStorage`, key `ske-incidents-v1`) and appears in the Canon
+   Archive across sessions. (Implemented Stage 0.3.)
 10. **Next Hunt** — Return to a ready state. Another target spawns, or the run ends into an
     after-action report.
 
@@ -90,8 +92,8 @@ Implemented for Duck Hunt via `incident-engine.summarizeRun` and rendered with
 
 ## How Future Modes Reuse This
 
-- **Patrol** stretches beats 2–3 (detection/positioning) across a side-scrolling sweep and
-  files exploration incidents per zone.
+- **Patrol** (prototype, Stage 0.3) stretches beats 2–3 across a sector sweep: pick a zone,
+  resolve 6 encounters via `SakuraIncident.resolvePatrol(kind, action)`, file the patrol report.
 - **RPG Hunt** turns beats into turns; an engagement becomes a quest, and incidents become
   campaign history.
 - **Chaos Mode** runs many loops concurrently and lets incidents cascade and interact.

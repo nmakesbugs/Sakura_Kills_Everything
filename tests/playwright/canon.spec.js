@@ -34,6 +34,47 @@ test.describe('Canon Archive portal', () => {
     await expect(page.locator('#archive-incidents')).toContainText(/Likely reality/i);
   });
 
+  test('Permanent Record shows the empty state when nothing is filed', async ({ page }) => {
+    await page.goto(CANON);
+    await page.evaluate(() => window.SakuraStorage.clearIncidents());
+    await page.reload();
+    await expect(page.locator('#saved-empty')).toBeVisible();
+    await expect(page.locator('#saved-empty')).toContainText(/paperwork has failed Sakura/i);
+    await expect(page.locator('#saved-incidents .incident-card')).toHaveCount(0);
+  });
+
+  test('filed incidents appear in the Permanent Record with stats', async ({ page }) => {
+    await page.goto(CANON);
+    await page.evaluate(() => {
+      window.SakuraStorage.clearIncidents();
+      window.SakuraStorage.saveIncidents([
+        { id: 'a', title: 'Feather Event', outcomeType: 'featherEvent', kind: 'bird', officialInterpretation: 'Air control broken.', likelyReality: 'A bird left.', zoneName: 'The Open Field' },
+        { id: 'b', title: 'Squirrel Escaped', outcomeType: 'squirrelEscape', kind: 'squirrel', officialInterpretation: 'Secured.', likelyReality: 'It reached the fence.', zoneName: 'The Great Fence Line' }
+      ], { sourceMode: 'duck-hunt' });
+    });
+    await page.reload();
+    await expect(page.locator('#saved-empty')).toBeHidden();
+    expect(await page.locator('#saved-incidents .incident-card').count()).toBe(2);
+    await expect(page.locator('#archive-stats')).toContainText(/Squirrel capture rate: 0%/i);
+    await expect(page.locator('#archive-stats')).toContainText(/Reports filed/i);
+  });
+
+  test('Purge Field Reports clears the record', async ({ page }) => {
+    page.on('dialog', d => d.accept());
+    await page.goto(CANON);
+    await page.evaluate(() => {
+      window.SakuraStorage.clearIncidents();
+      window.SakuraStorage.saveIncidents([
+        { id: 'a', title: 'X', outcomeType: 'escape', kind: 'rabbit', officialInterpretation: 'o', likelyReality: 'r', zoneName: 'The Garden Frontier' }
+      ], { sourceMode: 'patrol' });
+    });
+    await page.reload();
+    await expect(page.locator('#saved-incidents .incident-card')).toHaveCount(1);
+    await page.locator('#btn-clear').click();
+    await expect(page.locator('#saved-empty')).toBeVisible();
+    expect(await page.evaluate(() => window.SakuraStorage.loadIncidents().length)).toBe(0);
+  });
+
   test('no console errors on load', async ({ page }) => {
     const errors = [];
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });

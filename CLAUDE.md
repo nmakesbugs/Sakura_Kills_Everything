@@ -29,12 +29,17 @@ The first audience is the family — specifically Tanisha, the original Witness.
 |---|---|---|
 | 0.1 — Foundation | ✅ Complete | Repo, home screen, real Sakura photo, theme/engine helpers, Duck Hunt shell, smoke tests |
 | Canon 0.1 | ✅ Complete | ~21k-word worldbuilding bible (canon library under `docs/canon/`) |
-| **0.2 — Game Platform** | ✅ **This stage** | **Incident platform, canon data layer, Duck Hunt first playable, Canon Archive portal, expanded tests** |
-| 0.3 — Incident Memory + Patrol | ⚪ Next | Saved incident history, player-facing archive, first Patrol prototype |
+| 0.2 — Game Platform | ✅ Complete | Incident platform, canon data layer, Duck Hunt first playable, Canon Archive portal |
+| **0.3 — Incident Memory + Patrol** | ✅ **This stage** | **Persistent incident archive (`ske-incidents-v1`), Duck Hunt report filing, Canon saved-incident view + stats, Patrol prototype** |
+| 0.4 — TBD | ⚪ Next | Patrol polish + zone map, OR Sakura sprite/photo animation pipeline v0.1 |
 
 **Playable now:** Duck Hunt (a real, short, replayable run that generates incidents).
-**Live now:** Sakura Canon (an in-game archive portal).
-**Future:** Patrol, RPG Hunt, Chaos Mode (themed placeholders only).
+**Prototype now:** Patrol (sector select → encounter-by-encounter surveillance sweep → report).
+**Live now:** Sakura Canon (archive portal **plus a persistent Permanent Record** of filed reports + stats).
+**Future:** RPG Hunt, Chaos Mode (themed placeholders only).
+
+**Incidents now persist.** A finished run files into the permanent record via "File Official
+Report"; the Canon Archive reads it back. Storage key: `ske-incidents-v1` (capped, newest first).
 
 **The project is canon-driven, not mode-driven. Incidents are the atomic unit of gameplay.**
 
@@ -105,6 +110,8 @@ in Playwright without a dev server.
 - `window.SakuraIncident` — the incident engine: `resolveOutcome`, `createIncident`,
   `summarizeRun` (enforces canon).
 - `window.SakuraUI` — `renderIncidentCard`, `renderInto`.
+- `window.SakuraStorage` — persistent record: `saveIncidents(incidents, ctx)`, `loadIncidents()`,
+  `clearIncidents()`, `getStats()`. Key `ske-incidents-v1`, capped at 200, newest first.
 - `window.SakuraEngine` — canvas/loop helpers (kept for future modes).
 
 ### Where things live
@@ -116,9 +123,11 @@ src/ui/incident-card.js        Incident card renderer (window.SakuraUI)
 src/data/{zones,creatures,incidents,voice-lines}.js   Canon data layer
 src/engine/{random,voice-engine,incident-engine}.js   Engines
 src/engine/index.js            Canvas helpers (window.SakuraEngine)
-src/modes/duck-hunt/           Duck Hunt — first playable
-src/modes/canon/               Sakura Canon — archive portal
-src/modes/{side-scroller,rpg,chaos}/   Future modes (themed placeholders)
+src/utils/storage.js           Persistent incident memory (window.SakuraStorage)
+src/modes/duck-hunt/           Duck Hunt — first playable (files reports)
+src/modes/side-scroller/       Patrol — prototype (user-facing name: "Patrol")
+src/modes/canon/               Sakura Canon — archive portal + Permanent Record
+src/modes/{rpg,chaos}/         Future modes (themed placeholders)
 docs/canon/                    The worldbuilding bible (Tier 1-3)
 docs/systems/                  Gameplay/incident system designs (Tier 4)
 docs/design/                   Pillars, modes, tone, achievements, voice guide

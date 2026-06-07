@@ -27,10 +27,12 @@ The core unit of the game is the **incident** — a record with two layers:
 
 | Area | Status |
 |---|---|
-| **Duck Hunt** | ✅ Playable — short replayable runs that generate incidents + an after-action report |
-| **Sakura Canon** | ✅ Live — in-game archive portal with sample incident cards |
+| **Duck Hunt** | ✅ Playable — short replayable runs; file the report to the permanent record |
+| **Patrol** | 🟦 Prototype — pick a sector, sweep it encounter-by-encounter, file the report |
+| **Persistent incidents** | ✅ Runs save to `localStorage` (`ske-incidents-v1`) and survive across sessions |
+| **Sakura Canon** | ✅ Live — archive portal **plus a Permanent Record** of filed reports + stats |
 | **Home screen** | ✅ Mobile-first, real Sakura photo, modes labeled |
-| Patrol / RPG Hunt / Chaos Mode | ⚪ Future — themed placeholder pages only |
+| RPG Hunt / Chaos Mode | ⚪ Future — themed placeholder pages only |
 | Canon (worldbuilding) | ✅ ~21k words across `docs/canon/` |
 
 ---
@@ -47,7 +49,12 @@ cd Sakura_Kills_Everything
 
 Open `index.html` → tap **Duck Hunt** → **Begin Operation**. Tap targets to launch Sakura.
 Birds may be neutralized (feathers). Squirrels always escape (canon). The far corner can
-never be confirmed.
+never be confirmed. At the after-action report, tap **File Official Report** to enter the run
+into the permanent record — then open **Sakura Canon** to see it preserved with stats.
+
+Or tap **Patrol** → choose a sector → resolve each encounter (Investigate / Stalk / Pounce /
+Report) → file the patrol report. Patrol is surveillance; Duck Hunt is reaction. Both feed the
+same incident archive.
 
 ---
 
@@ -77,7 +84,8 @@ tooling. Load order on a gameplay page: **data → engine → ui → mode**.
 src/data/      zones, creatures, incidents, voice-lines   → window.SakuraData
 src/engine/    random, voice-engine, incident-engine      → window.SakuraIncident / SakuraVoice / SakuraRandom
 src/ui/        theme.css, components.css, incident-card.js → window.SakuraUI
-src/modes/     duck-hunt (playable), canon (live), others (future)
+src/utils/     storage.js (ske-incidents-v1)              → window.SakuraStorage
+src/modes/     duck-hunt (playable), side-scroller=Patrol (prototype), canon (live), rpg/chaos (future)
 docs/          canon (the bible) · systems · design · technical
 ```
 
@@ -103,11 +111,10 @@ Full canon: [`docs/canon/sakura-canon-bible.md`](docs/canon/sakura-canon-bible.m
 
 ## Roadmap
 
-- **Stage 0.3 — Incident Memory + Patrol:** persistent incident history, a player-facing
-  archive, a first Patrol (side-scroller) prototype, backyard zone selection, more
-  Sakura photo-sprite animation.
-
-Not built yet. Duck Hunt and the incident platform come first.
+- **Stage 0.3 — Incident Memory + Patrol:** ✅ done — persistent incident history, Duck Hunt
+  report filing, Canon Permanent Record + stats, and a first Patrol prototype.
+- **Stage 0.4 — TBD:** likely either *Patrol polish + a zone map*, or a *Sakura sprite/photo
+  animation pipeline v0.1*. Not started.
 
 ---
 

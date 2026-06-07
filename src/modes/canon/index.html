@@ -42,6 +42,17 @@
     .portal-card.wide { grid-column: 1 / -1; }
 
     .footer-note { font-size: 0.68rem; color: var(--text-muted); line-height: 1.5; margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+
+    /* Permanent Record */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.45rem; margin-bottom: 1rem; }
+    .stat-pill { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.35rem; text-align: center; }
+    .stat-pill .n { display: block; font-size: 1.05rem; font-weight: 800; color: var(--text); }
+    .stat-pill .k { display: block; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.15rem; }
+    .stat-pill.wide { grid-column: 1 / -1; }
+    .stat-pill .n.compliant { color: var(--accent-text); }
+    .empty-state { background: var(--bg-surface); border: 1px dashed var(--border-warm); border-radius: var(--radius); padding: 1.2rem; }
+    .empty-state p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; font-style: italic; }
+    .record-actions { margin: 0.4rem 0 0.6rem; }
   </style>
 </head>
 <body>
@@ -104,6 +115,17 @@
     <p class="section-label">Selected Incidents · From the Permanent Collection</p>
     <div id="archive-incidents"></div>
 
+    <p class="section-label">The Permanent Record · Field Reports Filed</p>
+    <div id="archive-stats" class="stats-grid"></div>
+    <div class="record-actions">
+      <button class="ske-btn ske-btn--danger" id="btn-clear" hidden>Purge Field Reports</button>
+    </div>
+    <div id="saved-incidents"></div>
+    <div class="empty-state" id="saved-empty" hidden>
+      <p>No field reports have been filed. This does not mean nothing happened. It means the
+      paperwork has failed Sakura. Play a run and file an official report to populate the record.</p>
+    </div>
+
     <p class="footer-note">
       The archive is alive. Each run of Duck Hunt files new incidents; the museum pieces above are the foundational record.
       Squirrels remain uncaught. Birds remain accountable. The far corner remains unexplained.
@@ -114,18 +136,85 @@
   <script src="../../data/creatures.js"></script>
   <script src="../../data/incidents.js"></script>
   <script src="../../ui/incident-card.js"></script>
+  <script src="../../utils/storage.js"></script>
   <script>
     (function () {
-      var container = document.getElementById('archive-incidents');
       var data = window.SakuraData;
-      if (!container || !data || !data.incidents || !window.SakuraUI) return;
-      // Show a curated, varied subset: the Bird Incident, a squirrel escape,
-      // a false alarm / glorious failure, a vorg non-confirmation, a victory.
-      var pickIds = ['INC-001', 'INC-006', 'INC-013', 'INC-027', 'INC-024'];
-      var chosen = pickIds
-        .map(function (id) { return data.incidentById(id); })
-        .filter(Boolean);
-      window.SakuraUI.renderInto(container, chosen);
+      var UI = window.SakuraUI;
+
+      // --- Curated museum pieces ---
+      var container = document.getElementById('archive-incidents');
+      if (container && data && data.incidents && UI) {
+        var pickIds = ['INC-001', 'INC-006', 'INC-013', 'INC-027', 'INC-024'];
+        UI.renderInto(container, pickIds.map(function (id) { return data.incidentById(id); }).filter(Boolean));
+      }
+
+      // --- The Permanent Record (saved player incidents) ---
+      function renderStats() {
+        var box = document.getElementById('archive-stats');
+        if (!box || !window.SakuraStorage) return;
+        var s = window.SakuraStorage.getStats();
+        var cells = [
+          ['Reports filed', s.total],
+          ['Birds neutralized', s.birdsNeutralized],
+          ['Mythic kills', s.confirmedMythicKills],
+          ['Squirrel escapes', s.squirrelEscapes],
+          ['Rabbit escapes', s.rabbitEscapes],
+          ['False alarms', s.falseAlarms + s.environmentalMisidentifications],
+          ['Vorg non-confirmations', s.vorgNonConfirmations]
+        ];
+        box.innerHTML = '';
+        cells.forEach(function (c) {
+          var el = document.createElement('div');
+          el.className = 'stat-pill';
+          el.innerHTML = '<span class="n">' + c[1] + '</span><span class="k">' + c[0] + '</span>';
+          box.appendChild(el);
+        });
+        // The eternal stat.
+        var rate = document.createElement('div');
+        rate.className = 'stat-pill wide';
+        rate.innerHTML = '<span class="n compliant">Squirrel capture rate: ' + s.squirrelCaptureRate +
+          '</span><span class="k">Status: canonically compliant</span>';
+        box.appendChild(rate);
+        if (s.mostCommonZone) {
+          var zone = document.createElement('div');
+          zone.className = 'stat-pill wide';
+          zone.innerHTML = '<span class="n">' + s.mostCommonZone + '</span><span class="k">Most-patrolled sector</span>';
+          box.appendChild(zone);
+        }
+      }
+
+      function renderSaved() {
+        var saved = window.SakuraStorage ? window.SakuraStorage.loadIncidents() : [];
+        var list = document.getElementById('saved-incidents');
+        var empty = document.getElementById('saved-empty');
+        var clearBtn = document.getElementById('btn-clear');
+        var statsBox = document.getElementById('archive-stats');
+        if (saved.length && UI) {
+          empty.hidden = true;
+          if (clearBtn) clearBtn.hidden = false;
+          if (statsBox) statsBox.hidden = false;
+          UI.renderInto(list, saved);
+        } else {
+          if (list) list.innerHTML = '';
+          empty.hidden = false;
+          if (clearBtn) clearBtn.hidden = true;
+          if (statsBox) statsBox.hidden = true;
+        }
+        renderStats();
+      }
+
+      var clearBtn = document.getElementById('btn-clear');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+          var ok = window.confirm('Purge all filed field reports? Sakura’s official record will be erased. This cannot be undone.');
+          if (!ok) return;
+          window.SakuraStorage.clearIncidents();
+          renderSaved();
+        });
+      }
+
+      renderSaved();
     })();
   </script>
 </body>

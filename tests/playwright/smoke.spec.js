@@ -32,13 +32,25 @@ test.describe('Home screen', () => {
     await expect(duckHunt).toContainText(/Playable/i);
   });
 
+  test('Patrol is marked Prototype and Canon is Live', async ({ page }) => {
+    await page.goto(HOME);
+    await expect(page.getByRole('link', { name: /Patrol/i })).toContainText(/Prototype/i);
+    await expect(page.getByRole('link', { name: /Sakura Canon/i })).toContainText(/Live/i);
+  });
+
   test('future modes are visible and Canon Archive is accessible', async ({ page }) => {
     await page.goto(HOME);
     // Future modes still shown.
-    await expect(page.getByRole('link', { name: /Patrol/i })).toContainText(/Future/i);
+    await expect(page.getByRole('link', { name: /RPG Hunt/i })).toContainText(/Future/i);
+    await expect(page.getByRole('link', { name: /Chaos Mode/i })).toContainText(/Future/i);
     // Canon links to the archive page.
     const canon = page.getByRole('link', { name: /Sakura Canon/i });
     await expect(canon).toHaveAttribute('href', /modes\/canon\/index\.html/);
+  });
+
+  test('Stage 0.3 build line is shown', async ({ page }) => {
+    await page.goto(HOME);
+    await expect(page.locator('.build-line')).toContainText(/Stage 0\.3/i);
   });
 
   test('no console errors on load', async ({ page }) => {

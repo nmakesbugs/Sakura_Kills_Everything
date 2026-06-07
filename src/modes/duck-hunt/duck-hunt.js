@@ -279,7 +279,39 @@
       }
     }
 
+    // Reset the file-report control for the new report.
+    if (dom.btnFile) {
+      dom.btnFile.disabled = false;
+      dom.btnFile.textContent = 'File Official Report';
+      dom.btnFile.classList.remove('ske-btn--ghost');
+    }
+    if (dom.fileConfirm) { dom.fileConfirm.hidden = true; dom.fileConfirm.textContent = ''; }
+
     if (dom.panelSummary) dom.panelSummary.hidden = false;
+  }
+
+  var FILE_CONFIRM_LINES = [
+    'Report entered into the permanent record.',
+    'The archive has accepted Sakura’s version of events.',
+    'Likely reality appended under protest.'
+  ];
+
+  function fileReport() {
+    if (!state.summary || !window.SakuraStorage) return;
+    if (dom.btnFile && dom.btnFile.disabled) return;
+    window.SakuraStorage.saveIncidents(state.summary.incidents, {
+      sourceMode: 'duck-hunt',
+      runTitle: state.summary.runTitle
+    });
+    if (dom.btnFile) {
+      dom.btnFile.disabled = true;
+      dom.btnFile.textContent = 'Report Filed ✓';
+      dom.btnFile.classList.add('ske-btn--ghost');
+    }
+    if (dom.fileConfirm) {
+      dom.fileConfirm.textContent = (R ? R.pick(FILE_CONFIRM_LINES) : FILE_CONFIRM_LINES[0]);
+      dom.fileConfirm.hidden = false;
+    }
   }
 
   function pickNotable(incidents, n) {
@@ -375,11 +407,14 @@
     dom.summaryReality = document.getElementById('summary-reality');
     dom.scoreboard = document.getElementById('summary-scoreboard');
     dom.summaryIncidents = document.getElementById('summary-incidents');
+    dom.btnFile = document.getElementById('btn-file');
+    dom.fileConfirm = document.getElementById('file-confirm');
 
     var startBtn = document.getElementById('btn-start');
     var againBtn = document.getElementById('btn-again');
     if (startBtn) startBtn.addEventListener('click', startRun);
     if (againBtn) againBtn.addEventListener('click', startRun);
+    if (dom.btnFile) dom.btnFile.addEventListener('click', fileReport);
 
     syncHud();
     if (dom.targets) dom.targets.textContent = '0/' + state.budget;
@@ -393,6 +428,7 @@
       endRun: endRun,
       spawn: function (kind) { return spawnTarget(kind); },
       resolve: resolve,
+      fileReport: fileReport,
       /** Deterministic: create + register an incident without DOM. Returns it. */
       simulate: function (kind, didHit) {
         var def = KINDS[kind] || KINDS.squirrel;

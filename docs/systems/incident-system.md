@@ -118,10 +118,22 @@ counts by outcome, total prestige + a prestige rank, a `vorgStatus` line, and a 
 
 ---
 
-## Data vs. Runtime
+## Data vs. Runtime vs. Persisted
 
 - **Curated incidents** (`src/data/incidents.js`) are the foundational museum pieces shown in
-  the Canon Archive. They are hand-written and canon-true.
+  the Canon Archive. Hand-written and canon-true.
 - **Runtime incidents** are generated during play by the engine, using the same schema, and
-  filed into the run's after-action report. Stage 0.3 will persist these into a
-  player-facing archive (`ske-incidents-v1`).
+  collected into the run's after-action report.
+- **Persisted incidents** (Stage 0.3) — when the player taps **File Official Report**, the run's
+  incidents are saved via `window.SakuraStorage.saveIncidents(incidents, { sourceMode, runTitle })`
+  to `localStorage` key `ske-incidents-v1` (capped at 200, newest first, each stamped with
+  `sourceMode` + `savedAt`). The Canon Archive's **Permanent Record** reads them back via
+  `loadIncidents()` and computes archive `getStats()`. `clearIncidents()` purges the record.
+
+## Patrol Resolution
+
+Patrol does not invent a data model. It resolves encounters through
+`SakuraIncident.resolvePatrol(kind, action)` — where `kind` is one of `squirrel | rabbit |
+bird | falseAlarm | environmental | vorg | victory` and `action` is `investigate | stalk |
+pounce | report` — then passes the resulting outcome straight into the same `createIncident`
+pipeline. Canon enforcement is identical (squirrels escape, vorg non-confirms).

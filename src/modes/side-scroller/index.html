@@ -2,43 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Patrol — Sakura Kills Everything</title>
   <link rel="stylesheet" href="../../ui/theme.css">
+  <link rel="stylesheet" href="../../ui/components.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem;
-    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem 2.5rem; }
     .screen { width: 100%; max-width: var(--screen-max); }
-    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 2rem; }
+    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 1rem; }
     .back:hover { color: var(--accent-hover); }
-    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
-    h1 { font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
-    .status { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-top: 2rem; }
-    .status p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
-    .status p + p { margin-top: 0.75rem; }
-    .not-built { display: inline-block; background: #1a1a12; border: 1px solid var(--border-warm); border-radius: var(--radius-sm); padding: 0.25rem 0.6rem; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warn); margin-bottom: 1.5rem; }
+    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+    h1 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin: 0.2rem 0 0.4rem; }
+    .build-chip { display:inline-block; font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent-text); border:1px solid var(--border); border-radius:999px; padding:0.15rem 0.5rem; margin-bottom:0.9rem; }
+
+    .hud { display:flex; gap:0.5rem; margin-bottom:0.7rem; }
+    .hud .stat { flex:1; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.45rem 0.3rem; text-align:center; }
+    .hud .num { display:block; font-size:1.0rem; font-weight:800; }
+    .hud .lbl { display:block; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
+
+    /* Zone select */
+    .zone-grid { display:flex; flex-direction:column; gap:0.5rem; }
+    .zone-card { text-align:left; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); padding:0.85rem 0.9rem; cursor:pointer; color:var(--text); font-family:var(--font); transition:border-color 0.12s, background 0.12s; }
+    .zone-card:hover, .zone-card:focus-visible { border-color:var(--accent); background:var(--bg-raised); outline:none; }
+    .zone-card .zn { display:block; font-size:0.95rem; font-weight:800; }
+    .zone-card .zs { display:block; font-size:0.68rem; color:var(--text-muted); margin:0.15rem 0 0.3rem; }
+    .zone-card .zd { display:block; font-size:0.72rem; color:var(--text); line-height:1.4; }
+    .zone-card .zr { display:inline-block; margin-top:0.4rem; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--warn); }
+
+    /* Trail */
+    .trail-wrap { position:relative; height:78px; margin-bottom:0.8rem; background:linear-gradient(180deg,#1b2330,#20281e 70%,#182415); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .trail-line { position:absolute; left:4%; right:4%; bottom:20px; height:2px; background:rgba(74,124,78,0.4); }
+    .node { position:absolute; bottom:14px; width:14px; height:14px; margin-left:-7px; border-radius:50%; background:var(--bg-surface); border:2px solid var(--border-warm); transform:translateY(0); }
+    .node.done { border-color:var(--accent); background:var(--accent); }
+    .node.current { border-color:var(--warn); }
+    .trail-sakura { position:absolute; bottom:24px; width:46px; margin-left:-23px; transition:left 0.5s ease; z-index:2; filter:drop-shadow(0 3px 4px rgba(0,0,0,0.6)); }
+    .trail-sakura img { width:100%; display:block; border-radius:6px; }
+    .trail-sakura.trot { animation:trot 0.5s ease-in-out infinite; }
+    .trail-sakura.pounce { animation:pounce 0.3s ease-out; }
+    @keyframes trot { 0%,100%{ transform:translateY(0) rotate(0); } 50%{ transform:translateY(-3px) rotate(-2deg); } }
+    @keyframes pounce { 0%{ transform:translateY(0) scale(1);} 40%{ transform:translateY(-10px) scale(1.1);} 100%{ transform:translateY(0) scale(1);} }
+
+    /* Encounter / resolution cards */
+    .panel-card { background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; }
+    .enc-glyph { font-size:2.2rem; text-align:center; }
+    .enc-zone { text-align:center; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-muted); margin:0.3rem 0; }
+    .enc-desc { font-size:0.9rem; line-height:1.5; text-align:center; margin-bottom:0.9rem; }
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+    .resolution { margin-top:0.2rem; }
+    .resolution .ske-btn { width:100%; margin-top:0.6rem; }
+
+    .panel-start, .panel-summary { }
+    .lead { font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:1rem; }
+    .summary-grand { background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); padding:0.9rem; margin:0.6rem 0 0.9rem; }
+    .summary-grand .ic-label { display:block; font-size:0.56rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.15rem; }
+    .summary-grand .official .ic-label { color:var(--accent-text); }
+    .summary-grand .reality .ic-label { color:var(--warn); }
+    .summary-grand p { font-size:0.86rem; line-height:1.45; margin-bottom:0.7rem; }
+    .summary-grand .reality p { color:var(--text-muted); font-style:italic; margin-bottom:0; }
+    .rank { text-align:center; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent-text); margin-bottom:0.7rem; }
+    .archive-head { font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin:0.6rem 0 0.5rem; }
+    .file-confirm { font-size:0.78rem; color:var(--accent-text); text-align:center; margin:0.5rem 0; }
+    .summary-actions { display:flex; gap:0.5rem; margin-top:0.5rem; }
+    .summary-actions .ske-btn { flex:1; }
+    .message { min-height:1.2rem; margin-top:0.7rem; font-size:0.82rem; color:var(--accent-text); text-align:center; }
+    [hidden] { display:none !important; }
   </style>
 </head>
 <body>
   <div class="screen">
     <a href="../../../index.html" class="back">← Back to hunting grounds</a>
-    <p class="mode-tag">Mode 02</p>
+    <p class="mode-tag">Mode 02 · Prototype</p>
     <h1>Patrol</h1>
-    <span class="not-built">Not yet built — Build 3</span>
-    <div class="status">
-      <p>Perimeter sweep protocols are being developed.</p>
-      <p>Fence line sectors A through D require inspection. Squirrel activity has been elevated on the east boundary. This is not new. This is always the east boundary.</p>
-      <p>Patrol route optimization is ongoing. Sakura's preferred route remains unconventional but effective by her metrics.</p>
+    <span class="build-chip">Stage 0.3 · prototype</span>
+
+    <div class="hud">
+      <div class="stat"><span class="num" id="hud-zone">—</span><span class="lbl">Sector</span></div>
+      <div class="stat"><span class="num" id="hud-progress">0/0</span><span class="lbl">Encounter</span></div>
+      <div class="stat"><span class="num" id="hud-prestige">0</span><span class="lbl">Prestige</span></div>
     </div>
+
+    <!-- Zone select -->
+    <section id="panel-start" class="panel-start">
+      <p class="lead">Duck Hunt is reaction. Patrol is surveillance. Choose a sector. Sakura will sweep it, encounter by encounter, and the realm will record what she claims happened.</p>
+      <div class="zone-grid" id="zone-grid"></div>
+    </section>
+
+    <!-- Patrol view -->
+    <section id="panel-patrol" hidden>
+      <div class="trail-wrap" id="trail">
+        <div class="trail-line"></div>
+        <div class="trail-sakura" id="trail-sakura"><img src="../../assets/sakura/sakura-home.jpg" alt="Sakura on patrol" onerror="this.parentNode.style.display='none'"></div>
+      </div>
+
+      <div class="panel-card" id="encounter">
+        <div class="enc-glyph" id="enc-glyph">🐿️</div>
+        <div class="enc-zone" id="enc-zone">Sector</div>
+        <div class="enc-desc" id="enc-desc">An encounter.</div>
+        <div class="actions">
+          <button class="ske-btn ske-btn--ghost" data-action="investigate">Investigate</button>
+          <button class="ske-btn ske-btn--ghost" data-action="stalk">Stalk</button>
+          <button class="ske-btn ske-btn--ghost" data-action="pounce">Pounce</button>
+          <button class="ske-btn ske-btn--ghost" data-action="report">Report</button>
+        </div>
+      </div>
+
+      <div class="panel-card resolution" id="resolution" hidden>
+        <div id="resolution-card"></div>
+        <button class="ske-btn" id="btn-continue">Continue Patrol</button>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section id="panel-summary" hidden>
+      <h2 id="summary-title" style="font-size:1.2rem;font-weight:900;text-transform:uppercase;">Patrol Report</h2>
+      <p class="rank" id="summary-rank"></p>
+      <div class="summary-grand">
+        <div class="official"><span class="ic-label">Official interpretation</span><p id="summary-official"></p></div>
+        <div class="reality"><span class="ic-label">Likely reality</span><p id="summary-reality"></p></div>
+      </div>
+      <p class="archive-head">Incidents filed this patrol</p>
+      <div id="summary-incidents"></div>
+      <button class="ske-btn" id="btn-file" style="width:100%; margin:0.2rem 0 0.4rem;">File Official Report</button>
+      <p class="file-confirm" id="file-confirm" hidden></p>
+      <div class="summary-actions">
+        <button class="ske-btn ske-btn--ghost" id="btn-again">New Patrol</button>
+        <a class="ske-btn ske-btn--ghost" href="../canon/index.html">Canon Archive</a>
+      </div>
+    </section>
+
+    <p class="message" id="message">Select a sector to begin your sweep.</p>
   </div>
+
+  <script src="../../data/zones.js"></script>
+  <script src="../../data/creatures.js"></script>
+  <script src="../../data/incidents.js"></script>
+  <script src="../../data/voice-lines.js"></script>
+  <script src="../../engine/random.js"></script>
+  <script src="../../engine/voice-engine.js"></script>
+  <script src="../../engine/incident-engine.js"></script>
+  <script src="../../ui/incident-card.js"></script>
+  <script src="../../utils/storage.js"></script>
+  <script src="patrol.js"></script>
 </body>
 </html>

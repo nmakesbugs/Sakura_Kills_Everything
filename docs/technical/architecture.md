@@ -66,8 +66,8 @@ src/
   utils/    — utility functions (storage.js stub; reserved for ske-* persistence in 0.3)
 ```
 
-As of Stage 0.2, `data/`, `engine/`, and `ui/` are real and load-bearing. `app/` and `utils/`
-remain stubs reserved for Stage 0.3 persistence.
+As of Stage 0.3, `data/`, `engine/`, `ui/`, and `utils/storage.js` are real and load-bearing.
+`app/` remains a reserved stub. `modes/side-scroller/` is the **Patrol** prototype.
 
 ---
 
@@ -83,6 +83,7 @@ gameplay page loads them **data → engine → ui → mode**:
 | `SakuraVoice` | `src/engine/voice-engine.js` | voice-line selection + incident narration |
 | `SakuraIncident` | `src/engine/incident-engine.js` | `resolveOutcome`, `createIncident`, `summarizeRun` |
 | `SakuraUI` | `src/ui/incident-card.js` | `renderIncidentCard`, `renderInto` |
+| `SakuraStorage` | `src/utils/storage.js` | persistent record: `saveIncidents/loadIncidents/clearIncidents/getStats` |
 | `SakuraEngine` | `src/engine/index.js` | canvas/loop helpers (future modes) |
 
 This pattern works identically in a browser and under Playwright on `file://`.

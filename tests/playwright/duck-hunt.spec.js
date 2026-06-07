@@ -103,6 +103,27 @@ test.describe('Duck Hunt — first playable', () => {
     await expect(page.locator('#panel-summary')).toContainText(/Likely reality/i);
   });
 
+  test('a finished run can be filed to the permanent record', async ({ page }) => {
+    await page.goto(DUCK_HUNT);
+    await page.evaluate(() => window.SakuraStorage.clearIncidents());
+    await page.evaluate(() => {
+      window.__duckHunt.startRun();
+      window.__duckHunt.simulate('bird', true);
+      window.__duckHunt.simulate('squirrel', true);
+      window.__duckHunt.endRun();
+    });
+    const before = await page.evaluate(() => window.SakuraStorage.loadIncidents().length);
+    await page.locator('#btn-file').click();
+    const after = await page.evaluate(() => window.SakuraStorage.loadIncidents().length);
+    expect(after).toBeGreaterThan(before);
+    // Button enters a confirmation state, confirmation text shows.
+    await expect(page.locator('#btn-file')).toContainText(/Filed/i);
+    await expect(page.locator('#file-confirm')).toBeVisible();
+    // Saved incidents are tagged with the source mode.
+    const src = await page.evaluate(() => window.SakuraStorage.loadIncidents()[0].sourceMode);
+    expect(src).toBe('duck-hunt');
+  });
+
   test('no console errors across a full simulated run', async ({ page }) => {
     const errors = [];
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });

@@ -244,6 +244,7 @@
     }
     .mode-status.playable { color: #06140a; background: var(--accent); border-color: var(--accent); }
     .mode-status.live { color: var(--accent-text); border-color: var(--accent); }
+    .mode-status.prototype { color: var(--warn); border-color: var(--warn); }
     .mode-status.future { color: var(--text-muted); }
     .mode-btn.is-future { opacity: 0.72; }
     .mode-btn.is-future .btn-arrow { color: var(--text-muted); }
@@ -303,10 +304,10 @@
         <span class="btn-arrow">›</span>
       </a>
 
-      <a href="src/modes/side-scroller/index.html" class="mode-btn is-future" data-mode="patrol">
+      <a href="src/modes/side-scroller/index.html" class="mode-btn" data-mode="patrol">
         <span class="btn-label">Patrol</span>
-        <span class="btn-sub">Perimeter sweep. Report all fence line anomalies.</span>
-        <span class="mode-status future">Future</span>
+        <span class="btn-sub">Surveillance sweep. Investigate the sectors. File reports.</span>
+        <span class="mode-status prototype">Prototype</span>
         <span class="btn-arrow">›</span>
       </a>
 
@@ -335,7 +336,7 @@
     <footer class="footer">
       <p>Reports of vorg activity remain unconfirmed.</p>
       <p>All rabbits are presumed suspicious.</p>
-      <p class="build-line">Stage 0.2 · Duck Hunt playable · Canon archive live</p>
+      <p class="build-line">Stage 0.3 · Duck Hunt playable · Patrol prototype · incidents now persist</p>
     </footer>
 
   </div>

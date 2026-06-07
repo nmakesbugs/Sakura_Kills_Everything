@@ -46,14 +46,20 @@ incident:
 
 ```
 SakuraIncident.resolveOutcome(kind, didHit, creature)  → outcome descriptor (canon-enforced)
+SakuraIncident.resolvePatrol(kind, action)             → outcome descriptor (Patrol, 0.3)
 SakuraIncident.createIncident({ kind, didHit, zoneId, creatureId, runId })  → incident
 SakuraIncident.summarizeRun(incidents, stats)  → after-action report (official vs likely)
 SakuraVoice.getLine(category) / formatIncidentLine(incident)  → narration
+SakuraStorage.saveIncidents(incidents, ctx) / loadIncidents() / getStats()  → persistence (0.3)
 ```
 
-A data-driven `src/data/events.js` table (triggers, weights, seasonal gating) is planned for
-Stage 0.3 so designers can add events without touching engine code; it will feed the same
+A data-driven `src/data/events.js` table (triggers, weights, seasonal gating) is planned for a
+later stage so designers can add events without touching engine code; it will feed the same
 `createIncident` pipeline and inherit canon enforcement for free.
+
+**Persistence (Stage 0.3):** filed incidents are written to `localStorage` (`ske-incidents-v1`)
+via `SakuraStorage` and read back by the Canon Archive's Permanent Record. See
+`docs/technical/architecture.md` and `incident-system.md`.
 
 ---
 
