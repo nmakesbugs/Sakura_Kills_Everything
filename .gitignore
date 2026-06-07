@@ -11,3 +11,7 @@ playwright-report/
 .DS_Store
 Thumbs.db
 *.log
+
+# Temp scratch files (commit messages, one-off scripts)
+_commitmsg.txt
+_*.js
