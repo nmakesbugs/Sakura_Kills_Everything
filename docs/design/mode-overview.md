@@ -17,12 +17,16 @@
 ---
 
 ## Duck Hunt
-**Status:** 🟢 Playable (since Stage 0.2; files reports since 0.3)
+**Status:** 🟢 Playable (since 0.2; files reports since 0.3; **rebuilt 0.4.1**)
 **Location:** `src/modes/duck-hunt/`
 
-The first true playable. A short run (16 targets) of tap-to-engage backyard warfare. Targets
-appear and disappear; the player taps to launch Sakura; outcomes resolve through the incident
-engine and the run ends in an **after-action report** with the official-vs-reality dual layer.
+The first true playable, **rebuilt in 0.4.1** after a playtest found the original noisy and the
+animated Sakura photo cursed. Now a clean target range: **one target breaks cover at a time**
+as a circular chip with a telegraph ring; tap it to send Sakura. Feedback is **symbolic** — a
+"Sakura Strike" paw + a colored outcome ring (no in-game photo; a small static portrait sits in
+the HUD only). Outcomes resolve through the incident engine; the run ends in a **summary-first
+after-action report** (Official Interpretation prominent, Likely Reality the punchline,
+incidents collapsed behind a toggle). See `docs/assets/sakura-runtime-visual-policy.md`.
 
 - **Target types:** birds (catchable, feather-burst), rabbits (escape-biased, near-miss),
   squirrels (always escape — canon), false alarms (leaves/bags/shadows — won anyway), and

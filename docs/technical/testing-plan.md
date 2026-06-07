@@ -67,6 +67,15 @@ player can resolve an encounter (incident card appears); a squirrel encounter ne
 catch; a vorg encounter only non-confirms; the patrol ends with an after-action report; the
 patrol report can be filed; no console errors.
 
+## The 0.4 Lesson (read this)
+
+Stage 0.4 shipped with **51/51 tests green** and still **failed a human playtest** — Duck Hunt
+felt bad and the animated Sakura photo looked cursed. Automated tests verify that things *run*;
+they do not verify that the game *feels good* or *looks acceptable*. **A stage is not done until
+it has been looked at / played.** Capture qualitative findings in `docs/qa/` (see
+`stage-0.4.1-playtest-notes.md`). Treat screenshots of the actual runtime as part of QA, not an
+afterthought.
+
 ## Stage 0.4 — Zone Map + Archive Usability Coverage
 
 **`patrol.spec.js` (added)** — the backyard **zone map** renders tappable sector tiles (≥3) with

@@ -8,157 +8,148 @@
   <link rel="stylesheet" href="../../ui/components.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 1rem 2.5rem;
-    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.25rem 1rem 2rem; }
     .screen { width: 100%; max-width: var(--screen-max); }
-    .back { color: var(--accent); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; display: block; margin-bottom: 1rem; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .back { color: var(--accent); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.08em; }
     .back:hover { color: var(--accent-hover); }
-    .mode-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
-    h1 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin: 0.2rem 0 0.4rem; }
-    .build-chip { display:inline-block; font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent-text); border:1px solid var(--border); border-radius:999px; padding:0.15rem 0.5rem; margin-bottom:0.9rem; }
+    .mode-tag { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    h1 { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0.1rem 0 0.7rem; }
 
     /* HUD */
-    .hud { display:flex; gap:0.5rem; margin-bottom:0.6rem; }
-    .hud .stat { flex:1; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.45rem 0.3rem; text-align:center; }
-    .hud .num { display:block; font-size:1.15rem; font-weight:800; color:var(--text); }
-    .hud .lbl { display:block; font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
+    .hud { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid var(--accent); flex: none; background: var(--bg-surface); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 26%; display: block; }
+    .hud .stats { display: flex; gap: 0.4rem; flex: 1; }
+    .hud .stat { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.35rem 0.3rem; text-align: center; }
+    .hud .num { display: block; font-size: 1rem; font-weight: 800; }
+    .hud .lbl { display: block; font-size: 0.46rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.05rem; }
 
-    /* Stage / field */
-    .stage { position:relative; width:100%; aspect-ratio:3/4; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--bg-surface); touch-action:manipulation; }
-    .field {
-      position:absolute; inset:0;
-      background:
-        radial-gradient(120% 60% at 50% 0%, #2a3950 0%, #1b2330 40%, #20281e 70%, #182415 100%);
-    }
-    .field::after { /* grass band */
-      content:''; position:absolute; left:0; right:0; bottom:0; height:26%;
-      background:linear-gradient(180deg, #24331c, #1a2614);
-      border-top:2px solid rgba(74,124,78,0.5);
-    }
+    /* Field */
+    .stage { position: relative; width: 100%; aspect-ratio: 3/4; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; touch-action: manipulation; }
+    .field { position: absolute; inset: 0; background:
+        radial-gradient(140% 90% at 50% -10%, #2b3a52 0%, #1d2636 45%, #223021 78%, #18230f 100%); }
+    .field::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 22%;
+      background: linear-gradient(180deg, #25331c, #1a2613); border-top: 2px solid rgba(74,124,78,0.45); }
 
-    /* Sakura presence */
-    .hunter { position:absolute; left:50%; bottom:2%; width:34%; max-width:130px; transform:translateX(-50%); z-index:3; pointer-events:none; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.6)); transition:transform 0.18s ease-out; }
-    .hunter img { width:100%; display:block; border-radius:8px; }
-    .hunter.pounce { transform:translateX(-50%) translateY(-22%) scale(1.08); }
-
-    /* Targets */
+    /* Target chip */
     .target {
-      position:absolute; z-index:4;
-      width:62px; height:62px; margin:-31px 0 0 -31px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:40px; line-height:1;
-      background:none; border:none; cursor:pointer; padding:0;
-      animation: pop 0.18s ease-out, bob 1.8s ease-in-out 0.18s infinite;
+      position: absolute; z-index: 4;
+      width: 78px; height: 78px; margin: -39px 0 0 -39px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      border: 2px solid rgba(245,240,232,0.25);
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.10), rgba(0,0,0,0.18));
+      font-size: 38px; line-height: 1;
+      cursor: pointer; padding: 0; color: inherit;
       -webkit-tap-highlight-color: transparent;
+      animation: spawn 0.22s ease-out;
+      box-shadow: 0 0 0 6px rgba(201,124,58,0.0);
     }
-    .target::before { /* alert ring */
-      content:''; position:absolute; inset:2px; border-radius:50%;
-      border:2px solid rgba(201,124,58,0.0);
-      animation: alert 0.6s ease-out 1;
-    }
-    .target[data-kind="vorg"] { filter:drop-shadow(0 0 8px #7c5aa0); }
-    @keyframes pop { from { transform:scale(0.2); opacity:0; } to { transform:scale(1); opacity:1; } }
-    @keyframes bob { 0%,100% { translate:0 0; } 50% { translate:0 -4px; } }
-    @keyframes alert { 0% { border-color:rgba(201,124,58,0.8); transform:scale(0.6); } 100% { border-color:rgba(201,124,58,0); transform:scale(1.6); } }
+    .target::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(201,124,58,0.7); animation: telegraph 0.7s ease-out 1; }
+    .target[data-kind="bird"]       { border-color: rgba(120,170,210,0.5); }
+    .target[data-kind="squirrel"]   { border-color: rgba(210,150,90,0.5); }
+    .target[data-kind="rabbit"]     { border-color: rgba(120,180,120,0.5); }
+    .target[data-kind="falseAlarm"] { border-color: rgba(150,150,140,0.45); }
+    .target[data-kind="vorg"]       { border-color: rgba(150,110,190,0.6); box-shadow: 0 0 14px rgba(124,90,160,0.5); }
+    @keyframes spawn { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes telegraph { 0% { transform: scale(0.7); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
+    .target.leaving { animation: leave 0.2s ease-in forwards; }
+    @keyframes leave { to { transform: scale(0.4); opacity: 0; } }
 
-    /* Effects */
-    .fx { position:absolute; z-index:6; pointer-events:none; font-size:20px; }
-    .fx-particle { position:absolute; left:0; top:0; will-change:transform,opacity; }
-    @keyframes burst { to { transform:translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity:0; } }
-    .gold-flash { position:absolute; inset:0; z-index:5; background:radial-gradient(circle at center, rgba(201,168,58,0.35), transparent 60%); opacity:0; pointer-events:none; }
-    .gold-flash.show { animation: flash 0.5s ease-out 1; }
-    @keyframes flash { 0% { opacity:1; } 100% { opacity:0; } }
-    .stage.shake { animation: shake 0.18s; }
-    @keyframes shake { 0%,100%{transform:translate(0,0);} 25%{transform:translate(-2px,1px);} 75%{transform:translate(2px,-1px);} }
+    /* Sakura Strike + outcome FX (symbolic — no photo) */
+    .fx { position: absolute; z-index: 6; pointer-events: none; }
+    .strike { font-size: 40px; transform: translate(-50%, -50%); animation: strike 0.42s ease-out forwards; }
+    @keyframes strike { 0% { transform: translate(-50%,-50%) scale(0.4) rotate(-15deg); opacity: 0; } 35% { opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1.5) rotate(8deg); opacity: 0; } }
+    .ring-fx { width: 20px; height: 20px; border-radius: 50%; transform: translate(-50%,-50%); border: 3px solid var(--accent); animation: ringfx 0.5s ease-out forwards; }
+    .ring-fx[data-tone="gold"] { border-color: #c9a83a; }
+    .ring-fx[data-tone="warn"] { border-color: var(--warn); }
+    .ring-fx[data-tone="blue"] { border-color: #6a9ec0; }
+    .ring-fx[data-tone="vorg"] { border-color: #9a7ad0; }
+    @keyframes ringfx { 0% { width: 20px; height: 20px; opacity: 0.9; } 100% { width: 120px; height: 120px; opacity: 0; } }
+    .streak { font-size: 26px; transform: translate(-50%,-50%); animation: streak 0.5s ease-in forwards; }
+    @keyframes streak { 0% { opacity: 0.9; } 100% { transform: translate(40px,-50%); opacity: 0; } }
+    .particle { font-size: 18px; will-change: transform, opacity; }
+    @keyframes burst { to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
 
-    /* Panels (start / summary) */
-    .panel { position:absolute; inset:0; z-index:8; background:rgba(10,10,10,0.86); display:flex; flex-direction:column; padding:1.1rem; overflow-y:auto; }
-    .panel[hidden] { display:none; }
-    .panel h2 { font-size:1.2rem; font-weight:900; text-transform:uppercase; margin-bottom:0.4rem; }
-    .panel .lead { font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:1rem; }
-    .panel-start { align-items:center; justify-content:center; text-align:center; }
+    .status { min-height: 1.3rem; margin-top: 0.7rem; font-size: 0.88rem; color: var(--accent-text); text-align: center; font-weight: 600; }
+    .hint { margin-top: 0.3rem; font-size: 0.66rem; color: var(--text-muted); text-align: center; }
 
-    .summary-grand { background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); padding:0.9rem; margin-bottom:0.9rem; }
-    .summary-grand .ic-label { display:block; font-size:0.56rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.15rem; }
-    .summary-grand .official .ic-label { color:var(--accent-text); }
-    .summary-grand .reality .ic-label { color:var(--warn); }
-    .summary-grand p { font-size:0.86rem; line-height:1.45; margin-bottom:0.7rem; }
-    .summary-grand .reality p { color:var(--text-muted); font-style:italic; margin-bottom:0; }
+    /* Panels */
+    .panel { position: absolute; inset: 0; z-index: 8; background: rgba(12,13,10,0.92); display: flex; flex-direction: column; padding: 1.2rem; overflow-y: auto; }
+    .panel[hidden] { display: none; }
+    .panel-start { align-items: center; justify-content: center; text-align: center; }
+    .panel-start h2 { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .panel-start .lead { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.2rem; }
 
-    .scoreboard { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.9rem; }
-    .scoreboard .chip { flex:1 1 30%; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.5rem 0.3rem; text-align:center; }
-    .scoreboard .chip .n { display:block; font-size:1.1rem; font-weight:800; }
-    .scoreboard .chip .k { display:block; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
-    .rank { text-align:center; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent-text); margin-bottom:0.9rem; }
-    .archive-head { font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.5rem; }
-    .summary-actions { display:flex; gap:0.5rem; margin-top:0.4rem; }
-    .summary-actions .ske-btn { flex:1; }
-
-    .file-confirm { font-size:0.78rem; color:var(--accent-text); text-align:center; margin-bottom:0.6rem; line-height:1.4; }
-    .message { min-height:1.3rem; margin-top:0.7rem; font-size:0.85rem; color:var(--accent-text); text-align:center; }
-    .hint { margin-top:0.4rem; font-size:0.66rem; color:var(--text-muted); text-align:center; }
+    /* After-action report */
+    .report-rank { text-align: center; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.2rem; }
+    .report-title { text-align: center; font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.8rem; }
+    .report-official { background: var(--bg-surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 0.85rem; margin-bottom: 0.6rem; }
+    .report-official .lab { display: block; font-size: 0.56rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.25rem; }
+    .report-official p { font-size: 0.95rem; line-height: 1.45; }
+    .report-reality { text-align: center; font-size: 0.9rem; font-style: italic; color: var(--text-muted); line-height: 1.45; margin-bottom: 0.9rem; }
+    .report-reality .lab { display: block; font-size: 0.5rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--warn); margin-bottom: 0.2rem; font-style: normal; }
+    .scoreboard { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+    .scoreboard .chip { flex: 1 1 28%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.45rem 0.3rem; text-align: center; }
+    .scoreboard .chip .n { display: block; font-size: 1.05rem; font-weight: 800; }
+    .scoreboard .chip .k { display: block; font-size: 0.46rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.05rem; }
+    .file-confirm { font-size: 0.78rem; color: var(--accent-text); text-align: center; margin: 0.5rem 0; }
+    .incidents-toggle { width: 100%; margin-top: 0.5rem; }
+    .incidents-wrap[hidden] { display: none; }
+    .incidents-wrap { margin-top: 0.6rem; }
+    .report-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+    .report-actions .ske-btn { flex: 1; }
   </style>
 </head>
 <body>
   <div class="screen">
-    <a href="../../../index.html" class="back">← Back to hunting grounds</a>
-    <p class="mode-tag">Mode 01 · Playable</p>
+    <div class="topbar">
+      <a href="../../../index.html" class="back">← Hunting grounds</a>
+      <span class="mode-tag">Mode 01 · Playable</span>
+    </div>
     <h1>Duck Hunt</h1>
-    <span class="build-chip">Stage 0.3 · playable · files official reports</span>
 
     <div class="hud">
-      <div class="stat"><span class="num" id="hud-score">0</span><span class="lbl">Prestige</span></div>
-      <div class="stat"><span class="num" id="hud-targets">0/0</span><span class="lbl">Targets</span></div>
-      <div class="stat"><span class="num" id="hud-catches">0</span><span class="lbl">Confirmed</span></div>
+      <div class="avatar"><img src="../../assets/sakura/sakura-home.jpg" alt="Sakura, on duty" onerror="this.parentNode.style.display='none'"></div>
+      <div class="stats">
+        <div class="stat"><span class="num" id="hud-score">0</span><span class="lbl">Prestige</span></div>
+        <div class="stat"><span class="num" id="hud-targets">0/0</span><span class="lbl">Targets</span></div>
+        <div class="stat"><span class="num" id="hud-catches">0</span><span class="lbl">Confirmed</span></div>
+      </div>
     </div>
 
     <div class="stage" id="stage">
       <div class="field" id="field"></div>
-      <div class="hunter" id="hunter">
-        <img src="../../assets/sakura/sakura-home.jpg" alt="Sakura, in position" onerror="this.parentNode.style.display='none'">
-      </div>
-      <div class="gold-flash" id="goldflash"></div>
 
-      <!-- Start panel -->
       <div class="panel panel-start" id="panel-start">
         <h2>The Backyard Awaits</h2>
-        <p class="lead">Tap targets to launch Sakura. Birds may be neutralized. Squirrels will escape — they always do. Anomalies at the corner cannot be confirmed.</p>
+        <p class="lead">Targets break cover one at a time. Tap one to send Sakura. Birds can be neutralized. Squirrels always escape — they always do. The far corner cannot be confirmed.</p>
         <button class="ske-btn" id="btn-start">Begin Operation</button>
       </div>
 
-      <!-- Summary panel -->
       <div class="panel" id="panel-summary" hidden>
-        <h2 id="summary-title">After-Action Report</h2>
-        <p class="rank" id="summary-rank"></p>
-        <div class="summary-grand">
-          <div class="official"><span class="ic-label">Official interpretation</span><p id="summary-official"></p></div>
-          <div class="reality"><span class="ic-label">Likely reality</span><p id="summary-reality"></p></div>
-        </div>
+        <p class="report-rank" id="summary-rank"></p>
+        <p class="report-title" id="summary-title">After-Action Report</p>
+        <div class="report-official"><span class="lab">Official interpretation</span><p id="summary-official"></p></div>
+        <p class="report-reality"><span class="lab">Likely reality</span><span id="summary-reality"></span></p>
         <div class="scoreboard" id="summary-scoreboard"></div>
-        <p class="archive-head">Incidents filed this run</p>
-        <div id="summary-incidents"></div>
-        <button class="ske-btn" id="btn-file" style="width:100%; margin:0.2rem 0 0.5rem;">File Official Report</button>
+        <button class="ske-btn" id="btn-file" style="width:100%;">File Official Report</button>
         <p class="file-confirm" id="file-confirm" hidden></p>
-        <div class="summary-actions">
+        <button class="ske-btn ske-btn--ghost incidents-toggle" id="btn-incidents" type="button">View incidents ▾</button>
+        <div class="incidents-wrap" id="summary-incidents" hidden></div>
+        <div class="report-actions">
           <button class="ske-btn ske-btn--ghost" id="btn-again">Play Again</button>
-          <a class="ske-btn ske-btn--ghost" href="../canon/index.html">Canon Archive</a>
+          <a class="ske-btn ske-btn--ghost" href="../canon/index.html">Archive</a>
         </div>
       </div>
     </div>
 
-    <p class="message" id="message">Sakura is in position.</p>
-    <p class="hint">Tap the yard to engage. The squirrels are not afraid of you.</p>
+    <p class="status" id="status">Sakura is in position.</p>
+    <p class="hint">Tap the target that breaks cover.</p>
   </div>
 
-  <!-- Data layer -->
+  <!-- Data -->
   <script src="../../data/zones.js"></script>
   <script src="../../data/creatures.js"></script>
   <script src="../../data/incidents.js"></script>
@@ -167,9 +158,8 @@
   <script src="../../engine/random.js"></script>
   <script src="../../engine/voice-engine.js"></script>
   <script src="../../engine/incident-engine.js"></script>
-  <!-- UI -->
+  <!-- UI + persistence -->
   <script src="../../ui/incident-card.js"></script>
-  <!-- Persistence -->
   <script src="../../utils/storage.js"></script>
   <!-- Mode -->
   <script src="duck-hunt.js"></script>

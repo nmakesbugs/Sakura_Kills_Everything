@@ -40,14 +40,16 @@
 
 ---
 
-## Stage 0.3 Status
+## Stage 0.4.1 Status
 
-Within budget. The home screen adds one real Sakura photo (~207kb JPG, lazy on a single
-screen). Duck Hunt and Patrol are both **DOM/CSS-based** (no heavy canvas, no physics): targets
-and encounters are elements, effects are short CSS animations using `transform`/`opacity`,
-particles are removed after ~650ms. The data + engine + ui + storage layer is small plain JS
-with no dependencies. Persistence is `localStorage` only (capped at 200 incidents). No
-frameworks, no bundler, no network calls after load, no audio/video this pass.
+Within budget, and **lighter than before**. The 0.4.1 rescue *reduced* runtime cost: Duck Hunt
+now shows **one target at a time** (was up to 3), dropped the full-screen gold flash and screen
+shake, and trimmed particle counts. The real Sakura photo is used only on the home screen and
+as a small static HUD avatar — it is **not** animated in gameplay (see
+`docs/assets/sakura-runtime-visual-policy.md`). Duck Hunt and Patrol remain **DOM/CSS-based**
+(no canvas, no physics); effects are short `transform`/`opacity` animations, particles removed
+within ~650ms. Persistence is `localStorage` only (capped at 200). No frameworks, no bundler,
+no network after load, no audio/video.
 
 | Area | Status |
 |---|---|

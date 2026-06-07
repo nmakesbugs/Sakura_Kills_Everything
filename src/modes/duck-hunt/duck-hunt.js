@@ -1,17 +1,14 @@
 /* =============================================================
-   Duck Hunt — first playable (Stage 0.2; files reports since 0.3)
-   A short, replayable, incident-generating run. Tap targets to launch
-   Sakura. Outcomes resolve through the incident engine, producing the
-   sacred dual layer (official interpretation vs. likely reality), and
-   the run ends with an after-action report.
+   Duck Hunt — Stage 0.4.1 rescue rebuild
+   A clean target range. One target breaks cover at a time; tap it to
+   send Sakura. Feedback is symbolic (a "Sakura Strike" paw + an outcome
+   ring) — NO photo in gameplay (see docs/assets/sakura-runtime-visual-policy.md).
 
-   Canon enforced: squirrels never confirmed caught, vorg never
-   confirmed, birds neutralized via feather-event abstraction.
+   Preserves: incident output, storage filing, the test seam, canon
+   (squirrels never caught, vorg never confirmed).
 
-   Depends (loaded before this file):
-     SakuraData (zones/creatures/voiceLines), SakuraRandom,
-     SakuraVoice, SakuraIncident, SakuraUI.
-   No bundler. Exposes window.__duckHunt test seam.
+   Depends (loaded first): SakuraData, SakuraRandom, SakuraVoice,
+   SakuraIncident, SakuraUI, SakuraStorage.
    ============================================================= */
 (function () {
   'use strict';
@@ -22,32 +19,27 @@
   var UI = window.SakuraUI;
 
   var CONFIG = {
-    budget: 16,         // targets per run
-    spawnGapMin: 480,   // ms between spawns
-    spawnGapMax: 820,
-    targetLifeMin: 1700,
-    targetLifeMax: 2600,
-    maxConcurrent: 3,
-    summaryCards: 6     // notable incident cards shown on the report
+    budget: 14,        // targets per run
+    lifeMin: 1300,     // ms a target stays before escaping
+    lifeMax: 1700,
+    gapMin: 420,       // ms between targets
+    gapMax: 640
   };
 
-  // Spawn kinds + their flavor pools.
   var KINDS = {
-    bird:       { weight: 0.28, glyphs: ['🐦', '🐤'], creatures: ['captain-flit', 'the-robin', 'sparrow-squadron'], zones: ['great-patio', 'open-field', 'tree-line'] },
+    bird:       { weight: 0.30, glyphs: ['🐦', '🐤'], creatures: ['captain-flit', 'the-robin', 'sparrow-squadron'], zones: ['great-patio', 'open-field', 'tree-line'] },
     squirrel:   { weight: 0.30, glyphs: ['🐿️'],       creatures: ['the-squirrel', 'acorn', 'corner-sentry'],       zones: ['fence-line', 'open-field', 'drop-zone'] },
-    rabbit:     { weight: 0.18, glyphs: ['🐇', '🐰'], creatures: ['general-thistle', 'the-twitch', 'duchess-clover'], zones: ['garden-frontier'] },
-    falseAlarm: { weight: 0.16, glyphs: ['🍃', '🛍️', '🌑', '🧦', '🌿'], creatures: [null], zones: ['great-patio', 'open-field', 'garden-frontier'] },
-    vorg:       { weight: 0.08, glyphs: ['👁️', '🌑', '❓'], creatures: ['the-vorg'], zones: ['unknown-regions', 'dusk-vigil-point'] }
+    rabbit:     { weight: 0.18, glyphs: ['🐰', '🐇'], creatures: ['general-thistle', 'the-twitch', 'duchess-clover'], zones: ['garden-frontier'] },
+    falseAlarm: { weight: 0.14, glyphs: ['🍃', '🌿', '🛍️'], creatures: [null], zones: ['great-patio', 'open-field', 'garden-frontier'] },
+    vorg:       { weight: 0.08, glyphs: ['❓', '👁️'], creatures: ['the-vorg'], zones: ['unknown-regions', 'dusk-vigil-point'] }
   };
   var KIND_WEIGHTS = Object.keys(KINDS).map(function (k) { return { value: k, weight: KINDS[k].weight }; });
 
-  // ---- State ----
   var state = {
     phase: 'idle',
     runId: null,
     spawned: 0,
     budget: CONFIG.budget,
-    activeCount: 0,
     incidents: [],
     score: 0,
     counts: { confirmedCatches: 0, featherEvents: 0, escapes: 0, squirrelFailures: 0, falseAlarms: 0, vorgEvidence: 0 },
@@ -56,15 +48,14 @@
   };
 
   var dom = {};
+  var current = null;       // { id, el, kind, creatureId, zoneId, lifeTimer, resolved }
   var spawnTimer = null;
-  var targetSeq = 0;
-  var liveTargets = {}; // id -> { el, kind, creatureId, zoneId, lifeTimer, resolved }
+  var seq = 0;
+  var incidentsRendered = false;
 
-  // ---- Helpers ----
   function rint(a, b) { return R ? R.int(a, b) : Math.floor(Math.random() * (b - a + 1)) + a; }
-  function rpick(arr) { return R ? R.pick(arr) : arr[Math.floor(Math.random() * arr.length)]; }
-
-  function setMessage(msg) { if (dom.message && msg) dom.message.textContent = msg; }
+  function rpick(a) { return R ? R.pick(a) : a[Math.floor(Math.random() * a.length)]; }
+  function setStatus(s) { if (dom.status && s) dom.status.textContent = s; }
 
   function syncHud() {
     if (dom.score) dom.score.textContent = state.score;
@@ -72,7 +63,7 @@
     if (dom.catches) dom.catches.textContent = state.counts.confirmedCatches + state.counts.featherEvents;
   }
 
-  // ---- Incident registration (shared by tap, escape, and test sim) ----
+  // ---- Incident registration ----
   function registerIncident(inc) {
     state.incidents.push(inc);
     state.score += inc.points || 0;
@@ -87,326 +78,251 @@
     syncHud();
     return inc;
   }
-
   function makeIncident(kind, didHit, creatureId, zoneId) {
-    return Incident.createIncident({
-      kind: kind, didHit: didHit, creatureId: creatureId, zoneId: zoneId, runId: state.runId
-    });
+    return Incident.createIncident({ kind: kind, didHit: didHit, creatureId: creatureId, zoneId: zoneId, runId: state.runId });
   }
-
-  // Does a resolution of this kind/hit produce a logged incident?
   function shouldLog(kind, didHit) {
-    if (kind === 'falseAlarm') return didHit;   // a leaf you ignored is not an incident
-    if (kind === 'vorg') return didHit;          // a sign that faded leaves no record
-    return true;                                 // birds/rabbits/squirrels always logged
+    if (kind === 'falseAlarm' || kind === 'vorg') return didHit;
+    return true;
   }
 
   // ---- Run lifecycle ----
   function startRun() {
     clearField();
     state.phase = 'playing';
-    state.runId = (R ? R.id('run') : 'run' + Date.now());
+    state.runId = R ? R.id('run') : 'run' + Date.now();
     state.spawned = 0;
-    state.activeCount = 0;
     state.incidents = [];
     state.score = 0;
     state.counts = { confirmedCatches: 0, featherEvents: 0, escapes: 0, squirrelFailures: 0, falseAlarms: 0, vorgEvidence: 0 };
     var z = window.SakuraData && window.SakuraData.zoneById(rpick(['open-field', 'great-patio', 'fence-line']));
     state.runZoneName = z ? z.name : 'the backyard';
     state.summary = null;
+    incidentsRendered = false;
 
     if (dom.panelStart) dom.panelStart.hidden = true;
     if (dom.panelSummary) dom.panelSummary.hidden = true;
     syncHud();
-    setMessage(Voice ? Voice.getLine('runStart') : 'Operation begins.');
-    queueSpawn(420);
+    setStatus(Voice ? Voice.getLine('runStart') : 'Operation begins.');
+    scheduleNext(420);
   }
 
-  function queueSpawn(delay) {
+  function scheduleNext(delay) {
     if (state.phase !== 'playing') return;
     if (spawnTimer) clearTimeout(spawnTimer);
     spawnTimer = setTimeout(function () {
       spawnTimer = null;
       if (state.phase !== 'playing') return;
-      if (state.spawned < state.budget && state.activeCount < CONFIG.maxConcurrent) {
-        spawnTarget();
-      }
-      if (state.spawned < state.budget) {
-        queueSpawn(rint(CONFIG.spawnGapMin, CONFIG.spawnGapMax));
-      } else {
-        maybeEnd();
-      }
-    }, delay == null ? rint(CONFIG.spawnGapMin, CONFIG.spawnGapMax) : delay);
+      if (state.spawned < state.budget) spawnTarget();
+      else maybeEnd();
+    }, delay == null ? rint(CONFIG.gapMin, CONFIG.gapMax) : delay);
   }
 
   function spawnTarget(kindOverride) {
+    // Enforce one target at a time: clear any lingering target first.
+    if (current) {
+      if (current.lifeTimer) clearTimeout(current.lifeTimer);
+      if (current.el && current.el.parentNode) current.el.parentNode.removeChild(current.el);
+      current = null;
+    }
     var kind = kindOverride || (R ? R.weighted(KIND_WEIGHTS) : 'squirrel');
     var def = KINDS[kind];
-    var creatureId = rpick(def.creatures);
-    var zoneId = rpick(def.zones);
-    var id = 'tg' + (++targetSeq);
-
+    var id = 'tg' + (++seq);
     var el = document.createElement('button');
     el.className = 'target';
+    el.type = 'button';
     el.setAttribute('data-kind', kind);
     el.setAttribute('data-target-id', id);
     el.setAttribute('aria-label', kind);
     el.textContent = rpick(def.glyphs);
-    // Position within the play area (avoid the very bottom where Sakura stands).
-    el.style.left = rint(14, 86) + '%';
-    el.style.top = rint(12, 68) + '%';
-    el.addEventListener('pointerdown', function (e) {
-      e.preventDefault();
-      resolve(id, true);
-    });
-
+    el.style.left = rint(20, 80) + '%';
+    el.style.top = rint(18, 66) + '%';
+    el.addEventListener('pointerdown', function (e) { e.preventDefault(); resolve(id, true); });
     if (dom.field) dom.field.appendChild(el);
 
-    var lifeTimer = setTimeout(function () { resolve(id, false); }, rint(CONFIG.targetLifeMin, CONFIG.targetLifeMax));
-    liveTargets[id] = { el: el, kind: kind, creatureId: creatureId, zoneId: zoneId, lifeTimer: lifeTimer, resolved: false };
+    var lifeTimer = setTimeout(function () { resolve(id, false); }, rint(CONFIG.lifeMin, CONFIG.lifeMax));
+    current = { id: id, el: el, kind: kind, creatureId: rpick(def.creatures), zoneId: rpick(def.zones), lifeTimer: lifeTimer, resolved: false };
     state.spawned++;
-    state.activeCount++;
     syncHud();
     return id;
   }
 
   function resolve(id, didHit) {
-    var t = liveTargets[id];
-    if (!t || t.resolved) return null;
+    if (!current || current.id !== id || current.resolved) return null;
+    var t = current;
     t.resolved = true;
     if (t.lifeTimer) clearTimeout(t.lifeTimer);
 
-    // Effects + Sakura reaction (only for taps / on-screen play)
-    if (t.el && t.el.parentNode) {
-      var rect = t.el.getBoundingClientRect();
-      var fieldRect = dom.field ? dom.field.getBoundingClientRect() : { left: 0, top: 0 };
-      var x = rect.left - fieldRect.left + rect.width / 2;
-      var y = rect.top - fieldRect.top + rect.height / 2;
-      if (didHit) {
-        pounce();
-        if (t.kind === 'bird') featherBurst(x, y); else dustPuff(x, y);
-      }
-      t.el.parentNode.removeChild(t.el);
+    var x = 0, y = 0;
+    if (t.el) {
+      x = t.el.offsetLeft;
+      y = t.el.offsetTop;
+      t.el.classList.add('leaving');
+      (function (node) { setTimeout(function () { if (node && node.parentNode) node.parentNode.removeChild(node); }, 200); })(t.el);
     }
-
-    delete liveTargets[id];
-    state.activeCount = Math.max(0, state.activeCount - 1);
+    current = null;
 
     var inc = null;
     if (shouldLog(t.kind, didHit)) {
       inc = makeIncident(t.kind, didHit, t.creatureId, t.zoneId);
       registerIncident(inc);
-      setMessage(Voice ? Voice.formatIncidentLine(inc) : '');
-      reactTo(inc, x, y);
+      setStatus(Voice ? Voice.formatIncidentLine(inc) : '');
+      playFx(inc, didHit, x, y);
     } else {
-      // Non-logged: the leaf blew away, or the sign faded.
-      setMessage(t.kind === 'vorg'
+      setStatus(t.kind === 'vorg'
         ? (Voice ? Voice.getLine('vorgAlert') : 'Something was there.')
         : (Voice ? Voice.getLine('falseAlarm') : 'It was nothing.'));
+      if (didHit) { strike(x, y); ring(x, y, ''); }
     }
 
-    maybeEnd();
+    if (state.spawned < state.budget) scheduleNext();
+    else maybeEnd();
     return inc;
-  }
-
-  function reactTo(inc) {
-    if (!inc) return;
-    if (inc.outcomeType === 'confirmedCatch') { goldFlash(); shake(); toast('Confirmed kill (mythic). ' + inc.title, 'gold'); }
-    else if (inc.outcomeType === 'vorgNonConfirmation') { toast('Vorg sign logged — unconfirmed.', 'vorg'); }
-    else if (inc.outcomeType === 'featherEvent') { toast('Feather event confirmed.', ''); }
-    else if (inc.nearMiss) { toast('Near miss. The rabbit survived. For now.', ''); }
   }
 
   function maybeEnd() {
     if (state.phase !== 'playing') return;
-    if (state.spawned >= state.budget && state.activeCount === 0) endRun();
+    if (state.spawned >= state.budget && !current) endRun();
   }
 
+  // ---- Feedback FX (symbolic, restrained) ----
+  function fxNode(cls, glyph, x, y) {
+    if (!dom.field) return null;
+    var n = document.createElement('span');
+    n.className = 'fx ' + cls;
+    if (glyph != null) n.textContent = glyph;
+    n.style.left = x + 'px';
+    n.style.top = y + 'px';
+    dom.field.appendChild(n);
+    return n;
+  }
+  function removeLater(node, ms) { if (node) setTimeout(function () { if (node.parentNode) node.parentNode.removeChild(node); }, ms); }
+  function strike(x, y) { removeLater(fxNode('strike', '🐾', x, y), 450); }
+  function ring(x, y, tone) { var n = fxNode('ring-fx', null, x, y); if (n && tone) n.setAttribute('data-tone', tone); removeLater(n, 520); }
+  function streak(x, y) { removeLater(fxNode('streak', '💨', x, y), 520); }
+  function feathers(x, y) {
+    for (var i = 0; i < 5; i++) {
+      var p = fxNode('particle', i % 2 ? '🪶' : '✨', x, y);
+      if (!p) continue;
+      p.style.setProperty('--dx', rint(-44, 44) + 'px');
+      p.style.setProperty('--dy', rint(-54, -12) + 'px');
+      p.style.animation = 'burst 0.6s ease-out forwards';
+      removeLater(p, 650);
+    }
+  }
+  function dust(x, y) {
+    for (var i = 0; i < 3; i++) {
+      var p = fxNode('particle', '·', x, y);
+      if (!p) continue;
+      p.style.setProperty('--dx', rint(-26, 26) + 'px');
+      p.style.setProperty('--dy', rint(-22, -4) + 'px');
+      p.style.animation = 'burst 0.5s ease-out forwards';
+      removeLater(p, 550);
+    }
+  }
+  function playFx(inc, didHit, x, y) {
+    switch (inc.outcomeType) {
+      case 'confirmedCatch': strike(x, y); ring(x, y, 'gold'); feathers(x, y); break;
+      case 'featherEvent': strike(x, y); ring(x, y, ''); feathers(x, y); break;
+      case 'squirrelEscape': if (didHit) strike(x, y); ring(x, y, 'warn'); streak(x, y); break;
+      case 'escape': ring(x, y, ''); dust(x, y); break;
+      case 'falseAlarm': if (didHit) strike(x, y); ring(x, y, 'blue'); break;
+      case 'vorgNonConfirmation': ring(x, y, 'vorg'); break;
+      default: dust(x, y);
+    }
+  }
+
+  // ---- After-action report (summary-first, incidents collapsed) ----
   function endRun() {
     if (state.phase === 'summary') return;
     state.phase = 'summary';
     if (spawnTimer) { clearTimeout(spawnTimer); spawnTimer = null; }
-    // Clear any stragglers.
-    Object.keys(liveTargets).forEach(function (id) {
-      var t = liveTargets[id];
-      if (t.lifeTimer) clearTimeout(t.lifeTimer);
-      if (t.el && t.el.parentNode) t.el.parentNode.removeChild(t.el);
-      delete liveTargets[id];
-    });
-    state.activeCount = 0;
-
+    clearField();
     var summary = Incident.summarizeRun(state.incidents, { zoneName: state.runZoneName, runId: state.runId });
     state.summary = summary;
     renderSummary(summary);
-    setMessage(Voice ? Voice.getLine('runEnd') : 'Operation complete.');
+    setStatus(Voice ? Voice.getLine('runEnd') : 'Operation complete.');
   }
 
   function renderSummary(summary) {
-    if (dom.summaryTitle) dom.summaryTitle.textContent = summary.runTitle;
     if (dom.summaryRank) dom.summaryRank.textContent = 'Prestige ' + summary.prestige + ' · ' + summary.prestigeRank;
+    if (dom.summaryTitle) dom.summaryTitle.textContent = summary.runTitle;
     if (dom.summaryOfficial) dom.summaryOfficial.textContent = summary.officialInterpretation;
     if (dom.summaryReality) dom.summaryReality.textContent = summary.likelyReality;
 
     if (dom.scoreboard) {
-      var c = summary.counts;
       var chips = [
         ['Confirmed', summary.confirmedCatches],
-        ['Escapes', summary.escapes],
-        ['Squirrel fails', summary.squirrelFailures],
-        ['False alarms', c.falseAlarms],
-        ['Vorg evidence', c.vorgEvidence],
-        ['Incidents', summary.total]
+        ['Got away', summary.escapes],
+        ['Squirrel fails', summary.squirrelFailures]
       ];
       dom.scoreboard.innerHTML = '';
-      chips.forEach(function (pair) {
-        var chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.innerHTML = '<span class="n">' + pair[1] + '</span><span class="k">' + pair[0] + '</span>';
-        dom.scoreboard.appendChild(chip);
+      chips.forEach(function (c) {
+        var d = document.createElement('div');
+        d.className = 'chip';
+        d.innerHTML = '<span class="n">' + c[1] + '</span><span class="k">' + c[0] + '</span>';
+        dom.scoreboard.appendChild(d);
       });
     }
 
-    // Notable incident cards: prioritize catches, vorg, near-misses, then fill.
-    if (dom.summaryIncidents && UI) {
-      var notable = pickNotable(summary.incidents, CONFIG.summaryCards);
-      UI.renderInto(dom.summaryIncidents, notable);
-      if (summary.incidents.length > notable.length) {
-        var more = document.createElement('p');
-        more.className = 'archive-head';
-        more.style.marginTop = '0.4rem';
-        more.textContent = '+ ' + (summary.incidents.length - notable.length) + ' more incidents filed';
-        dom.summaryIncidents.appendChild(more);
-      }
-    }
+    // Incidents collapsed by default — no paperwork wall.
+    incidentsRendered = false;
+    if (dom.incidents) { dom.incidents.hidden = true; dom.incidents.innerHTML = ''; }
+    if (dom.btnIncidents) dom.btnIncidents.textContent = 'View ' + summary.total + ' incident' + (summary.total === 1 ? '' : 's') + ' ▾';
 
-    // Reset the file-report control for the new report.
-    if (dom.btnFile) {
-      dom.btnFile.disabled = false;
-      dom.btnFile.textContent = 'File Official Report';
-      dom.btnFile.classList.remove('ske-btn--ghost');
-    }
+    if (dom.btnFile) { dom.btnFile.disabled = false; dom.btnFile.textContent = 'File Official Report'; dom.btnFile.classList.remove('ske-btn--ghost'); }
     if (dom.fileConfirm) { dom.fileConfirm.hidden = true; dom.fileConfirm.textContent = ''; }
-
     if (dom.panelSummary) dom.panelSummary.hidden = false;
   }
 
-  var FILE_CONFIRM_LINES = [
-    'Report entered into the permanent record.',
-    'The archive has accepted Sakura’s version of events.',
-    'Likely reality appended under protest.'
-  ];
+  function toggleIncidents() {
+    if (!dom.incidents) return;
+    var show = dom.incidents.hidden;
+    if (show && !incidentsRendered && state.summary && UI) {
+      UI.renderRowsInto(dom.incidents, state.summary.incidents);
+      incidentsRendered = true;
+    }
+    dom.incidents.hidden = !show;
+    if (dom.btnIncidents && state.summary) {
+      dom.btnIncidents.textContent = (show ? 'Hide incidents ▴' : 'View ' + state.summary.total + ' incident' + (state.summary.total === 1 ? '' : 's') + ' ▾');
+    }
+  }
 
+  var FILE_LINES = ['Report entered into the permanent record.', 'The archive has accepted Sakura’s version of events.', 'Likely reality appended under protest.'];
   function fileReport() {
     if (!state.summary || !window.SakuraStorage) return;
     if (dom.btnFile && dom.btnFile.disabled) return;
-    window.SakuraStorage.saveIncidents(state.summary.incidents, {
-      sourceMode: 'duck-hunt',
-      runTitle: state.summary.runTitle
-    });
-    if (dom.btnFile) {
-      dom.btnFile.disabled = true;
-      dom.btnFile.textContent = 'Report Filed ✓';
-      dom.btnFile.classList.add('ske-btn--ghost');
-    }
-    if (dom.fileConfirm) {
-      dom.fileConfirm.textContent = (R ? R.pick(FILE_CONFIRM_LINES) : FILE_CONFIRM_LINES[0]);
-      dom.fileConfirm.hidden = false;
-    }
-  }
-
-  function pickNotable(incidents, n) {
-    var rank = {
-      confirmedCatch: 0, vorgNonConfirmation: 1, featherEvent: 2,
-      escape: 3, squirrelEscape: 4, falseAlarm: 5
-    };
-    return incidents.slice().sort(function (a, b) {
-      var ra = rank[a.outcomeType] == null ? 9 : rank[a.outcomeType];
-      var rb = rank[b.outcomeType] == null ? 9 : rank[b.outcomeType];
-      if (ra !== rb) return ra - rb;
-      return (b.points || 0) - (a.points || 0);
-    }).slice(0, n);
-  }
-
-  // ---- Effects ----
-  function pounce() {
-    if (!dom.hunter) return;
-    dom.hunter.classList.add('pounce');
-    setTimeout(function () { dom.hunter.classList.remove('pounce'); }, 200);
-  }
-  function goldFlash() {
-    if (!dom.goldflash) return;
-    dom.goldflash.classList.remove('show'); void dom.goldflash.offsetWidth; dom.goldflash.classList.add('show');
-  }
-  function shake() {
-    if (!dom.stage) return;
-    dom.stage.classList.remove('shake'); void dom.stage.offsetWidth; dom.stage.classList.add('shake');
-    setTimeout(function () { dom.stage.classList.remove('shake'); }, 200);
-  }
-  function burst(x, y, glyphs, count) {
-    if (!dom.field) return;
-    for (var i = 0; i < count; i++) {
-      var p = document.createElement('span');
-      p.className = 'fx fx-particle';
-      p.textContent = glyphs[i % glyphs.length];
-      p.style.left = x + 'px';
-      p.style.top = y + 'px';
-      var dx = rint(-50, 50), dy = rint(-60, -10), rot = rint(-180, 180);
-      p.style.setProperty('--dx', dx + 'px');
-      p.style.setProperty('--dy', dy + 'px');
-      p.style.setProperty('--rot', rot + 'deg');
-      p.style.animation = 'burst 0.6s ease-out forwards';
-      dom.field.appendChild(p);
-      (function (node) { setTimeout(function () { if (node.parentNode) node.parentNode.removeChild(node); }, 650); })(p);
-    }
-  }
-  function featherBurst(x, y) { burst(x, y, ['🪶', '🪶', '✨'], 6); }
-  function dustPuff(x, y) { burst(x, y, ['💨', '·'], 4); }
-
-  var toastTimer = null;
-  function toast(text, tone) {
-    if (!dom.toast) {
-      dom.toast = document.createElement('div');
-      dom.toast.className = 'ske-toast';
-      document.body.appendChild(dom.toast);
-    }
-    dom.toast.textContent = text;
-    dom.toast.setAttribute('data-tone', tone || '');
-    dom.toast.classList.add('show');
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { dom.toast.classList.remove('show'); }, 1600);
+    window.SakuraStorage.saveIncidents(state.summary.incidents, { sourceMode: 'duck-hunt', runTitle: state.summary.runTitle });
+    if (dom.btnFile) { dom.btnFile.disabled = true; dom.btnFile.textContent = 'Report Filed ✓'; dom.btnFile.classList.add('ske-btn--ghost'); }
+    if (dom.fileConfirm) { dom.fileConfirm.textContent = rpick(FILE_LINES); dom.fileConfirm.hidden = false; }
   }
 
   function clearField() {
     if (dom.field) {
-      // Remove targets/particles but keep nothing stale.
       var nodes = dom.field.querySelectorAll('.target, .fx');
       for (var i = 0; i < nodes.length; i++) nodes[i].parentNode.removeChild(nodes[i]);
     }
-    Object.keys(liveTargets).forEach(function (id) {
-      if (liveTargets[id].lifeTimer) clearTimeout(liveTargets[id].lifeTimer);
-      delete liveTargets[id];
-    });
-    state.activeCount = 0;
+    if (current && current.lifeTimer) clearTimeout(current.lifeTimer);
+    current = null;
   }
 
   // ---- Boot ----
   function init() {
     dom.field = document.getElementById('field');
     dom.stage = document.getElementById('stage');
-    dom.hunter = document.getElementById('hunter');
-    dom.goldflash = document.getElementById('goldflash');
-    dom.message = document.getElementById('message');
+    dom.status = document.getElementById('status');
     dom.score = document.getElementById('hud-score');
     dom.targets = document.getElementById('hud-targets');
     dom.catches = document.getElementById('hud-catches');
     dom.panelStart = document.getElementById('panel-start');
     dom.panelSummary = document.getElementById('panel-summary');
-    dom.summaryTitle = document.getElementById('summary-title');
     dom.summaryRank = document.getElementById('summary-rank');
+    dom.summaryTitle = document.getElementById('summary-title');
     dom.summaryOfficial = document.getElementById('summary-official');
     dom.summaryReality = document.getElementById('summary-reality');
     dom.scoreboard = document.getElementById('summary-scoreboard');
-    dom.summaryIncidents = document.getElementById('summary-incidents');
+    dom.incidents = document.getElementById('summary-incidents');
+    dom.btnIncidents = document.getElementById('btn-incidents');
     dom.btnFile = document.getElementById('btn-file');
     dom.fileConfirm = document.getElementById('file-confirm');
 
@@ -415,25 +331,23 @@
     if (startBtn) startBtn.addEventListener('click', startRun);
     if (againBtn) againBtn.addEventListener('click', startRun);
     if (dom.btnFile) dom.btnFile.addEventListener('click', fileReport);
+    if (dom.btnIncidents) dom.btnIncidents.addEventListener('click', toggleIncidents);
 
     syncHud();
     if (dom.targets) dom.targets.textContent = '0/' + state.budget;
 
-    // Test seam + introspection.
     window.__duckHunt = {
       state: state,
       config: CONFIG,
       KINDS: KINDS,
       startRun: startRun,
       endRun: endRun,
+      fileReport: fileReport,
       spawn: function (kind) { return spawnTarget(kind); },
       resolve: resolve,
-      fileReport: fileReport,
-      /** Deterministic: create + register an incident without DOM. Returns it. */
       simulate: function (kind, didHit) {
         var def = KINDS[kind] || KINDS.squirrel;
-        var inc = makeIncident(kind, didHit, rpick(def.creatures), rpick(def.zones));
-        return registerIncident(inc);
+        return registerIncident(makeIncident(kind, didHit, rpick(def.creatures), rpick(def.zones)));
       },
       getSummary: function () { return state.summary; }
     };

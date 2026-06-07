@@ -88,14 +88,14 @@
     ],
     runStart: [
       'Operation begins. The backyard is not safe.',
-      'Patrol live. Sakura has entered the hunting grounds.',
+      'Sakura has entered the hunting grounds.',
       'Stand by. The Warden does not.',
       'The grass holds its breath.'
     ],
     runEnd: [
       'Operation complete. The record will exaggerate.',
       'Stand down. The legend grows regardless of the footage.',
-      'Patrol concluded. History has been generously interpreted.',
+      'Operation concluded. History has been generously interpreted.',
       'The dust settles. The paperwork rises.'
     ],
     incidentReport: [

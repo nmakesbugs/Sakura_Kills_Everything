@@ -23,7 +23,7 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ---
 
-## Current Status (Stage 0.4)
+## Current Status (Stage 0.4.1)
 
 | Stage | Status | Scope |
 |---|---|---|
@@ -31,8 +31,15 @@ The first audience is the family — specifically Tanisha, the original Witness.
 | Canon 0.1 | ✅ Complete | ~21k-word worldbuilding bible (canon library under `docs/canon/`) |
 | 0.2 — Game Platform | ✅ Complete | Incident platform, canon data layer, Duck Hunt first playable, Canon Archive portal |
 | 0.3 — Incident Memory + Patrol | ✅ Complete | Persistent incident archive, Duck Hunt report filing, Canon saved view + stats, Patrol prototype |
-| **0.4 — Patrol Polish + Archive Usability** | ✅ **This stage** | **Backyard zone map for Patrol sector select; archive filters + grouping + counts; incident detail modal; territory stats** |
-| 0.5 — Sakura Animation | ⚪ Next | Sakura sprite/photo animation pipeline v0.1. Not started. |
+| 0.4 — Patrol Polish + Archive Usability | ✅ Complete | Backyard zone map; archive filters + grouping + counts; incident detail modal; territory stats |
+| **0.4.1 — Runtime Rescue** | ✅ **This stage** | **Rebuilt Duck Hunt (clean range); removed cursed in-game Sakura photo → symbolic Strike + HUD portrait; summary-first readable report** |
+| 0.5 — Sakura Animation | ⚪ Next | Sakura sprite/photo pipeline v0.1 — only after a human playtest confirms runtime feel; must honor the runtime visual policy. Not started. |
+
+> **Hard lesson (0.4):** automated tests passed while the human playtest failed. **Passing
+> tests ≠ good product.** Always look at / play the runtime before declaring a stage done.
+> **Sakura runtime visual policy** (`docs/assets/sakura-runtime-visual-policy.md`): the real
+> photo is for the home screen and small static HUD avatars only — NEVER an animated gameplay
+> sprite. In gameplay, use symbolic Sakura (paw/strike/token).
 
 **Playable now:** Duck Hunt (a real, short, replayable run that generates incidents).
 **Prototype now:** Patrol (sector select → encounter-by-encounter surveillance sweep → report).

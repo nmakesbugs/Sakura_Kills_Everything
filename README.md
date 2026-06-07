@@ -5,7 +5,14 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.4-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Stage](https://img.shields.io/badge/stage-0.4.1-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-rebuilt-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+
+> **Stage 0.4.1 (rescue):** Stage 0.4 added strong usability *systems* but a human playtest
+> revealed the runtime felt bad — Duck Hunt was noisy and the real Sakura photo, animated as a
+> gameplay sprite, looked cursed. 0.4.1 rebuilt Duck Hunt as a clean target range, replaced the
+> in-game photo with symbolic "Sakura Strike" feedback + a HUD portrait, and made the report
+> readable. Systems success ≠ product success — that distinction is now tracked in
+> `docs/qa/stage-0.4.1-playtest-notes.md`.
 
 ---
 
@@ -27,7 +34,7 @@ The core unit of the game is the **incident** — a record with two layers:
 
 | Area | Status |
 |---|---|
-| **Duck Hunt** | ✅ Playable — short replayable runs; file the report to the permanent record |
+| **Duck Hunt** | ✅ Playable (rebuilt 0.4.1) — clean target range, symbolic Sakura, readable report |
 | **Patrol** | 🟦 Prototype+ — pick a sector from the **backyard zone map**, sweep it, file the report |
 | **Persistent incidents** | ✅ Runs save to `localStorage` (`ske-incidents-v1`) and survive across sessions |
 | **Sakura Canon** | ✅ Live — portal + **Permanent Record** with filters, grouping, an incident **detail view**, and territory stats |
@@ -121,7 +128,10 @@ Full canon: [`docs/canon/sakura-canon-bible.md`](docs/canon/sakura-canon-bible.m
   report filing, Canon Permanent Record + stats, and a first Patrol prototype.
 - **Stage 0.4 — Patrol Polish + Zone Map + Archive Usability:** ✅ done — backyard zone map for
   sector selection, archive filters + grouping + counts, incident detail view, territory stats.
-- **Stage 0.5 — Sakura Sprite / Photo Animation Pipeline v0.1:** next. Not started.
+- **Stage 0.4.1 — Runtime Experience Rescue:** ✅ done — rebuilt Duck Hunt, removed the cursed
+  in-game Sakura photo (symbolic presence + HUD portrait), summary-first readable report.
+- **Stage 0.5 — Sakura Sprite / Photo Animation Pipeline v0.1:** next, *only if the runtime now
+  feels acceptable in a human playtest*. Must honor `docs/assets/sakura-runtime-visual-policy.md`.
 
 ---
 

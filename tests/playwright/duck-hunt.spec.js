@@ -9,7 +9,7 @@ test.describe('Duck Hunt — first playable', () => {
     await page.goto(DUCK_HUNT);
     await expect(page).toHaveTitle(/Duck Hunt/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Duck Hunt', { ignoreCase: true });
-    await expect(page.getByRole('link', { name: /Back to hunting grounds/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Hunting grounds/i })).toBeVisible();
     await expect(page.locator('#field')).toBeVisible();
   });
 
@@ -61,19 +61,23 @@ test.describe('Duck Hunt — first playable', () => {
   test('an escape/miss produces narration text', async ({ page }) => {
     await page.goto(DUCK_HUNT);
     await page.evaluate(() => { window.__duckHunt.startRun(); window.__duckHunt.simulate('rabbit', false); });
-    const msg = await page.locator('#message').textContent();
+    const msg = await page.locator('#status').textContent();
     expect(msg && msg.trim().length).toBeGreaterThan(0);
   });
 
-  test('tapping a spawned target resolves it without errors', async ({ page }) => {
+  test('tapping a spawned target logs an incident without errors', async ({ page }) => {
     const errors = [];
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(DUCK_HUNT);
-    await page.evaluate(() => window.__duckHunt.startRun());
+    // Hide the start panel but do NOT start the run loop, so no auto-spawn
+    // replaces the target mid-test and the field is tappable.
+    await page.evaluate(() => { document.getElementById('panel-start').hidden = true; });
     await page.evaluate(() => window.__duckHunt.spawn('bird'));
+    const before = await page.evaluate(() => window.__duckHunt.state.incidents.length);
     await page.locator('.target').first().click({ force: true });
-    await expect(page.locator('.target')).toHaveCount(0);
+    const after = await page.evaluate(() => window.__duckHunt.state.incidents.length);
+    expect(after).toBeGreaterThan(before);
     expect(errors).toEqual([]);
   });
 
@@ -92,8 +96,10 @@ test.describe('Duck Hunt — first playable', () => {
     const reality = await page.locator('#summary-reality').textContent();
     expect(official && official.trim().length).toBeGreaterThan(0);
     expect(reality && reality.trim().length).toBeGreaterThan(0);
-    // The summary should also render incident cards.
-    await expect(page.locator('#summary-incidents .incident-card').first()).toBeVisible();
+    // Incidents are collapsed by default (no paperwork wall); expand to view rows.
+    await expect(page.locator('#summary-incidents')).toBeHidden();
+    await page.locator('#btn-incidents').click();
+    await expect(page.locator('#summary-incidents .incident-row').first()).toBeVisible();
   });
 
   test('the summary shows both an Official interpretation and a Likely reality label', async ({ page }) => {

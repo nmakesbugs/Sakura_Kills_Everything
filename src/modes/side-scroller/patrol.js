@@ -294,7 +294,7 @@
     if (dom.summaryRank) dom.summaryRank.textContent = 'Prestige ' + summary.prestige + ' · ' + summary.prestigeRank;
     if (dom.summaryOfficial) dom.summaryOfficial.textContent = summary.officialInterpretation;
     if (dom.summaryReality) dom.summaryReality.textContent = summary.likelyReality;
-    if (dom.summaryIncidents && UI) UI.renderInto(dom.summaryIncidents, summary.incidents);
+    if (dom.summaryIncidents && UI) UI.renderRowsInto(dom.summaryIncidents, summary.incidents);
     if (dom.btnFile) { dom.btnFile.disabled = false; dom.btnFile.textContent = 'File Official Report'; dom.btnFile.classList.remove('ske-btn--ghost'); }
     if (dom.fileConfirm) { dom.fileConfirm.hidden = true; dom.fileConfirm.textContent = ''; }
     if (dom.panelSummary) dom.panelSummary.hidden = false;
