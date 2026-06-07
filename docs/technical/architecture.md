@@ -57,7 +57,8 @@ State is not required for the home screen or canon archive. It is optional progr
 
 ```
 src/
-  data/     — canon data layer: zones.js, creatures.js, incidents.js, voice-lines.js
+  data/     — canon data layer: zones.js, creatures.js, incidents.js, voice-lines.js, adventures.js
+  adventures/ — authored episodes (flagship: bird-incident/), since 0.6
   engine/   — random.js, voice-engine.js, incident-engine.js (+ index.js canvas helpers)
   ui/       — theme.css, components.css, incident-card.js
   modes/    — one directory per mode (duck-hunt playable, canon live, others future)

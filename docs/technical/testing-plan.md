@@ -89,6 +89,21 @@ Reality; grouping (sector/outcome/source) renders group headers; territory stats
 
 **`home`** — Stage 0.4 build line; Patrol marked Prototype+ ; Duck Hunt Playable; Canon Live.
 
+## Stage 0.6 — Adventure-First Coverage
+
+**`bird-incident.spec.js`** — the episode loads; briefing → start; observation + approach
+choices work; complication and strike beats reachable; the strike resolves (forced tier via the
+`window.__birdIncident` seam); the official report shows both Official Interpretation and Likely
+Reality; choices change the report (e.g. different witness); the report files into the Permanent
+Record with `sourceAdventure: 'bird-incident'`; no console errors.
+
+**`home`** — "Choose Sakura's Next Adventure" appears; The Bird Incident is Playable; Practice
+Yard / Free Patrol / Permanent Record present in Training & Records; the flagship link points at
+`src/adventures/bird-incident/`.
+
+**`archive`** — a filed Bird Incident appears under the **Adventures** filter; `sourceAdventure`
+is preserved; squirrels remain uncaught; vorg remains unconfirmed.
+
 ## Stage 0.5 — Runtime Feel + SakuraPresence Coverage
 
 **`presence.spec.js`** — `window.SakuraPresence` exposes the v0.1 API (`portrait/token/outcomeFx/

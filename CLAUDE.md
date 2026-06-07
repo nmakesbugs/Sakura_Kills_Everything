@@ -23,7 +23,7 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ---
 
-## Current Status (Stage 0.5.0)
+## Current Status (Stage 0.6.0)
 
 | Stage | Status | Scope |
 |---|---|---|
@@ -33,8 +33,14 @@ The first audience is the family — specifically Tanisha, the original Witness.
 | 0.3 — Incident Memory + Patrol | ✅ Complete | Persistent incident archive, Duck Hunt report filing, Canon saved view + stats, Patrol prototype |
 | 0.4 — Patrol Polish + Archive Usability | ✅ Complete | Backyard zone map; archive filters + grouping + counts; incident detail modal; territory stats |
 | 0.4.1 — Runtime Rescue | ✅ Complete | Rebuilt Duck Hunt; removed cursed in-game photo; summary-first report |
-| **0.5.0 — Runtime Feel + Visual Pipeline** | ✅ **This stage** | **Duck Hunt scene/pacing elevation; reusable `SakuraPresence` (portraits + token + effects); sprite-pipeline-v0.1 contract** |
-| Next — real Sakura sprites | ⚪ | Only after a phone playtest; must satisfy `docs/assets/sakura-sprite-pipeline-v0.1.md`. Not started. |
+| 0.5.0 — Runtime Feel + Visual Pipeline | ✅ Complete | `SakuraPresence`; Duck Hunt elevation |
+| **0.6.0 — Adventure-first pivot** | ✅ **This stage** | **Product reframed around authored adventures; flagship `The Bird Incident` (choice-driven episode → official report → file); Duck Hunt demoted to Practice Yard** |
+| Next — Episode 2 + real sprites | ⚪ | Episode 2 on the same pattern after a phone playtest; then sprite art. Not started. |
+
+**The product is adventure-first.** Playable flagship: **The Bird Incident**
+(`src/adventures/bird-incident/`). Duck Hunt = "Practice Yard" (bonus), Patrol = "Free Patrol"
+(prototype), Canon = "Permanent Record" (live). The goal of play is the funniest official record
+of Sakura's version of events. See `docs/design/adventure-first-refactor.md`.
 
 > **Hard lesson (0.4):** automated tests passed while the human playtest failed. **Passing
 > tests ≠ good product.** Always look at / play the runtime before declaring a stage done.

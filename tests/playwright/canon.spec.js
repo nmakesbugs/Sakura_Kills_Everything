@@ -90,7 +90,7 @@ test.describe('Canon Archive portal', () => {
     await page.goto(CANON);
     await seed(page);
     await page.reload();
-    expect(await page.locator('#record-filters .chip-filter').count()).toBe(8);
+    expect(await page.locator('#record-filters .chip-filter').count()).toBe(9);
     await expect(page.locator('#saved-incidents .incident-row')).toHaveCount(3);
     await page.locator('#record-filters .chip-filter[data-filter="squirrels"]').click();
     await expect(page.locator('#saved-incidents .incident-row')).toHaveCount(1);

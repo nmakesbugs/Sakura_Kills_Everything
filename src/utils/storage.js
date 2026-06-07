@@ -56,6 +56,7 @@
       var copy = {};
       for (var k in inc) { if (Object.prototype.hasOwnProperty.call(inc, k)) copy[k] = inc[k]; }
       copy.sourceMode = context.sourceMode || copy.sourceMode || 'unknown';
+      copy.sourceAdventure = context.sourceAdventure || copy.sourceAdventure || null;
       copy.runTitle = context.runTitle || copy.runTitle || null;
       copy.savedAt = stamp;
       return copy;

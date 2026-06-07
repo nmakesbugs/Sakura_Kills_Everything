@@ -171,7 +171,8 @@
       // Filter definitions: id, label, predicate.
       var FILTERS = [
         { id: 'all',        label: 'All',          test: function () { return true; } },
-        { id: 'duck-hunt',  label: 'Duck Hunt',    test: function (i) { return i.sourceMode === 'duck-hunt'; } },
+        { id: 'adventures', label: 'Adventures',   test: function (i) { return !!i.sourceAdventure || i.sourceMode === 'bird-incident'; } },
+        { id: 'duck-hunt',  label: 'Practice Yard',test: function (i) { return i.sourceMode === 'duck-hunt'; } },
         { id: 'patrol',     label: 'Patrol',       test: function (i) { return i.sourceMode === 'patrol'; } },
         { id: 'birds',      label: 'Birds',        test: function (i) { return i.kind === 'bird' || i.outcomeType === 'featherEvent' || i.outcomeType === 'confirmedCatch'; } },
         { id: 'squirrels',  label: 'Squirrels',    test: function (i) { return i.kind === 'squirrel' || i.outcomeType === 'squirrelEscape'; } },
@@ -223,7 +224,12 @@
       function groupKeyFor(mode, inc) {
         if (mode === 'sector') return inc.zoneName || inc.zone || 'Unknown sector';
         if (mode === 'outcome') return BADGE[inc.outcomeType] || 'Logged';
-        if (mode === 'source') return inc.sourceMode === 'patrol' ? 'Patrol' : (inc.sourceMode === 'duck-hunt' ? 'Duck Hunt' : 'Other');
+        if (mode === 'source') {
+          if (inc.sourceAdventure === 'bird-incident' || inc.sourceMode === 'bird-incident') return 'The Bird Incident';
+          if (inc.sourceMode === 'patrol') return 'Patrol';
+          if (inc.sourceMode === 'duck-hunt') return 'Practice Yard';
+          return 'Other';
+        }
         return null;
       }
 

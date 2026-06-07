@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Bird Incident — Sakura Kills Everything</title>
+  <link rel="stylesheet" href="../../ui/theme.css">
+  <link rel="stylesheet" href="../../ui/components.css">
+  <link rel="stylesheet" href="../../ui/sakura-presence.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.1rem 1rem 2rem; }
+    .screen { width: 100%; max-width: var(--screen-max); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
+    .back { color: var(--accent); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.08em; }
+    .back:hover { color: var(--accent-hover); }
+    .ep-tag { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+
+    .titlecard { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.5rem; }
+    .titlecard .tc-text h1 { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; line-height: 1.05; }
+    .titlecard .tc-text p { font-size: 0.7rem; color: var(--text-muted); font-style: italic; margin-top: 0.15rem; }
+
+    /* Progress dots */
+    .beats { display: flex; gap: 0.3rem; margin-bottom: 0.7rem; }
+    .beats .dot { flex: 1; height: 3px; border-radius: 2px; background: var(--border); }
+    .beats .dot.done { background: var(--accent); }
+    .beats .dot.current { background: var(--warn); }
+
+    /* The incident file card */
+    .file-card { background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.10)), var(--bg-surface);
+      border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: var(--radius);
+      padding: 1.1rem 1.05rem 1.2rem; min-height: 300px; }
+    .beat-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.4rem; }
+    .beat-title { font-size: 1.15rem; font-weight: 900; line-height: 1.15; margin-bottom: 0.6rem; }
+    .prose { font-size: 0.9rem; line-height: 1.55; color: var(--text); margin-bottom: 1rem; }
+    .prose.muted { color: var(--text-muted); }
+    .prose .pop { color: var(--accent-text); font-weight: 600; }
+
+    .choices { display: flex; flex-direction: column; gap: 0.5rem; }
+    .choice { text-align: left; background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--border-warm);
+      border-radius: var(--radius); padding: 0.75rem 0.85rem; color: var(--text); font-family: var(--font); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+    .choice:hover, .choice:focus-visible { border-left-color: var(--accent); border-color: var(--accent); background: var(--bg-raised); outline: none; }
+    .choice .ch-name { display: block; font-size: 0.92rem; font-weight: 800; }
+    .choice .ch-sub { display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; line-height: 1.4; }
+
+    .cta { width: 100%; margin-top: 0.4rem; }
+
+    /* Strike stage */
+    .strike-stage { position: relative; width: 100%; aspect-ratio: 5/4; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 0.8rem; background:
+        radial-gradient(120% 90% at 50% -10%, #2c3c56 0%, #1e2738 45%, #243223 78%, #18230f 100%); }
+    .strike-stage .moon { position: absolute; top: 9%; right: 14%; width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 38% 38%, #f3eede, #cfc7ad); box-shadow: 0 0 22px rgba(243,238,222,0.3); }
+    .strike-stage .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 24%; background: linear-gradient(180deg,#25331c,#19250f); border-top: 2px solid rgba(74,124,78,0.4); }
+    .bird { position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%); font-size: 40px; z-index: 3; }
+    .reticle { position: absolute; left: 50%; top: 42%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border: 3px solid var(--warn); border-radius: 50%; z-index: 4; pointer-events: none; }
+    .reticle::after { content: ''; position: absolute; inset: 42%; border-radius: 50%; background: var(--warn); opacity: 0.7; }
+
+    /* Report */
+    .report-rank { text-align: center; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.2rem; }
+    .report-verdict { text-align: center; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.8rem; }
+    .rep-block { border-top: 1px dashed var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+    .rep-block .lab { display: block; font-size: 0.54rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .rep-official .lab { color: var(--accent-text); }
+    .rep-reality .lab { color: var(--warn); }
+    .rep-block p { font-size: 0.9rem; line-height: 1.5; }
+    .rep-reality p { color: var(--text-muted); font-style: italic; }
+    .rep-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 0.6rem; margin-top: 0.7rem; }
+    .rep-field .k { display: block; font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .rep-field .v { display: block; font-size: 0.8rem; }
+    .file-confirm { font-size: 0.8rem; color: var(--accent-text); text-align: center; margin: 0.6rem 0; }
+    .report-actions { display: flex; gap: 0.5rem; margin-top: 0.7rem; }
+    .report-actions .ske-btn { flex: 1; }
+
+    .status { min-height: 1.2rem; margin-top: 0.7rem; font-size: 0.82rem; color: var(--accent-text); text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <a href="../../../index.html" class="back">← Adventures</a>
+      <span class="ep-tag">Episode 01 · Playable</span>
+    </div>
+
+    <div class="titlecard">
+      <div id="title-portrait"></div>
+      <div class="tc-text">
+        <h1>The Bird Incident</h1>
+        <p>A legendary aerial engagement. History awaits paperwork.</p>
+      </div>
+    </div>
+
+    <div class="beats" id="beat-dots" aria-hidden="true"></div>
+
+    <div class="file-card" id="beat"></div>
+
+    <p class="status" id="status">An incident is forming.</p>
+  </div>
+
+  <!-- Data -->
+  <script src="../../data/zones.js"></script>
+  <script src="../../data/creatures.js"></script>
+  <script src="../../data/incidents.js"></script>
+  <script src="../../data/voice-lines.js"></script>
+  <script src="../../data/adventures.js"></script>
+  <!-- Engine -->
+  <script src="../../engine/random.js"></script>
+  <script src="../../engine/voice-engine.js"></script>
+  <script src="../../engine/incident-engine.js"></script>
+  <!-- UI + presence + persistence -->
+  <script src="../../ui/incident-card.js"></script>
+  <script src="../../ui/sakura-presence.js"></script>
+  <script src="../../utils/storage.js"></script>
+  <!-- Episode -->
+  <script src="bird-incident.js"></script>
+</body>
+</html>

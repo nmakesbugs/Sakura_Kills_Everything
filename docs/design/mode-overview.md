@@ -16,8 +16,26 @@
 
 ---
 
-## Duck Hunt
-**Status:** 🟢 Playable (since 0.2; files reports since 0.3; **rebuilt 0.4.1**)
+## Adventures (the flagship, since 0.6)
+
+The product is **adventure-first**: short, authored Sakura stories, chosen from
+"Choose Sakura's Next Adventure" on the home screen. Each is a beat-driven episode that ends in
+a fileable official report. Registry: `src/data/adventures.js`; episodes: `src/adventures/<id>/`.
+
+### The Bird Incident
+**Status:** 🟢 Playable flagship (Stage 0.6) · `src/adventures/bird-incident/`
+A 3–6 minute choice-driven episode: briefing → observation post → approach → complication →
+timed strike → aftermath → official report → file. Observation/approach/strike all vary the
+report (rank, official interpretation, likely reality, witness, evidence). The goal is the
+funniest official record, not a score. **This is the new primary call to action.**
+
+### Squirrel Surveillance · Rabbit at the Garden Frontier · Vorg Watch
+**Status:** ⚪ Coming soon — teased on the home screen; future episodes on the same pattern.
+
+---
+
+## Practice Yard (formerly Duck Hunt)
+**Status:** 🟢 Playable **bonus** (no longer the flagship; rebuilt 0.4.1, elevated 0.5.0)
 **Location:** `src/modes/duck-hunt/`
 
 The first true playable, **rebuilt in 0.4.1** and **elevated in 0.5.0**. A clean target range

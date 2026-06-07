@@ -5,16 +5,16 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.5.0-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Stage](https://img.shields.io/badge/stage-0.6.0-4a7c4e) ![Flagship](https://img.shields.io/badge/The_Bird_Incident-playable-4a7c4e) ![Mode](https://img.shields.io/badge/adventure--first-pivot-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
-> **Stage 0.5.0 (runtime feel + Sakura visual pipeline v0.1):** Stage 0.4 had strong *systems*
-> but a human playtest found the runtime bad — Duck Hunt noisy, the animated photo cursed. 0.4.1
-> rescued it; **0.5.0 elevates it**: Duck Hunt's field now has dignity (dusk scene, fence,
-> moon), bigger/clearer targets, generous pacing, and a reusable **`SakuraPresence`** visual
-> system (static portraits + symbolic "Sakura Strike" effects — never an animated gameplay
-> photo). The lesson stands: systems success ≠ product success. See
-> `docs/qa/stage-runtime-recovery-playtest-notes.md` and
-> `docs/assets/sakura-runtime-visual-policy.md`.
+> **Stage 0.6.0 — adventure-first pivot.** The systems were strong but the game was *boring*:
+> mode-first arcade (tap target → incident → repeat) had no story. 0.6.0 reframes the product
+> around **authored Sakura adventures**. The flagship, **The Bird Incident**, is a 3–6 minute
+> choice-driven episode: briefing → observation → approach → complication → a timed strike →
+> aftermath → an official report you'll want to show someone. Duck Hunt is demoted to a "Practice
+> Yard" bonus. The goal isn't score — it's *the funniest official record of Sakura's version of
+> events.* See `docs/design/adventure-first-refactor.md` and
+> `docs/qa/stage-adventure-refactor-playtest-notes.md`.
 
 ---
 
@@ -36,12 +36,12 @@ The core unit of the game is the **incident** — a record with two layers:
 
 | Area | Status |
 |---|---|
-| **Duck Hunt** | ✅ Playable (rebuilt 0.4.1) — clean target range, symbolic Sakura, readable report |
-| **Patrol** | 🟦 Prototype+ — pick a sector from the **backyard zone map**, sweep it, file the report |
-| **Persistent incidents** | ✅ Runs save to `localStorage` (`ske-incidents-v1`) and survive across sessions |
-| **Sakura Canon** | ✅ Live — portal + **Permanent Record** with filters, grouping, an incident **detail view**, and territory stats |
-| **Home screen** | ✅ Mobile-first, real Sakura photo, modes labeled |
-| RPG Hunt / Chaos Mode | ⚪ Future — themed placeholder pages only |
+| **The Bird Incident** | ✅ Playable **flagship** — authored choice-driven episode → official report → file |
+| Squirrel Surveillance / Garden Frontier / Vorg Watch | ⚪ Coming soon — teased on the home screen |
+| **Practice Yard** (was Duck Hunt) | ✅ Bonus — clean arcade target range; symbolic Sakura, readable report |
+| **Free Patrol** | 🟦 Prototype — pick a sector from the **backyard zone map**, sweep it, file the report |
+| **Permanent Record** (Sakura Canon) | ✅ Live — portal + filed reports with filters (incl. Adventures), grouping, detail view, territory stats |
+| **Persistent incidents** | ✅ Runs/adventures save to `localStorage` (`ske-incidents-v1`) and survive across sessions |
 | Canon (worldbuilding) | ✅ ~21k words across `docs/canon/` |
 
 ---
@@ -101,8 +101,10 @@ src/engine/    random, voice-engine, incident-engine      → window.SakuraIncid
 src/ui/        theme.css, components.css, incident-card.js → window.SakuraUI
 src/ui/        sakura-presence.{css,js}                   → window.SakuraPresence (portraits, token, FX)
 src/utils/     storage.js (ske-incidents-v1)              → window.SakuraStorage
-src/modes/     duck-hunt (playable), side-scroller=Patrol (prototype), canon (live), rpg/chaos (future)
-docs/          canon (the bible) · systems · design · technical
+src/data/      adventures.js (episode registry)           → window.SakuraData.adventures
+src/adventures/<id>/  authored episodes (flagship: bird-incident)
+src/modes/     duck-hunt=Practice Yard, side-scroller=Free Patrol, canon=Permanent Record, rpg/chaos (future)
+docs/          canon (the bible) · systems · design · technical · qa
 ```
 
 **Start here:** [`CLAUDE.md`](CLAUDE.md) is the full project constitution and agent
@@ -133,11 +135,12 @@ Full canon: [`docs/canon/sakura-canon-bible.md`](docs/canon/sakura-canon-bible.m
   sector selection, archive filters + grouping + counts, incident detail view, territory stats.
 - **Stage 0.4.1 — Runtime Experience Rescue:** ✅ done — rebuilt Duck Hunt, removed the cursed
   in-game Sakura photo, summary-first readable report.
-- **Stage 0.5.0 — Runtime Feel + Sakura Visual Pipeline v0.1:** ✅ done — Duck Hunt scene/pacing
-  elevation + reusable `SakuraPresence` (portraits, token, effects), `sakura-sprite-pipeline-v0.1`
-  contract.
-- **Next — real Sakura sprite art:** only after a phone playtest of 0.5.0; must satisfy
-  `docs/assets/sakura-sprite-pipeline-v0.1.md` and beat the symbolic system in a human playtest.
+- **Stage 0.5.0 — Runtime Feel + Sakura Visual Pipeline v0.1:** ✅ done — `SakuraPresence`.
+- **Stage 0.6.0 — Adventure-first pivot + The Bird Incident:** ✅ done — flagship authored
+  episode; Duck Hunt → Practice Yard; home reframed around adventures.
+- **Next — Episode 2 (Squirrel Surveillance)** on the same pattern, *after a phone playtest of
+  The Bird Incident's strike beat*; then real Sakura sprite art per
+  `docs/assets/sakura-sprite-pipeline-v0.1.md`.
 
 ---
 

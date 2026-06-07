@@ -117,8 +117,9 @@
   }
 
   function sourceLabel(src) {
-    if (src === 'duck-hunt') return 'Duck Hunt';
+    if (src === 'duck-hunt') return 'Practice Yard';
     if (src === 'patrol') return 'Patrol';
+    if (src === 'bird-incident') return 'The Bird Incident';
     return src.charAt(0).toUpperCase() + src.slice(1);
   }
 

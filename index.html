@@ -246,8 +246,20 @@
     .mode-status.live { color: var(--accent-text); border-color: var(--accent); }
     .mode-status.prototype { color: var(--warn); border-color: var(--warn); }
     .mode-status.future { color: var(--text-muted); }
+    .mode-status.soon { color: var(--text-muted); }
+    .mode-status.bonus { color: var(--accent-text); }
     .mode-btn.is-future { opacity: 0.72; }
     .mode-btn.is-future .btn-arrow { color: var(--text-muted); }
+
+    /* Adventure cards */
+    .section-head { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin: 0.2rem 0 0.85rem; }
+    .section-head.second { margin-top: 1.5rem; }
+    .mode-btn.adv { display: flex; align-items: flex-start; gap: 0.7rem; padding-right: 5.6rem; }
+    .mode-btn.adv .adv-icon { font-size: 1.7rem; line-height: 1; margin-top: 0.05rem; }
+    .mode-btn.adv .adv-body { flex: 1; }
+    .mode-btn.flagship { border-color: var(--accent); border-left: 3px solid var(--accent); }
+    .mode-btn.soon { opacity: 0.58; cursor: default; }
+    .mode-btn.soon:hover, .mode-btn.soon:focus-visible { background: var(--bg-surface); border-color: var(--border); }
 
     .build-line {
       font-size: 0.62rem;
@@ -294,39 +306,66 @@
       <p class="game-subtitle">A backyard legend.</p>
     </div>
 
-    <p class="mode-label">Select Hunting Mode</p>
+    <p class="section-head">Choose Sakura’s Next Adventure</p>
 
-    <nav class="mode-list" aria-label="Game modes">
-      <a href="src/modes/duck-hunt/index.html" class="mode-btn" data-mode="duck-hunt">
-        <span class="btn-label">Duck Hunt</span>
-        <span class="btn-sub">Aerial engagement. Neutralize birds. Generate incidents.</span>
+    <nav class="mode-list" aria-label="Adventures">
+      <a href="src/adventures/bird-incident/index.html" class="mode-btn adv flagship" data-adventure="bird-incident">
+        <span class="adv-icon" aria-hidden="true">🐦</span>
+        <span class="adv-body">
+          <span class="btn-label">The Bird Incident</span>
+          <span class="btn-sub">Sakura’s legendary aerial engagement. Build the official record.</span>
+        </span>
         <span class="mode-status playable">Playable</span>
         <span class="btn-arrow">›</span>
       </a>
 
+      <div class="mode-btn adv soon" data-adventure="squirrel-surveillance" aria-disabled="true">
+        <span class="adv-icon" aria-hidden="true">🐿️</span>
+        <span class="adv-body">
+          <span class="btn-label">Squirrel Surveillance</span>
+          <span class="btn-sub">The Directorate is moving along the fence line. Confirm nothing.</span>
+        </span>
+        <span class="mode-status soon">Coming soon</span>
+      </div>
+
+      <div class="mode-btn adv soon" data-adventure="garden-frontier" aria-disabled="true">
+        <span class="adv-icon" aria-hidden="true">🐇</span>
+        <span class="adv-body">
+          <span class="btn-label">Rabbit at the Garden Frontier</span>
+          <span class="btn-sub">General Thistle holds the garden. A staring contest of national importance.</span>
+        </span>
+        <span class="mode-status soon">Coming soon</span>
+      </div>
+
+      <div class="mode-btn adv soon" data-adventure="vorg-watch" aria-disabled="true">
+        <span class="adv-icon" aria-hidden="true">👁️</span>
+        <span class="adv-body">
+          <span class="btn-label">Vorg Watch</span>
+          <span class="btn-sub">Dusk at the far corner. Hold the line. Do not confirm.</span>
+        </span>
+        <span class="mode-status soon">Coming soon</span>
+      </div>
+    </nav>
+
+    <p class="section-head second">Training &amp; Records</p>
+
+    <nav class="mode-list" aria-label="Training and records">
+      <a href="src/modes/duck-hunt/index.html" class="mode-btn" data-mode="duck-hunt">
+        <span class="btn-label">Practice Yard</span>
+        <span class="btn-sub">Arcade target range. Quick reflex runs. (Formerly Duck Hunt.)</span>
+        <span class="mode-status bonus">Bonus</span>
+        <span class="btn-arrow">›</span>
+      </a>
+
       <a href="src/modes/side-scroller/index.html" class="mode-btn" data-mode="patrol">
-        <span class="btn-label">Patrol</span>
-        <span class="btn-sub">Surveillance sweep. Pick a sector. Investigate. File reports.</span>
-        <span class="mode-status prototype">Prototype+</span>
-        <span class="btn-arrow">›</span>
-      </a>
-
-      <a href="src/modes/rpg/index.html" class="mode-btn is-future" data-mode="rpg-hunt">
-        <span class="btn-label">RPG Hunt</span>
-        <span class="btn-sub">Strategic campaign. Build reputation. Interrogate squirrels.</span>
-        <span class="mode-status future">Future</span>
-        <span class="btn-arrow">›</span>
-      </a>
-
-      <a href="src/modes/chaos/index.html" class="mode-btn is-future" data-mode="chaos-mode">
-        <span class="btn-label">Chaos Mode</span>
-        <span class="btn-sub">Unstructured. Several squirrels were involved.</span>
-        <span class="mode-status future">Future</span>
+        <span class="btn-label">Free Patrol</span>
+        <span class="btn-sub">Surveillance sweep. Pick a sector. File reports.</span>
+        <span class="mode-status prototype">Prototype</span>
         <span class="btn-arrow">›</span>
       </a>
 
       <a href="src/modes/canon/index.html" class="mode-btn canon" data-mode="sakura-canon">
-        <span class="btn-label">Sakura Canon</span>
+        <span class="btn-label">Permanent Record</span>
         <span class="btn-sub">The living archive. Official record vs. likely reality.</span>
         <span class="mode-status live">Live</span>
         <span class="btn-arrow">›</span>
@@ -336,7 +375,7 @@
     <footer class="footer">
       <p>Reports of vorg activity remain unconfirmed.</p>
       <p>All rabbits are presumed suspicious.</p>
-      <p class="build-line">Stage 0.5.0 · Duck Hunt elevated · Sakura presence v0.1 · readable reports</p>
+      <p class="build-line">Stage 0.6.0 · Adventure-first · The Bird Incident playable</p>
     </footer>
 
   </div>

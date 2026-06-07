@@ -6,6 +6,17 @@
 
 ---
 
+## The Adventure Loop (primary, since 0.6)
+
+The flagship loop is now the **authored adventure**, not the arcade mode:
+
+> briefing → choice (observation) → choice (approach) → complication → strike/action beat →
+> aftermath → **official report** → file to the Permanent Record
+
+Choices shape the report; the report is the payoff. The arcade loop below still powers Practice
+Yard (Duck Hunt) and Free Patrol, and adventures reuse the same incident schema, storage, voice,
+and presence systems. See `docs/design/adventure-first-refactor.md`.
+
 ## The Core Insight
 
 **Sakura Kills Everything is not mainly about score. It is about generating incidents.**

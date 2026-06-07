@@ -17,40 +17,44 @@ test.describe('Home screen', () => {
     await expect(heading).toContainText('Sakura Kills Everything', { ignoreCase: true });
   });
 
-  test('all five mode buttons are present', async ({ page }) => {
+  test('frames the product as adventures', async ({ page }) => {
     await page.goto(HOME);
-    await expect(page.getByRole('link', { name: /Duck Hunt/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Patrol/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /RPG Hunt/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Chaos Mode/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Sakura Canon/i })).toBeVisible();
+    await expect(page.getByText(/Choose Sakura’s Next Adventure/i)).toBeVisible();
   });
 
-  test('Duck Hunt is marked playable', async ({ page }) => {
+  test('The Bird Incident is the playable flagship', async ({ page }) => {
     await page.goto(HOME);
-    const duckHunt = page.getByRole('link', { name: /Duck Hunt/i });
-    await expect(duckHunt).toContainText(/Playable/i);
+    const bird = page.getByRole('link', { name: /The Bird Incident/i });
+    await expect(bird).toBeVisible();
+    await expect(bird).toContainText(/Playable/i);
+    await expect(bird).toHaveAttribute('href', /adventures\/bird-incident\/index\.html/);
   });
 
-  test('Patrol is marked Prototype and Canon is Live', async ({ page }) => {
+  test('coming-soon adventures are teased', async ({ page }) => {
     await page.goto(HOME);
-    await expect(page.getByRole('link', { name: /Patrol/i })).toContainText(/Prototype/i);
-    await expect(page.getByRole('link', { name: /Sakura Canon/i })).toContainText(/Live/i);
+    await expect(page.getByText(/Squirrel Surveillance/i)).toBeVisible();
+    await expect(page.getByText(/Vorg Watch/i)).toBeVisible();
   });
 
-  test('future modes are visible and Canon Archive is accessible', async ({ page }) => {
+  test('Duck Hunt is demoted to a bonus Practice Yard (not the flagship)', async ({ page }) => {
     await page.goto(HOME);
-    // Future modes still shown.
-    await expect(page.getByRole('link', { name: /RPG Hunt/i })).toContainText(/Future/i);
-    await expect(page.getByRole('link', { name: /Chaos Mode/i })).toContainText(/Future/i);
-    // Canon links to the archive page.
-    const canon = page.getByRole('link', { name: /Sakura Canon/i });
-    await expect(canon).toHaveAttribute('href', /modes\/canon\/index\.html/);
+    const practice = page.getByRole('link', { name: /Practice Yard/i });
+    await expect(practice).toBeVisible();
+    await expect(practice).toContainText(/Bonus/i);
+    await expect(practice).toHaveAttribute('href', /modes\/duck-hunt\/index\.html/);
   });
 
-  test('Stage 0.5 build line is shown', async ({ page }) => {
+  test('Free Patrol and Permanent Record remain accessible', async ({ page }) => {
     await page.goto(HOME);
-    await expect(page.locator('.build-line')).toContainText(/Stage 0\.5/i);
+    await expect(page.getByRole('link', { name: /Free Patrol/i })).toContainText(/Prototype/i);
+    const record = page.getByRole('link', { name: /Permanent Record/i });
+    await expect(record).toContainText(/Live/i);
+    await expect(record).toHaveAttribute('href', /modes\/canon\/index\.html/);
+  });
+
+  test('Stage 0.6 build line is shown', async ({ page }) => {
+    await page.goto(HOME);
+    await expect(page.locator('.build-line')).toContainText(/Stage 0\.6/i);
   });
 
   test('no console errors on load', async ({ page }) => {
