@@ -120,6 +120,92 @@
 .incident-card[data-outcome="falseAlarm"]     { border-left-color: #4a6a7c; }
 .incident-card[data-outcome="vorgNonConfirmation"] { border-left-color: #7c5aa0; }
 
+/* ---- Compact incident row (browsable lists) ---- */
+.incident-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.7rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.incident-row:hover, .incident-row:focus-visible { border-color: var(--accent); background: var(--bg-raised); outline: none; }
+.incident-row .ir-main { flex: 1; min-width: 0; }
+.incident-row .ir-title { display: block; font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.incident-row .ir-meta { display: block; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.15rem; }
+.incident-row .ir-open { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.incident-row[data-outcome="confirmedCatch"] { border-left-color: #c9a83a; }
+.incident-row[data-outcome="featherEvent"]   { border-left-color: var(--accent); }
+.incident-row[data-outcome="squirrelEscape"] { border-left-color: var(--warn); }
+.incident-row[data-outcome="falseAlarm"]     { border-left-color: #4a6a7c; }
+.incident-row[data-outcome="environmentalMisidentification"] { border-left-color: #4a6a7c; }
+.incident-row[data-outcome="vorgNonConfirmation"] { border-left-color: #7c5aa0; }
+.incident-row[data-outcome="patrolSuccess"]  { border-left-color: var(--accent); }
+
+/* ---- Filter chips ---- */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.8rem; }
+.chip-filter {
+  font-family: var(--font);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+.chip-filter:hover { border-color: var(--accent); color: var(--text); }
+.chip-filter.active { background: var(--accent); border-color: var(--accent); color: #06140a; }
+.chip-filter .cf-count { opacity: 0.7; margin-left: 0.25rem; }
+
+/* ---- Incident detail modal (official paperwork) ---- */
+.ic-modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: flex-end; justify-content: center;
+  background: rgba(5, 6, 4, 0.72);
+  opacity: 0; transition: opacity 0.18s;
+  padding: 0;
+}
+.ic-modal.show { opacity: 1; }
+.ic-sheet {
+  width: 100%; max-width: var(--screen-max);
+  max-height: 88vh; overflow-y: auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 1.1rem 1.1rem 1.4rem;
+  transform: translateY(12px); transition: transform 0.18s;
+}
+.ic-modal.show .ic-sheet { transform: translateY(0); }
+.idt-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
+.idt-title { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.01em; }
+.idt-stamp { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.8rem; }
+.idt-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 0.6rem; margin-bottom: 0.9rem; }
+.idt-field { display: flex; flex-direction: column; }
+.idt-key { font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+.idt-val { font-size: 0.8rem; color: var(--text); }
+.idt-layer { border-top: 1px dashed var(--border); padding-top: 0.6rem; margin-bottom: 0.6rem; }
+.idt-layer-label { display: block; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.2rem; }
+.idt-official .idt-layer-label { color: var(--accent-text); }
+.idt-reality .idt-layer-label { color: var(--warn); }
+.idt-layer p { font-size: 0.86rem; line-height: 1.5; }
+.idt-reality p { color: var(--text-muted); font-style: italic; }
+.idt-close { width: 100%; margin-top: 0.5rem; }
+
 /* ---- Incident toast ---- */
 .ske-toast {
   position: fixed;

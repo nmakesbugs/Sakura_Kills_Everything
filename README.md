@@ -5,7 +5,7 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.3.1-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype-c97c3a) ![Tests](https://img.shields.io/badge/tests-45_passing-4a7c4e)
+![Stage](https://img.shields.io/badge/stage-0.4-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-playable-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
 ---
 
@@ -28,9 +28,9 @@ The core unit of the game is the **incident** — a record with two layers:
 | Area | Status |
 |---|---|
 | **Duck Hunt** | ✅ Playable — short replayable runs; file the report to the permanent record |
-| **Patrol** | 🟦 Prototype — pick a sector, sweep it encounter-by-encounter, file the report |
+| **Patrol** | 🟦 Prototype+ — pick a sector from the **backyard zone map**, sweep it, file the report |
 | **Persistent incidents** | ✅ Runs save to `localStorage` (`ske-incidents-v1`) and survive across sessions |
-| **Sakura Canon** | ✅ Live — archive portal **plus a Permanent Record** of filed reports + stats |
+| **Sakura Canon** | ✅ Live — portal + **Permanent Record** with filters, grouping, an incident **detail view**, and territory stats |
 | **Home screen** | ✅ Mobile-first, real Sakura photo, modes labeled |
 | RPG Hunt / Chaos Mode | ⚪ Future — themed placeholder pages only |
 | Canon (worldbuilding) | ✅ ~21k words across `docs/canon/` |
@@ -69,7 +69,7 @@ npm run test:report        # open the last HTML report
 ```
 
 - Specs: `tests/playwright/` (`home`, `duck-hunt`, `canon`, `patrol`, `storage`, `data-layer`) —
-  **45 tests** at Stage 0.3.1.
+  full suite passing at Stage 0.4 (see final count from `npm test`).
 - Results JSON: `tests/playwright/results.json` (git-ignored).
 - Screenshots: `tests/screenshots/` (git-ignored). Nick keeps these as learning artifacts —
   they are produced by the QA helper scripts and on failures.
@@ -119,9 +119,9 @@ Full canon: [`docs/canon/sakura-canon-bible.md`](docs/canon/sakura-canon-bible.m
 
 - **Stage 0.3 — Incident Memory + Patrol:** ✅ done — persistent incident history, Duck Hunt
   report filing, Canon Permanent Record + stats, and a first Patrol prototype.
-- **Stage 0.4 — Patrol Polish + Zone Map + Archive Usability:** deepen Patrol, add a backyard
-  zone map for sector selection, and make the Permanent Record more usable (filters / detail).
-  Not started.
+- **Stage 0.4 — Patrol Polish + Zone Map + Archive Usability:** ✅ done — backyard zone map for
+  sector selection, archive filters + grouping + counts, incident detail view, territory stats.
+- **Stage 0.5 — Sakura Sprite / Photo Animation Pipeline v0.1:** next. Not started.
 
 ---
 

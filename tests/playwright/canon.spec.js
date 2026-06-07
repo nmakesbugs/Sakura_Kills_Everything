@@ -54,7 +54,7 @@ test.describe('Canon Archive portal', () => {
     });
     await page.reload();
     await expect(page.locator('#saved-empty')).toBeHidden();
-    expect(await page.locator('#saved-incidents .incident-card').count()).toBe(2);
+    expect(await page.locator('#saved-incidents .incident-row').count()).toBe(2);
     await expect(page.locator('#archive-stats')).toContainText(/Squirrel capture rate: 0%/i);
     await expect(page.locator('#archive-stats')).toContainText(/Reports filed/i);
   });
@@ -69,10 +69,68 @@ test.describe('Canon Archive portal', () => {
       ], { sourceMode: 'patrol' });
     });
     await page.reload();
-    await expect(page.locator('#saved-incidents .incident-card')).toHaveCount(1);
+    await expect(page.locator('#saved-incidents .incident-row')).toHaveCount(1);
     await page.locator('#btn-clear').click();
     await expect(page.locator('#saved-empty')).toBeVisible();
     expect(await page.evaluate(() => window.SakuraStorage.loadIncidents().length)).toBe(0);
+  });
+
+  function seed(page) {
+    return page.evaluate(() => {
+      window.SakuraStorage.clearIncidents();
+      window.SakuraStorage.saveIncidents([
+        { id: 'a', kind: 'bird', title: 'Feather Event', outcomeType: 'featherEvent', officialInterpretation: 'Air control broken.', likelyReality: 'A bird left.', zoneName: 'The Open Field', zone: 'open-field', creatureName: 'A Robin', canonStatus: 'logged' },
+        { id: 'b', kind: 'squirrel', title: 'Squirrel Escaped', outcomeType: 'squirrelEscape', officialInterpretation: 'Sector secured.', likelyReality: 'It reached the fence.', zoneName: 'The Great Fence Line', zone: 'fence-line', creatureName: 'Acorn', canonStatus: 'canon' },
+        { id: 'c', kind: 'vorg', title: 'Anomaly', outcomeType: 'vorgNonConfirmation', officialInterpretation: 'Frontier held.', likelyReality: 'Something may have been there.', zoneName: 'The Unknown Regions', zone: 'unknown-regions', creatureName: 'The Vorg', canonStatus: 'unconfirmed' }
+      ], { sourceMode: 'patrol' });
+    });
+  }
+
+  test('filter chips render with counts and narrow the list', async ({ page }) => {
+    await page.goto(CANON);
+    await seed(page);
+    await page.reload();
+    expect(await page.locator('#record-filters .chip-filter').count()).toBe(8);
+    await expect(page.locator('#saved-incidents .incident-row')).toHaveCount(3);
+    await page.locator('#record-filters .chip-filter[data-filter="squirrels"]').click();
+    await expect(page.locator('#saved-incidents .incident-row')).toHaveCount(1);
+  });
+
+  test('each filter has its own empty-state copy', async ({ page }) => {
+    await page.goto(CANON);
+    await seed(page);
+    await page.reload();
+    await page.locator('#record-filters .chip-filter[data-filter="rabbits"]').click();
+    await expect(page.locator('#saved-empty')).toBeVisible();
+    await expect(page.locator('#saved-empty')).toContainText(/Garden Frontier holds its secrets/i);
+  });
+
+  test('opening a row shows the incident detail with both layers', async ({ page }) => {
+    await page.goto(CANON);
+    await seed(page);
+    await page.reload();
+    await page.locator('#saved-incidents .incident-row').first().click();
+    await expect(page.locator('#ic-modal')).toBeVisible();
+    await expect(page.locator('#ic-modal')).toContainText(/Official Interpretation/i);
+    await expect(page.locator('#ic-modal')).toContainText(/Likely Reality/i);
+    await page.locator('#ic-modal .idt-close').click();
+    await expect(page.locator('#ic-modal')).toHaveCount(0);
+  });
+
+  test('grouping by sector renders group headers', async ({ page }) => {
+    await page.goto(CANON);
+    await seed(page);
+    await page.reload();
+    await page.locator('#record-group').selectOption('sector');
+    expect(await page.locator('#saved-incidents .group-head').count()).toBeGreaterThanOrEqual(2);
+  });
+
+  test('territory stats appear', async ({ page }) => {
+    await page.goto(CANON);
+    await seed(page);
+    await page.reload();
+    await expect(page.locator('#archive-stats')).toContainText(/Squirrel capture rate: 0%/i);
+    await expect(page.locator('#archive-stats')).toContainText(/Most active sector/i);
   });
 
   test('no console errors on load', async ({ page }) => {

@@ -52,7 +52,13 @@
     .stat-pill .n.compliant { color: var(--accent-text); }
     .empty-state { background: var(--bg-surface); border: 1px dashed var(--border-warm); border-radius: var(--radius); padding: 1.2rem; }
     .empty-state p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; font-style: italic; }
-    .record-actions { margin: 0.4rem 0 0.6rem; }
+    .record-actions { margin: 0.8rem 0 0.6rem; }
+    .record-controls { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.7rem; }
+    .record-count { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .group-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem; }
+    .group-label select { font-family: var(--font); font-size: 0.7rem; background: var(--bg-surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.25rem 0.4rem; }
+    .group-head { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text); margin: 0.7rem 0 0.4rem; }
+    .group-head:first-child { margin-top: 0; }
   </style>
 </head>
 <body>
@@ -115,15 +121,26 @@
     <p class="section-label">Selected Incidents · From the Permanent Collection</p>
     <div id="archive-incidents"></div>
 
-    <p class="section-label">The Permanent Record · Field Reports Filed</p>
+    <p class="section-label">Territory Intelligence</p>
     <div id="archive-stats" class="stats-grid"></div>
-    <div class="record-actions">
-      <button class="ske-btn ske-btn--danger" id="btn-clear" hidden>Purge Field Reports</button>
+
+    <p class="section-label">The Permanent Record · Field Reports Filed</p>
+    <div class="filter-bar" id="record-filters"></div>
+    <div class="record-controls">
+      <span class="record-count" id="record-count"></span>
+      <label class="group-label">Group
+        <select id="record-group">
+          <option value="newest">Newest</option>
+          <option value="sector">By sector</option>
+          <option value="outcome">By outcome</option>
+          <option value="source">By source</option>
+        </select>
+      </label>
     </div>
     <div id="saved-incidents"></div>
-    <div class="empty-state" id="saved-empty" hidden>
-      <p>No field reports have been filed. This does not mean nothing happened. It means the
-      paperwork has failed Sakura. Play a run and file an official report to populate the record.</p>
+    <div class="empty-state" id="saved-empty" hidden><p id="saved-empty-copy"></p></div>
+    <div class="record-actions">
+      <button class="ske-btn ske-btn--danger" id="btn-clear" hidden>Purge Field Reports</button>
     </div>
 
     <p class="footer-note">
@@ -150,18 +167,125 @@
       }
 
       // --- The Permanent Record (saved player incidents) ---
+
+      // Filter definitions: id, label, predicate.
+      var FILTERS = [
+        { id: 'all',        label: 'All',          test: function () { return true; } },
+        { id: 'duck-hunt',  label: 'Duck Hunt',    test: function (i) { return i.sourceMode === 'duck-hunt'; } },
+        { id: 'patrol',     label: 'Patrol',       test: function (i) { return i.sourceMode === 'patrol'; } },
+        { id: 'birds',      label: 'Birds',        test: function (i) { return i.kind === 'bird' || i.outcomeType === 'featherEvent' || i.outcomeType === 'confirmedCatch'; } },
+        { id: 'squirrels',  label: 'Squirrels',    test: function (i) { return i.kind === 'squirrel' || i.outcomeType === 'squirrelEscape'; } },
+        { id: 'rabbits',    label: 'Rabbits',      test: function (i) { return i.kind === 'rabbit'; } },
+        { id: 'vorg',       label: 'Vorg',         test: function (i) { return i.outcomeType === 'vorgNonConfirmation'; } },
+        { id: 'falseAlarms',label: 'False Alarms', test: function (i) { return i.outcomeType === 'falseAlarm' || i.outcomeType === 'environmentalMisidentification'; } }
+      ];
+      var EMPTY_COPY = {
+        all: 'No field reports have been filed. This does not mean nothing happened. It means the paperwork has failed Sakura.',
+        'duck-hunt': 'No Duck Hunt reports filed. The airspace remains, technically, uncontested.',
+        patrol: 'No patrol reports filed. The sectors went unobserved. This is a lapse.',
+        birds: 'No bird engagements on record. The Bird Council is, for now, unbothered.',
+        squirrels: 'No squirrel captures found. This is correct. It will always be correct.',
+        rabbits: 'No rabbit incidents filed. The Garden Frontier holds its secrets.',
+        vorg: 'Vorg confirmations: 0. Vorg concern: rising. No evidence is, itself, suspicious.',
+        falseAlarms: 'No false alarms on record. Every threat so far has been, allegedly, real.'
+      };
+
+      var activeFilter = 'all';
+
+      function filtered() {
+        var all = window.SakuraStorage ? window.SakuraStorage.loadIncidents() : [];
+        var f = FILTERS.filter(function (x) { return x.id === activeFilter; })[0] || FILTERS[0];
+        return all.filter(f.test);
+      }
+
+      function renderFilters() {
+        var bar = document.getElementById('record-filters');
+        if (!bar) return;
+        var all = window.SakuraStorage ? window.SakuraStorage.loadIncidents() : [];
+        bar.innerHTML = '';
+        FILTERS.forEach(function (f) {
+          var count = all.filter(f.test).length;
+          var btn = document.createElement('button');
+          btn.className = 'chip-filter' + (f.id === activeFilter ? ' active' : '');
+          btn.type = 'button';
+          btn.setAttribute('data-filter', f.id);
+          btn.innerHTML = f.label + '<span class="cf-count">' + count + '</span>';
+          btn.addEventListener('click', function () { activeFilter = f.id; renderAll(); });
+          bar.appendChild(btn);
+        });
+      }
+
+      var BADGE = {
+        confirmedCatch: 'Confirmed Kill (Mythic)', featherEvent: 'Feather Event', escape: 'Escaped',
+        squirrelEscape: 'Squirrel Escaped', falseAlarm: 'False Alarm',
+        environmentalMisidentification: 'Misidentification', vorgNonConfirmation: 'Unconfirmed', patrolSuccess: 'Success'
+      };
+      function groupKeyFor(mode, inc) {
+        if (mode === 'sector') return inc.zoneName || inc.zone || 'Unknown sector';
+        if (mode === 'outcome') return BADGE[inc.outcomeType] || 'Logged';
+        if (mode === 'source') return inc.sourceMode === 'patrol' ? 'Patrol' : (inc.sourceMode === 'duck-hunt' ? 'Duck Hunt' : 'Other');
+        return null;
+      }
+
+      function renderRows() {
+        var list = document.getElementById('saved-incidents');
+        var empty = document.getElementById('saved-empty');
+        var emptyCopy = document.getElementById('saved-empty-copy');
+        var clearBtn = document.getElementById('btn-clear');
+        var rows = filtered();
+        var totalSaved = (window.SakuraStorage ? window.SakuraStorage.loadIncidents().length : 0);
+        if (clearBtn) clearBtn.hidden = totalSaved === 0;
+
+        if (!rows.length) {
+          if (list) list.innerHTML = '';
+          if (emptyCopy) emptyCopy.textContent = EMPTY_COPY[activeFilter] || EMPTY_COPY.all;
+          empty.hidden = false;
+          return;
+        }
+        empty.hidden = true;
+        list.innerHTML = '';
+
+        var groupMode = document.getElementById('record-group').value;
+        if (groupMode === 'newest') {
+          rows.forEach(function (inc) { list.appendChild(UI.renderIncidentRow(inc)); });
+        } else {
+          var groups = {};
+          var order = [];
+          rows.forEach(function (inc) {
+            var k = groupKeyFor(groupMode, inc);
+            if (!groups[k]) { groups[k] = []; order.push(k); }
+            groups[k].push(inc);
+          });
+          order.forEach(function (k) {
+            var head = document.createElement('p');
+            head.className = 'group-head';
+            head.textContent = k + ' (' + groups[k].length + ')';
+            list.appendChild(head);
+            groups[k].forEach(function (inc) { list.appendChild(UI.renderIncidentRow(inc)); });
+          });
+        }
+      }
+
+      function renderCount() {
+        var el = document.getElementById('record-count');
+        if (!el) return;
+        var n = filtered().length;
+        el.textContent = n + (n === 1 ? ' report' : ' reports');
+      }
+
       function renderStats() {
         var box = document.getElementById('archive-stats');
         if (!box || !window.SakuraStorage) return;
         var s = window.SakuraStorage.getStats();
+        var statsBox = document.getElementById('archive-stats');
+        if (statsBox) statsBox.hidden = s.total === 0;
         var cells = [
           ['Reports filed', s.total],
           ['Birds neutralized', s.birdsNeutralized],
           ['Mythic kills', s.confirmedMythicKills],
           ['Squirrel escapes', s.squirrelEscapes],
           ['Rabbit escapes', s.rabbitEscapes],
-          ['False alarms', s.falseAlarms + s.environmentalMisidentifications],
-          ['Vorg non-confirmations', s.vorgNonConfirmations]
+          ['False alarms', s.falseAlarms + s.environmentalMisidentifications]
         ];
         box.innerHTML = '';
         cells.forEach(function (c) {
@@ -170,39 +294,38 @@
           el.innerHTML = '<span class="n">' + c[1] + '</span><span class="k">' + c[0] + '</span>';
           box.appendChild(el);
         });
-        // The eternal stat.
         var rate = document.createElement('div');
         rate.className = 'stat-pill wide';
         rate.innerHTML = '<span class="n compliant">Squirrel capture rate: ' + s.squirrelCaptureRate +
           '</span><span class="k">Status: canonically compliant</span>';
         box.appendChild(rate);
+        var vorg = document.createElement('div');
+        vorg.className = 'stat-pill wide';
+        vorg.innerHTML = '<span class="n">Vorg confirmations: ' + 0 + '</span><span class="k">Vorg concern: rising</span>';
+        box.appendChild(vorg);
         if (s.mostCommonZone) {
           var zone = document.createElement('div');
           zone.className = 'stat-pill wide';
-          zone.innerHTML = '<span class="n">' + s.mostCommonZone + '</span><span class="k">Most-patrolled sector</span>';
+          zone.innerHTML = '<span class="n">' + s.mostCommonZone + '</span><span class="k">Most active sector</span>';
           box.appendChild(zone);
+        }
+        if (s.mostCommonCreature) {
+          var cr = document.createElement('div');
+          cr.className = 'stat-pill wide';
+          cr.innerHTML = '<span class="n">' + s.mostCommonCreature + '</span><span class="k">Most frequent adversary</span>';
+          box.appendChild(cr);
         }
       }
 
-      function renderSaved() {
-        var saved = window.SakuraStorage ? window.SakuraStorage.loadIncidents() : [];
-        var list = document.getElementById('saved-incidents');
-        var empty = document.getElementById('saved-empty');
-        var clearBtn = document.getElementById('btn-clear');
-        var statsBox = document.getElementById('archive-stats');
-        if (saved.length && UI) {
-          empty.hidden = true;
-          if (clearBtn) clearBtn.hidden = false;
-          if (statsBox) statsBox.hidden = false;
-          UI.renderInto(list, saved);
-        } else {
-          if (list) list.innerHTML = '';
-          empty.hidden = false;
-          if (clearBtn) clearBtn.hidden = true;
-          if (statsBox) statsBox.hidden = true;
-        }
+      function renderAll() {
+        renderFilters();
+        renderCount();
+        renderRows();
         renderStats();
       }
+
+      var groupSel = document.getElementById('record-group');
+      if (groupSel) groupSel.addEventListener('change', renderRows);
 
       var clearBtn = document.getElementById('btn-clear');
       if (clearBtn) {
@@ -210,11 +333,12 @@
           var ok = window.confirm('Purge all filed field reports? Sakura’s official record will be erased. This cannot be undone.');
           if (!ok) return;
           window.SakuraStorage.clearIncidents();
-          renderSaved();
+          activeFilter = 'all';
+          renderAll();
         });
       }
 
-      renderSaved();
+      renderAll();
     })();
   </script>
 </body>

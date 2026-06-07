@@ -129,6 +129,12 @@ counts by outcome, total prestige + a prestige rank, a `vorgStatus` line, and a 
   to `localStorage` key `ske-incidents-v1` (capped at 200, newest first, each stamped with
   `sourceMode` + `savedAt`). The Canon Archive's **Permanent Record** reads them back via
   `loadIncidents()` and computes archive `getStats()`. `clearIncidents()` purges the record.
+- **Browsing persisted incidents** (Stage 0.4) — the same schema drives the archive's filters
+  (by source/creature/outcome), grouping (newest / sector / outcome / source), compact rows
+  (`SakuraUI.renderIncidentRow`), and an **incident detail modal** (`SakuraUI.openIncidentDetail`)
+  that surfaces the full record: source, zone, creature, outcome, canon status, faction,
+  witnesses, filed timestamp, and both narrative layers. Territory stats come from
+  `getStats()` (`byZone`, `byZoneId`, `byCreature`, `mostCommonZone`, `mostCommonCreature`).
 
 ## Patrol Resolution
 

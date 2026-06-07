@@ -21,14 +21,30 @@
     .hud .num { display:block; font-size:1.0rem; font-weight:800; }
     .hud .lbl { display:block; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-top:0.1rem; }
 
-    /* Zone select */
-    .zone-grid { display:flex; flex-direction:column; gap:0.5rem; }
-    .zone-card { text-align:left; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); padding:0.85rem 0.9rem; cursor:pointer; color:var(--text); font-family:var(--font); transition:border-color 0.12s, background 0.12s; }
-    .zone-card:hover, .zone-card:focus-visible { border-color:var(--accent); background:var(--bg-raised); outline:none; }
-    .zone-card .zn { display:block; font-size:0.95rem; font-weight:800; }
-    .zone-card .zs { display:block; font-size:0.68rem; color:var(--text-muted); margin:0.15rem 0 0.3rem; }
-    .zone-card .zd { display:block; font-size:0.72rem; color:var(--text); line-height:1.4; }
-    .zone-card .zr { display:inline-block; margin-top:0.4rem; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--warn); }
+    /* Zone map (sector selection) */
+    .map-head { font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.5rem; }
+    .zone-map { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; background:
+        radial-gradient(120% 80% at 50% 0%, #20304a 0%, #1b2330 45%, #20281e 80%, #161c14 100%);
+      border:1px solid var(--border); border-radius:var(--radius); padding:0.6rem; }
+    .sector-tile { text-align:left; background:var(--bg-surface); border:1px solid var(--border); border-left:3px solid var(--text-muted); border-radius:var(--radius); padding:0.7rem 0.65rem; cursor:pointer; color:var(--text); font-family:var(--font); transition:border-color 0.12s, background 0.12s; }
+    .sector-tile:hover, .sector-tile:focus-visible { border-color:var(--accent); background:var(--bg-raised); outline:none; }
+    .sector-tile .st-name { display:block; font-size:0.82rem; font-weight:800; line-height:1.2; }
+    .sector-tile .st-sub { display:block; font-size:0.58rem; color:var(--text-muted); margin:0.15rem 0 0.4rem; }
+    .sector-tile .st-creatures { font-size:0.9rem; letter-spacing:0.06em; margin-bottom:0.45rem; min-height:1.1rem; }
+    .sector-tile .st-foot { display:flex; justify-content:space-between; align-items:center; gap:0.3rem; }
+    .sector-tile[data-d="low"]      { border-left-color:var(--accent); }
+    .sector-tile[data-d="moderate"] { border-left-color:var(--border-warm); }
+    .sector-tile[data-d="high"]     { border-left-color:var(--warn); }
+    .sector-tile[data-d="extreme"]  { border-left-color:var(--danger); }
+    .sector-tile[data-d="unknown"]  { border-left-color:#7c5aa0; }
+    .st-danger { font-size:0.48rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.12rem 0.4rem; border-radius:999px; border:1px solid var(--border-warm); color:var(--text-muted); }
+    .st-danger[data-d="low"]      { color:var(--accent-text); border-color:var(--accent); }
+    .st-danger[data-d="high"]     { color:var(--warn); border-color:var(--warn); }
+    .st-danger[data-d="extreme"]  { color:#ffb38a; border-color:var(--danger); }
+    .st-danger[data-d="unknown"]  { color:#d8c7f0; border-color:#7c5aa0; }
+    .st-filed { font-size:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); }
+    .st-filed.has { color:var(--accent-text); }
+    .map-legend { font-size:0.56rem; color:var(--text-muted); margin-top:0.55rem; text-align:center; letter-spacing:0.05em; line-height:1.4; }
 
     /* Trail */
     .trail-wrap { position:relative; height:78px; margin-bottom:0.8rem; background:linear-gradient(180deg,#1b2330,#20281e 70%,#182415); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
@@ -74,7 +90,7 @@
     <a href="../../../index.html" class="back">← Back to hunting grounds</a>
     <p class="mode-tag">Mode 02 · Prototype</p>
     <h1>Patrol</h1>
-    <span class="build-chip">Stage 0.3 · prototype</span>
+    <span class="build-chip">Stage 0.4 · prototype+ · sector map</span>
 
     <div class="hud">
       <div class="stat"><span class="num" id="hud-zone">—</span><span class="lbl">Sector</span></div>
@@ -82,10 +98,12 @@
       <div class="stat"><span class="num" id="hud-prestige">0</span><span class="lbl">Prestige</span></div>
     </div>
 
-    <!-- Zone select -->
+    <!-- Zone map / sector select -->
     <section id="panel-start" class="panel-start">
-      <p class="lead">Duck Hunt is reaction. Patrol is surveillance. Choose a sector. Sakura will sweep it, encounter by encounter, and the realm will record what she claims happened.</p>
-      <div class="zone-grid" id="zone-grid"></div>
+      <p class="lead">Duck Hunt is reaction. Patrol is surveillance. Select a sector of Sakura’s territory — she disputes all prior ownership claims — and she will sweep it, encounter by encounter.</p>
+      <p class="map-head">Select Patrol Sector · Backyard Intelligence Map</p>
+      <div class="zone-map" id="zone-grid"></div>
+      <p class="map-legend">Threat index · known activity · filed reports. Vorg evidence remains inadmissible.</p>
     </section>
 
     <!-- Patrol view -->
@@ -126,7 +144,7 @@
       <button class="ske-btn" id="btn-file" style="width:100%; margin:0.2rem 0 0.4rem;">File Official Report</button>
       <p class="file-confirm" id="file-confirm" hidden></p>
       <div class="summary-actions">
-        <button class="ske-btn ske-btn--ghost" id="btn-again">New Patrol</button>
+        <button class="ske-btn ske-btn--ghost" id="btn-again">Return to Sector Map</button>
         <a class="ske-btn ske-btn--ghost" href="../canon/index.html">Canon Archive</a>
       </div>
     </section>

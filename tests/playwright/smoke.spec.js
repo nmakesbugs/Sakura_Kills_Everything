@@ -48,9 +48,9 @@ test.describe('Home screen', () => {
     await expect(canon).toHaveAttribute('href', /modes\/canon\/index\.html/);
   });
 
-  test('Stage 0.3 build line is shown', async ({ page }) => {
+  test('Stage 0.4 build line is shown', async ({ page }) => {
     await page.goto(HOME);
-    await expect(page.locator('.build-line')).toContainText(/Stage 0\.3/i);
+    await expect(page.locator('.build-line')).toContainText(/Stage 0\.4/i);
   });
 
   test('no console errors on load', async ({ page }) => {

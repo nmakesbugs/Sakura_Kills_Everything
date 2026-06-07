@@ -92,8 +92,9 @@ Implemented for Duck Hunt via `incident-engine.summarizeRun` and rendered with
 
 ## How Future Modes Reuse This
 
-- **Patrol** (prototype, Stage 0.3) stretches beats 2–3 across a sector sweep: pick a zone,
-  resolve 6 encounters via `SakuraIncident.resolvePatrol(kind, action)`, file the patrol report.
+- **Patrol** (prototype, Stage 0.3; zone map 0.4) stretches beats 2–3 across a sector sweep:
+  pick a zone from the **backyard map**, resolve 6 encounters via
+  `SakuraIncident.resolvePatrol(kind, action)`, file the patrol report, return to the map.
 - **RPG Hunt** turns beats into turns; an engagement becomes a quest, and incidents become
   campaign history.
 - **Chaos Mode** runs many loops concurrently and lets incidents cascade and interact.

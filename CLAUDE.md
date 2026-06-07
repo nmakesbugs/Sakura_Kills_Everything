@@ -23,15 +23,16 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ---
 
-## Current Status (Stage 0.3.1)
+## Current Status (Stage 0.4)
 
 | Stage | Status | Scope |
 |---|---|---|
 | 0.1 — Foundation | ✅ Complete | Repo, home screen, real Sakura photo, theme/engine helpers, Duck Hunt shell, smoke tests |
 | Canon 0.1 | ✅ Complete | ~21k-word worldbuilding bible (canon library under `docs/canon/`) |
 | 0.2 — Game Platform | ✅ Complete | Incident platform, canon data layer, Duck Hunt first playable, Canon Archive portal |
-| **0.3 — Incident Memory + Patrol** | ✅ **This stage** | **Persistent incident archive (`ske-incidents-v1`), Duck Hunt report filing, Canon saved-incident view + stats, Patrol prototype** |
-| 0.4 — Patrol Polish | ⚪ Next | Patrol polish + zone map + archive usability (filters/detail). Not started. |
+| 0.3 — Incident Memory + Patrol | ✅ Complete | Persistent incident archive, Duck Hunt report filing, Canon saved view + stats, Patrol prototype |
+| **0.4 — Patrol Polish + Archive Usability** | ✅ **This stage** | **Backyard zone map for Patrol sector select; archive filters + grouping + counts; incident detail modal; territory stats** |
+| 0.5 — Sakura Animation | ⚪ Next | Sakura sprite/photo animation pipeline v0.1. Not started. |
 
 **Playable now:** Duck Hunt (a real, short, replayable run that generates incidents).
 **Prototype now:** Patrol (sector select → encounter-by-encounter surveillance sweep → report).
@@ -109,9 +110,11 @@ in Playwright without a dev server.
 - `window.SakuraVoice` — voice-line selection + incident narration.
 - `window.SakuraIncident` — the incident engine: `resolveOutcome`, `createIncident`,
   `summarizeRun` (enforces canon).
-- `window.SakuraUI` — `renderIncidentCard`, `renderInto`.
+- `window.SakuraUI` — `renderIncidentCard`, `renderInto` (full cards); `renderIncidentRow`,
+  `renderRowsInto` (compact browsable rows); `openIncidentDetail`/`closeIncidentDetail` (detail modal).
 - `window.SakuraStorage` — persistent record: `saveIncidents(incidents, ctx)`, `loadIncidents()`,
-  `clearIncidents()`, `getStats()`. Key `ske-incidents-v1`, capped at 200, newest first.
+  `clearIncidents()`, `getStats()` (now incl. `byZone`/`byZoneId`/`byCreature`/`mostCommonCreature`),
+  `countByZoneId()`. Key `ske-incidents-v1`, capped at 200, newest first.
 - `window.SakuraEngine` — canvas/loop helpers (kept for future modes).
 
 ### Where things live

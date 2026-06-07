@@ -82,8 +82,8 @@ gameplay page loads them **data → engine → ui → mode**:
 | `SakuraRandom` | `src/engine/random.js` | seedable RNG helpers |
 | `SakuraVoice` | `src/engine/voice-engine.js` | voice-line selection + incident narration |
 | `SakuraIncident` | `src/engine/incident-engine.js` | `resolveOutcome`, `createIncident`, `summarizeRun` |
-| `SakuraUI` | `src/ui/incident-card.js` | `renderIncidentCard`, `renderInto` |
-| `SakuraStorage` | `src/utils/storage.js` | persistent record: `saveIncidents/loadIncidents/clearIncidents/getStats` |
+| `SakuraUI` | `src/ui/incident-card.js` | `renderIncidentCard`/`renderInto`, `renderIncidentRow`/`renderRowsInto`, `openIncidentDetail`/`closeIncidentDetail` |
+| `SakuraStorage` | `src/utils/storage.js` | persistent record: `saveIncidents/loadIncidents/clearIncidents/getStats/countByZoneId` |
 | `SakuraEngine` | `src/engine/index.js` | canvas/loop helpers (future modes) |
 
 This pattern works identically in a browser and under Playwright on `file://`.

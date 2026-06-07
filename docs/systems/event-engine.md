@@ -61,6 +61,11 @@ later stage so designers can add events without touching engine code; it will fe
 via `SakuraStorage` and read back by the Canon Archive's Permanent Record. See
 `docs/technical/architecture.md` and `incident-system.md`.
 
+**Browsing & territory stats (Stage 0.4):** `SakuraStorage.getStats()` now returns `byZone`,
+`byZoneId`, `byCreature`, `mostCommonZone`, and `mostCommonCreature`; `countByZoneId()` feeds
+the Patrol zone map's filed-report counts. The Canon Archive uses these plus
+`SakuraUI.renderIncidentRow` / `openIncidentDetail` for filters, grouping, and a detail modal.
+
 ---
 
 ## Design Constraint

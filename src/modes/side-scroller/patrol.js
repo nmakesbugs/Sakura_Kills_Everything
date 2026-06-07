@@ -21,8 +21,12 @@
 
   var ENCOUNTERS_PER_PATROL = 6;
 
-  // Selectable sectors (zone ids from the canon data layer).
-  var PATROL_ZONES = ['fence-line', 'garden-frontier', 'unknown-regions', 'great-patio'];
+  // Selectable sectors (zone ids). Ordered to read roughly spatially on the
+  // 2x2 map: far frontier + fence up top, garden + patio (near the house) below.
+  var PATROL_ZONES = ['unknown-regions', 'fence-line', 'garden-frontier', 'great-patio'];
+
+  // Creature type -> glyph, for the at-a-glance "known activity" row on tiles.
+  var TYPE_GLYPH = { dog: '🐕', squirrel: '🐿️', rabbit: '🐇', bird: '🐦', chipmunk: '🐿', insect: '🐛', cat: '🐈', unconfirmed: '👁️' };
 
   // Per-zone encounter pools (encounter kinds). Collectively these cover
   // every required outcome: squirrel escape, rabbit chase, bird, false alarm,
@@ -114,23 +118,41 @@
     if (dom.hudPrestige) dom.hudPrestige.textContent = state.score;
   }
 
-  // ---- Zone select ----
+  // ---- Zone map / sector select ----
+  function creatureGlyphs(zone) {
+    if (!zone || !zone.commonCreatures) return '';
+    var seen = {}, out = [];
+    zone.commonCreatures.forEach(function (cid) {
+      var c = window.SakuraData && window.SakuraData.creatureById(cid);
+      var t = c ? c.type : null;
+      var g = t && TYPE_GLYPH[t];
+      if (g && !seen[g]) { seen[g] = 1; out.push(g); }
+    });
+    return out.join(' ');
+  }
+
   function renderZones() {
     if (!dom.zoneGrid) return;
+    var filed = (window.SakuraStorage && window.SakuraStorage.countByZoneId) ? window.SakuraStorage.countByZoneId() : {};
     dom.zoneGrid.innerHTML = '';
     PATROL_ZONES.forEach(function (zid) {
       var z = window.SakuraData && window.SakuraData.zoneById(zid);
       if (!z) return;
-      var btn = document.createElement('button');
-      btn.className = 'zone-card';
-      btn.setAttribute('data-zone', zid);
-      btn.innerHTML =
-        '<span class="zn">' + z.name + '</span>' +
-        '<span class="zs">' + (z.subtitle || '') + '</span>' +
-        '<span class="zd">' + z.officialDescription + '</span>' +
-        '<span class="zr">Danger: ' + z.dangerLevel + '</span>';
-      btn.addEventListener('click', function () { startPatrol(zid); });
-      dom.zoneGrid.appendChild(btn);
+      var n = filed[zid] || 0;
+      var tile = document.createElement('button');
+      tile.className = 'sector-tile';
+      tile.setAttribute('data-zone', zid);
+      tile.setAttribute('data-d', z.dangerLevel);
+      tile.innerHTML =
+        '<span class="st-name">' + z.name + '</span>' +
+        '<span class="st-sub">' + (z.subtitle || '') + '</span>' +
+        '<span class="st-creatures">' + (creatureGlyphs(z) || '—') + '</span>' +
+        '<span class="st-foot">' +
+          '<span class="st-danger" data-d="' + z.dangerLevel + '">' + z.dangerLevel + '</span>' +
+          '<span class="st-filed' + (n ? ' has' : '') + '">Filed: ' + n + '</span>' +
+        '</span>';
+      tile.addEventListener('click', function () { startPatrol(zid); });
+      dom.zoneGrid.appendChild(tile);
     });
   }
 
@@ -296,6 +318,7 @@
     if (dom.panelSummary) dom.panelSummary.hidden = true;
     if (dom.panelPatrol) dom.panelPatrol.hidden = true;
     if (dom.panelStart) dom.panelStart.hidden = false;
+    renderZones(); // refresh filed-report counts after a patrol
     setMessage('Select a sector to begin your sweep.');
     syncHud();
   }

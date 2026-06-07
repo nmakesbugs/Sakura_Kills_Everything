@@ -67,6 +67,19 @@ player can resolve an encounter (incident card appears); a squirrel encounter ne
 catch; a vorg encounter only non-confirms; the patrol ends with an after-action report; the
 patrol report can be filed; no console errors.
 
+## Stage 0.4 — Zone Map + Archive Usability Coverage
+
+**`patrol.spec.js` (added)** — the backyard **zone map** renders tappable sector tiles (≥3) with
+danger + filed-report counts; selecting a tile starts a patrol in that sector and the sector
+name appears in the HUD.
+
+**`canon.spec.js` (added)** — filter chips render with counts; selecting a filter narrows the
+rows; each filter has its own empty-state copy (e.g. "No squirrel captures found. This is
+correct."); an incident **row opens the detail modal** showing Official Interpretation + Likely
+Reality; grouping (sector/outcome/source) renders group headers; territory stats appear.
+
+**`home`** — Stage 0.4 build line; Patrol marked Prototype+ ; Duck Hunt Playable; Canon Live.
+
 ---
 
 ## Per-Build Testing Standard

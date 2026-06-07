@@ -34,7 +34,7 @@ engine and the run ends in an **after-action report** with the official-vs-reali
 ---
 
 ## Sakura Canon
-**Status:** 🟦 Live (since Stage 0.2; Permanent Record + stats since 0.3)
+**Status:** 🟦 Live (since 0.2; Permanent Record + stats since 0.3; filters/grouping/detail-view/territory-stats since 0.4)
 **Location:** `src/modes/canon/`
 
 An in-game archive portal — no longer a placeholder. Departments link to the full canon
@@ -48,14 +48,16 @@ An in-game archive portal — no longer a placeholder. Departments link to the f
 ---
 
 ## Patrol
-**Status:** 🟦 Playable Prototype (Stage 0.3)
+**Status:** 🟦 Playable Prototype+ (Stage 0.3; zone map added 0.4)
 **Location:** `src/modes/side-scroller/` (user-facing name: **Patrol**)
 
-Surveillance, not reaction. The player picks a **sector** (zone), then Sakura sweeps it
-encounter by encounter (6 per patrol). Each encounter offers four actions — **Investigate,
-Stalk, Pounce, Report** — and resolves through the **shared** incident engine
-(`SakuraIncident.resolvePatrol`). The patrol ends in an after-action report that can be filed
-to the permanent record.
+Surveillance, not reaction. The player picks a **sector** from the **backyard zone map**
+(a schematic 2×2 board built from `src/data/zones.js`, showing danger, known creatures, and
+filed-report counts per sector), then Sakura sweeps it encounter by encounter (6 per patrol).
+Each encounter offers four actions — **Investigate, Stalk, Pounce, Report** — and resolves
+through the **shared** incident engine (`SakuraIncident.resolvePatrol`). The patrol ends in an
+after-action report that can be filed to the permanent record; the player then returns to the
+sector map (filed counts update).
 
 - **Produces:** exploration incidents — squirrel escapes, rabbit chases, false alarms,
   environmental misidentifications, vorg non-confirmations, and the occasional legit victory.

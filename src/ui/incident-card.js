@@ -86,7 +86,128 @@
     });
   }
 
+  // ---- Compact row (for browsable lists / the Permanent Record) ----------
+  /**
+   * renderIncidentRow(incident, onOpen?) -> HTMLElement
+   * A condensed, tappable summary. Defaults to opening the detail modal.
+   */
+  function renderIncidentRow(inc, onOpen) {
+    var row = document.createElement('button');
+    row.className = 'incident-row';
+    row.setAttribute('data-outcome', inc.outcomeType || 'escape');
+    row.type = 'button';
+
+    var badge = el('span', 'ic-badge', BADGE_LABEL[inc.outcomeType] || 'Logged');
+    badge.setAttribute('data-outcome', inc.outcomeType || 'escape');
+
+    var main = el('span', 'ir-main');
+    main.appendChild(el('span', 'ir-title', inc.title || 'Incident'));
+    var meta = [zoneLabel(inc), inc.sourceMode ? sourceLabel(inc.sourceMode) : null]
+      .filter(Boolean).join('  ·  ');
+    main.appendChild(el('span', 'ir-meta', meta));
+
+    row.appendChild(badge);
+    row.appendChild(main);
+    row.appendChild(el('span', 'ir-open', 'Open ›'));
+
+    row.addEventListener('click', function () {
+      if (typeof onOpen === 'function') onOpen(inc); else openIncidentDetail(inc);
+    });
+    return row;
+  }
+
+  function sourceLabel(src) {
+    if (src === 'duck-hunt') return 'Duck Hunt';
+    if (src === 'patrol') return 'Patrol';
+    return src.charAt(0).toUpperCase() + src.slice(1);
+  }
+
+  function renderRowsInto(container, incidents, onOpen) {
+    if (!container) return;
+    container.innerHTML = '';
+    (incidents || []).forEach(function (inc) { container.appendChild(renderIncidentRow(inc, onOpen)); });
+  }
+
+  // ---- Detail modal (official paperwork) ---------------------------------
+  function detailLine(label, value) {
+    if (!value) return null;
+    var wrap = el('div', 'idt-field');
+    wrap.appendChild(el('span', 'idt-key', label));
+    wrap.appendChild(el('span', 'idt-val', value));
+    return wrap;
+  }
+
+  function formatSavedAt(iso) {
+    if (!iso) return null;
+    // Keep it simple + dependency-free: trim the ISO string to a readable stamp.
+    return String(iso).replace('T', ' ').replace(/\..*$/, '') + ' (filed)';
+  }
+
+  function openIncidentDetail(inc) {
+    closeIncidentDetail();
+    var overlay = el('div', 'ic-modal');
+    overlay.id = 'ic-modal';
+
+    var sheet = el('div', 'ic-sheet');
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-label', 'Field report');
+
+    var head = el('div', 'idt-head');
+    var badge = el('span', 'ic-badge', BADGE_LABEL[inc.outcomeType] || 'Logged');
+    badge.setAttribute('data-outcome', inc.outcomeType || 'escape');
+    head.appendChild(badge);
+    head.appendChild(el('h3', 'idt-title', inc.title || 'Field Report'));
+    sheet.appendChild(head);
+
+    sheet.appendChild(el('p', 'idt-stamp', 'Open Field Report · Filed into the Permanent Record'));
+
+    var facts = el('div', 'idt-facts');
+    [
+      detailLine('Source', inc.sourceMode ? sourceLabel(inc.sourceMode) : null),
+      detailLine('Zone', zoneLabel(inc)),
+      detailLine('Creature', creatureLabel(inc)),
+      detailLine('Outcome', BADGE_LABEL[inc.outcomeType] || inc.outcomeType),
+      detailLine('Canon status', inc.canonStatus),
+      detailLine('Faction', (inc.factions && inc.factions.length) ? inc.factions.join(', ') : null),
+      detailLine('Witness', (inc.witnesses && inc.witnesses.length) ? inc.witnesses.join(', ') : null),
+      detailLine('Filed', formatSavedAt(inc.savedAt) || inc.dateClassification)
+    ].filter(Boolean).forEach(function (f) { facts.appendChild(f); });
+    sheet.appendChild(facts);
+
+    var off = el('div', 'idt-layer idt-official');
+    off.appendChild(el('span', 'idt-layer-label', 'Official Interpretation'));
+    off.appendChild(el('p', null, inc.officialInterpretation || ''));
+    sheet.appendChild(off);
+
+    var real = el('div', 'idt-layer idt-reality');
+    real.appendChild(el('span', 'idt-layer-label', 'Likely Reality'));
+    real.appendChild(el('p', null, inc.likelyReality || ''));
+    sheet.appendChild(real);
+
+    var close = el('button', 'ske-btn ske-btn--ghost idt-close', 'Close Report');
+    close.type = 'button';
+    close.addEventListener('click', closeIncidentDetail);
+    sheet.appendChild(close);
+
+    overlay.appendChild(sheet);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeIncidentDetail(); });
+    document.body.appendChild(overlay);
+    // force reflow then show (for transition)
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    return overlay;
+  }
+
+  function closeIncidentDetail() {
+    var existing = document.getElementById('ic-modal');
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+  }
+
   global.SakuraUI = global.SakuraUI || {};
   global.SakuraUI.renderIncidentCard = renderIncidentCard;
   global.SakuraUI.renderInto = renderInto;
+  global.SakuraUI.renderIncidentRow = renderIncidentRow;
+  global.SakuraUI.renderRowsInto = renderRowsInto;
+  global.SakuraUI.openIncidentDetail = openIncidentDetail;
+  global.SakuraUI.closeIncidentDetail = closeIncidentDetail;
 })(typeof window !== 'undefined' ? window : this);

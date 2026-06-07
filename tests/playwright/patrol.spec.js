@@ -5,13 +5,26 @@ const PATROL = `file://${path.resolve(__dirname, '../../src/modes/side-scroller/
 
 test.describe('Patrol prototype', () => {
 
-  test('page loads with title, back link, and selectable sectors', async ({ page }) => {
+  test('page loads with title, back link, and the backyard zone map', async ({ page }) => {
     await page.goto(PATROL);
     await expect(page).toHaveTitle(/Patrol/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Patrol', { ignoreCase: true });
     await expect(page.getByRole('link', { name: /Back to hunting grounds/i })).toBeVisible();
-    await expect(page.locator('#zone-grid .zone-card').first()).toBeVisible();
-    expect(await page.locator('#zone-grid .zone-card').count()).toBeGreaterThanOrEqual(3);
+    await expect(page.getByText(/Select Patrol Sector/i)).toBeVisible();
+    await expect(page.locator('#zone-grid .sector-tile').first()).toBeVisible();
+    expect(await page.locator('#zone-grid .sector-tile').count()).toBeGreaterThanOrEqual(3);
+  });
+
+  test('zone map tiles show danger + filed counts, and selecting one starts a patrol there', async ({ page }) => {
+    await page.goto(PATROL);
+    // tiles carry danger + filed markers
+    await expect(page.locator('#zone-grid .sector-tile .st-danger').first()).toBeVisible();
+    await expect(page.locator('#zone-grid .sector-tile .st-filed').first()).toContainText(/Filed:/i);
+    // pick the fence-line sector and confirm the HUD reflects it
+    await page.locator('#zone-grid .sector-tile[data-zone="fence-line"]').click();
+    await expect(page.locator('#panel-patrol')).toBeVisible();
+    await expect(page.locator('#hud-zone')).toContainText(/Fence Line/i);
+    expect(await page.evaluate(() => window.__patrol.state.zoneId)).toBe('fence-line');
   });
 
   test('a patrol can start and an encounter appears', async ({ page }) => {

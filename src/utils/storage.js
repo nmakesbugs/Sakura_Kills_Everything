@@ -91,10 +91,13 @@
       vorgNonConfirmations: 0,
       patrolSuccesses: 0,
       bySource: {},
+      byZone: {},          // keyed by zoneName
+      byZoneId: {},        // keyed by zone id
+      byCreature: {},      // keyed by creatureName
       mostCommonZone: null,
+      mostCommonCreature: null,
       squirrelCaptureRate: '0%' // canonically compliant, always
     };
-    var zoneTally = {};
     for (var i = 0; i < list.length; i++) {
       var inc = list[i];
       switch (inc.outcomeType) {
@@ -110,13 +113,25 @@
       var src = inc.sourceMode || 'unknown';
       s.bySource[src] = (s.bySource[src] || 0) + 1;
       var z = inc.zoneName || inc.zone;
-      if (z) zoneTally[z] = (zoneTally[z] || 0) + 1;
+      if (z) s.byZone[z] = (s.byZone[z] || 0) + 1;
+      if (inc.zone) s.byZoneId[inc.zone] = (s.byZoneId[inc.zone] || 0) + 1;
+      var cr = inc.creatureName;
+      // Ignore generic / non-creature labels in the "most common creature" tally.
+      if (cr && cr !== 'The target' && cr !== 'Sakura') s.byCreature[cr] = (s.byCreature[cr] || 0) + 1;
     }
-    var best = null, bestN = 0;
-    for (var zk in zoneTally) { if (zoneTally[zk] > bestN) { bestN = zoneTally[zk]; best = zk; } }
-    s.mostCommonZone = best;
+    s.mostCommonZone = topKey(s.byZone);
+    s.mostCommonCreature = topKey(s.byCreature);
     return s;
   }
+
+  function topKey(tally) {
+    var best = null, bestN = 0;
+    for (var k in tally) { if (tally[k] > bestN) { bestN = tally[k]; best = k; } }
+    return best;
+  }
+
+  /** countByZoneId() -> { zoneId: count } convenience for the Patrol map. */
+  function countByZoneId() { return getStats().byZoneId; }
 
   global.SakuraStorage = {
     KEY: KEY,
@@ -124,6 +139,7 @@
     saveIncidents: saveIncidents,
     loadIncidents: loadIncidents,
     clearIncidents: clearIncidents,
-    getStats: getStats
+    getStats: getStats,
+    countByZoneId: countByZoneId
   };
 })(typeof window !== 'undefined' ? window : this);
