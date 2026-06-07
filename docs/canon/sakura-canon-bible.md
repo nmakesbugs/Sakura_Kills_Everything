@@ -1,6 +1,30 @@
 # Sakura Canon Bible
 
 > This document is Tier 1 source of truth. Nothing in this game may contradict it.
+>
+> The Bible holds the **immutable laws** — the short, hard facts. The deeper world lives in
+> the Canon Library below. When the Library and the Bible disagree, the Bible wins.
+
+---
+
+## The Canon Library
+
+The complete mythology of the backyard. Start here.
+
+| Document | What it holds |
+|---|---|
+| **`sakura-dossier.md`** | The full hero biography — who Sakura is, in depth |
+| **`family-cast.md`** | The people of the household: Nick, Tanisha, Cias, Soren, Nolyn |
+| **`backyard-map.md`** | The canonical geography — 28 named territories |
+| **`creature-catalog.md`** | 30 recurring named creatures — allies, rivals, mysteries |
+| **`creature-taxonomy.md`** | Threat-tier classification doctrine |
+| **`incident-archive.md`** | The history of the realm — 27 logged incidents (official vs. real) |
+| **`vorg-mythology.md`** | The foundational mystery. Unresolved by design |
+| **`organizations.md`** | The 11 factions and their politics |
+| **`seasonal-world.md`** | How the realm turns with the year (spring→winter) |
+| **`expansion-seeds.md`** | 60+ story hooks — years of future content |
+| `../design/tone-and-voice.md` · `../design/narrative-voice-guide.md` | How the realm speaks |
+| `../design/achievement-philosophy.md` | Memories, not statistics |
 
 ---
 
@@ -65,7 +89,11 @@ See `backyard-map.md` for full map. Key zones:
 described. These incidents become game events. Nothing here is invented — all are
 verified by family consensus.*
 
-### The Bird Incident
+> The Bird Incident below is the **founding incident**, kept here in the Bible for primacy.
+> The full history of the realm — 27 incidents and growing, each with its official legend and
+> its likely reality — lives in **`incident-archive.md`**.
+
+### The Bird Incident (INC-001)
 Date: Approximate — undated, a foundational family legend
 Location: The Backyard
 Witness: Tanisha (discovered the aftermath)
