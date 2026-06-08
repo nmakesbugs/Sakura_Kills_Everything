@@ -25,6 +25,34 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ## Current Status (Stage 0.4.1)
 
+> ## ⮕ DIRECTION (v0.8E) — READ THIS BEFORE BUILDING
+>
+> **The game is authored comic episodes — the *Backyard Incident Files*.** Not a mode platform.
+> The product face is `index.html` → `episodes/index.html`. Build new gameplay as **episodes**
+> under `episodes/<name>/` using the shared shell (`episodes/shared/episode-shell.{css,js}`),
+> following the pattern in `docs/design/episodic-direction.md`.
+>
+> - **Playable episodes (each a DIFFERENT middle toy):** The Bird Incident
+>   (`episodes/bird-incident/` — timed strike), Squirrel Surveillance
+>   (`episodes/squirrel-surveillance/` — suspect monitoring), Rabbit at the Garden Frontier
+>   (`episodes/rabbit-frontier/` — 5-node chase map), Vorg Watch (`episodes/vorg-watch/` —
+>   evidence-board classification + concern meter; the Vorg is never confirmed).
+> - **Closing:** `episodes/for-tanisha/` is the heartfelt dedication (the *Witness of Record*),
+>   linked as a gold "♥ For Tanisha" card on the index/root (class `is-closing`, NOT `is-playable`).
+>   The whole product is a gift for Tanisha — keep that warmth; she is witness / reality anchor in
+>   every episode.
+> - **Each episode plays differently — that's the rule.** The shell + report card are shared;
+>   the *middle toy* is per-episode and lives LOCAL to the episode folder (its own `episode.css`
+>   when it needs custom UI). Don't force episodes into one interaction; don't build generic
+>   engines (no map engine, no mystery engine). Episode 5 should invent its OWN toy.
+> - **The old mode platform is DEMOTED** to `legacy/index.html` (reference only). `src/modes/*`,
+>   `src/engine`, `src/data`, `src/ui`, `src/utils` still exist + are tested but are **not** the
+>   product. Do not extend them. Don't build Episode 3 on Duck Hunt/Patrol/the incident engine.
+> - **`docs/canon/*` lore is source material, not architecture** — seasoning, never homework.
+> - The Sakura visual policy still holds (static framed photo only; symbolic Sakura in scenes).
+>
+> The table below is project *history*. The active model is the episode pattern above.
+
 | Stage | Status | Scope |
 |---|---|---|
 | 0.1 — Foundation | ✅ Complete | Repo, home screen, real Sakura photo, theme/engine helpers, Duck Hunt shell, smoke tests |

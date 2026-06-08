@@ -1,0 +1,62 @@
+/* =============================================================
+   Sakura Kills Everything — Episode Index (the front door)
+   Builds on episode-shell.css tokens + frame/portrait styles.
+   ============================================================= */
+
+.index-panel { gap: 0.55rem; }
+
+.index-portrait { width: 84px; aspect-ratio: 1; margin: 0.2rem auto 0.1rem; }
+
+.index-title {
+  text-align: center; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: -0.01em; line-height: 1.05; margin-top: 0.2rem;
+}
+.index-tag {
+  text-align: center; font-size: 0.82rem; line-height: 1.45; color: var(--ink);
+  max-width: 32ch; margin: 0.15rem auto 0.5rem;
+}
+.index-tag .index-sub { display: block; margin-top: 0.35rem; font-size: 0.72rem; color: var(--muted); font-style: italic; }
+
+/* Closing card — warm gold accent, distinct from playable episodes */
+.episode.is-closing { border-left-color: var(--gold); background: rgba(216,178,74,0.06); }
+.episode.is-closing:hover, .episode.is-closing:focus-visible { border-color: var(--gold); background: rgba(216,178,74,0.1); outline: none; }
+.episode.is-closing:active { transform: translateY(1px); }
+.episode.is-closing .ep-no { color: var(--orange); }
+.ep-status.closing { color: var(--gold); border-color: rgba(216,178,74,0.4); }
+
+.episode-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.episode {
+  display: flex; align-items: center; gap: 0.7rem;
+  text-decoration: none; color: var(--ink); cursor: pointer;
+  background: var(--panel2); border: 1px solid var(--line); border-left: 4px solid var(--sage);
+  border-radius: 12px; padding: 0.7rem 0.8rem;
+  transition: border-color 0.12s, background 0.12s, transform 0.05s;
+}
+.episode.is-playable:hover, .episode.is-playable:focus-visible {
+  border-color: var(--sage); background: #232717; outline: none;
+}
+.episode.is-playable:active { transform: translateY(1px); }
+
+.ep-no { font-size: 1.1rem; font-weight: 900; color: var(--gold); width: 1.6rem; text-align: center; flex: none; font-variant-numeric: tabular-nums; }
+.ep-main { flex: 1; min-width: 0; }
+.ep-name { display: block; font-size: 1rem; font-weight: 900; }
+.ep-sub { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 0.16rem; line-height: 1.4; }
+
+.ep-status {
+  flex: none; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.2rem 0.5rem; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap;
+}
+.ep-status.playable { color: #06140a; background: var(--sage); border-color: var(--sage); }
+.ep-status.soon { color: var(--muted); }
+
+/* Coming-soon episodes: present, but visibly dormant */
+.episode.is-soon { border-left-color: var(--line); opacity: 0.62; cursor: default; }
+
+.index-foot { margin-top: auto; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+.index-foot p { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.02em; }
+.index-foot p::before { content: '▸ '; color: var(--sage); }
+.index-foot strong { color: var(--gold); }
+.legacy-line { margin-top: 0.35rem; }
+.legacy-line a { color: var(--muted); text-decoration: underline; }
+.legacy-line a:hover { color: var(--ink); }

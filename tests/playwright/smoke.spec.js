@@ -1,13 +1,16 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 
-const HOME = `file://${path.resolve(__dirname, '../../index.html')}`;
+// The mode-selector platform was demoted to legacy/ in v0.8E. These tests
+// guard that the legacy reference build still works; the new product face is
+// covered by episodes.spec.js.
+const HOME = `file://${path.resolve(__dirname, '../../legacy/index.html')}`;
 
-test.describe('Home screen', () => {
+test.describe('Legacy home screen (reference)', () => {
 
   test('loads without crashing', async ({ page }) => {
     await page.goto(HOME);
-    await expect(page).toHaveTitle('Sakura Kills Everything');
+    await expect(page).toHaveTitle(/Sakura Kills Everything/);
   });
 
   test('title is visible', async ({ page }) => {

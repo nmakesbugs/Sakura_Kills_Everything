@@ -2,351 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sakura Kills Everything</title>
-  <link rel="stylesheet" href="src/ui/theme.css">
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 16px;
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 1rem;
-    }
-
-    .screen {
-      width: 100%;
-      max-width: 420px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 2rem 0 3rem;
-    }
-
-    /* Status line */
-    .status-line {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .status-line.alert {
-      color: var(--warn);
-    }
-
-    /* Title block */
-    .title-block {
-      margin-bottom: 2.5rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* Sakura portrait */
-    .sakura-portrait {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4 / 3;            /* reserve space — no layout shift */
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg-surface);
-      margin-bottom: 1.25rem;
-    }
-
-    .sakura-portrait img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 50% 30%;       /* frame her face + radar ears */
-      position: relative;
-      z-index: 1;
-    }
-
-    .sakura-portrait .caption {
-      position: absolute;
-      z-index: 2;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 0.9rem 0.7rem 0.5rem;
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent-text);
-      background: linear-gradient(to top, rgba(10, 10, 10, 0.88), rgba(10, 10, 10, 0));
-    }
-
-    /* CSS silhouette fallback (shown only if the photo is missing) */
-    .sakura-fallback {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sakura-fallback .head {
-      position: relative;
-      width: 44%;
-      aspect-ratio: 1;
-      background: var(--text-muted);
-      border-radius: 48% 48% 46% 46%;
-      opacity: 0.45;
-    }
-
-    .sakura-fallback .head::before,
-    .sakura-fallback .head::after {
-      content: '';
-      position: absolute;
-      top: -38%;
-      width: 0;
-      height: 0;
-      border-left: 1.4em solid transparent;
-      border-right: 1.4em solid transparent;
-      border-bottom: 3.4em solid var(--text-muted);
-    }
-
-    .sakura-fallback .head::before { left: 6%;  transform: rotate(-12deg); }
-    .sakura-fallback .head::after  { right: 6%; transform: rotate(12deg); }
-
-    .game-title {
-      font-size: clamp(2rem, 8vw, 2.8rem);
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-      text-transform: uppercase;
-      color: var(--text);
-      margin: 0.75rem 0 0.5rem;
-    }
-
-    .game-subtitle {
-      font-size: 1rem;
-      font-style: italic;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .status-badge {
-      display: inline-block;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent-text);
-    }
-
-    /* Mode select */
-    .mode-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .mode-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .mode-btn {
-      display: block;
-      width: 100%;
-      padding: 0.9rem 1.1rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      text-decoration: none;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: left;
-      transition: border-color 0.12s, background 0.12s;
-      position: relative;
-    }
-
-    .mode-btn:hover,
-    .mode-btn:focus-visible {
-      background: var(--bg-raised);
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .mode-btn .btn-label {
-      display: block;
-      font-size: 0.95rem;
-    }
-
-    .mode-btn .btn-sub {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 400;
-      color: var(--text-muted);
-      margin-top: 0.15rem;
-    }
-
-    .mode-btn .btn-arrow {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--accent);
-      font-size: 1.1rem;
-    }
-
-    .mode-btn.canon {
-      border-left: 3px solid var(--accent);
-    }
-
-    /* Mode status pill */
-    .mode-status {
-      position: absolute;
-      right: 2.4rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.52rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.18rem 0.45rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-    }
-    .mode-status.playable { color: #06140a; background: var(--accent); border-color: var(--accent); }
-    .mode-status.live { color: var(--accent-text); border-color: var(--accent); }
-    .mode-status.prototype { color: var(--warn); border-color: var(--warn); }
-    .mode-status.future { color: var(--text-muted); }
-    .mode-btn.is-future { opacity: 0.72; }
-    .mode-btn.is-future .btn-arrow { color: var(--text-muted); }
-
-    .build-line {
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 0.6rem;
-    }
-
-    /* Footer */
-    .footer {
-      margin-top: auto;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer p {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-      margin-bottom: 0.4rem;
-    }
-
-    .footer p::before {
-      content: '▸ ';
-      color: var(--accent);
-    }
-  </style>
+  <link rel="stylesheet" href="episodes/shared/episode-shell.css">
+  <link rel="stylesheet" href="episodes/index.css">
 </head>
 <body>
-
-  <div class="screen">
-
-    <div class="title-block">
-      <figure class="sakura-portrait">
-        <div class="sakura-fallback" aria-hidden="true"><div class="head"></div></div>
-        <img src="src/assets/sakura/sakura-home.jpg"
-             alt="Sakura, apex backyard predator, ears at full alert"
-             onerror="this.style.display='none'">
-        <figcaption class="caption">Sakura has entered the hunting grounds.</figcaption>
-      </figure>
-      <p class="status-line alert">⚠ The backyard is not safe.</p>
-      <h1 class="game-title">Sakura Kills Everything</h1>
-      <p class="game-subtitle">A backyard legend.</p>
+  <div class="frame">
+    <div class="hud">
+      <span class="hud-title">Sakura Kills Everything</span>
+      <span class="hud-ver">v1.1T · Backyard Incident Files</span>
     </div>
 
-    <p class="mode-label">Select Hunting Mode</p>
+    <main class="panel index-panel">
+      <figure class="portrait index-portrait" style="width:140px;margin-top:0.6rem;">
+        <img src="src/assets/sakura/sakura-home.jpg" alt="Sakura, apex backyard predator">
+      </figure>
 
-    <nav class="mode-list" aria-label="Game modes">
-      <a href="src/modes/duck-hunt/index.html" class="mode-btn" data-mode="duck-hunt">
-        <span class="btn-label">Duck Hunt</span>
-        <span class="btn-sub">Aerial engagement. Neutralize birds. Generate incidents.</span>
-        <span class="mode-status playable">Playable</span>
-        <span class="btn-arrow">›</span>
-      </a>
+      <h1 class="index-title">Sakura Kills Everything</h1>
+      <p class="index-tag">A backyard legend, told in incidents. Every report is official. None of them are accurate.</p>
 
-      <a href="src/modes/side-scroller/index.html" class="mode-btn" data-mode="patrol">
-        <span class="btn-label">Patrol</span>
-        <span class="btn-sub">Surveillance sweep. Pick a sector. Investigate. File reports.</span>
-        <span class="mode-status prototype">Prototype+</span>
-        <span class="btn-arrow">›</span>
-      </a>
+      <nav class="episode-list" aria-label="Start" style="margin-top:0.4rem;">
+        <a class="episode is-playable" href="episodes/index.html" style="border-left-color:var(--gold);">
+          <span class="ep-no">▶</span>
+          <span class="ep-main">
+            <span class="ep-name">Open the Incident Files</span>
+            <span class="ep-sub">Choose today’s incident. The Bird Incident & Squirrel Surveillance are playable now.</span>
+          </span>
+          <span class="ep-status playable">Play</span>
+        </a>
 
-      <a href="src/modes/rpg/index.html" class="mode-btn is-future" data-mode="rpg-hunt">
-        <span class="btn-label">RPG Hunt</span>
-        <span class="btn-sub">Strategic campaign. Build reputation. Interrogate squirrels.</span>
-        <span class="mode-status future">Future</span>
-        <span class="btn-arrow">›</span>
-      </a>
+        <a class="episode is-playable" href="episodes/bird-incident/index.html">
+          <span class="ep-no">01</span>
+          <span class="ep-main">
+            <span class="ep-name">The Bird Incident</span>
+            <span class="ep-sub">A bird violated restricted airspace.</span>
+          </span>
+          <span class="ep-status playable">Playable</span>
+        </a>
 
-      <a href="src/modes/chaos/index.html" class="mode-btn is-future" data-mode="chaos-mode">
-        <span class="btn-label">Chaos Mode</span>
-        <span class="btn-sub">Unstructured. Several squirrels were involved.</span>
-        <span class="mode-status future">Future</span>
-        <span class="btn-arrow">›</span>
-      </a>
+        <a class="episode is-playable" href="episodes/squirrel-surveillance/index.html">
+          <span class="ep-no">02</span>
+          <span class="ep-main">
+            <span class="ep-name">Squirrel Surveillance</span>
+            <span class="ep-sub">A suspect on the fence. The squirrel remains uncaught.</span>
+          </span>
+          <span class="ep-status playable">Playable</span>
+        </a>
 
-      <a href="src/modes/canon/index.html" class="mode-btn canon" data-mode="sakura-canon">
-        <span class="btn-label">Sakura Canon</span>
-        <span class="btn-sub">The living archive. Official record vs. likely reality.</span>
-        <span class="mode-status live">Live</span>
-        <span class="btn-arrow">›</span>
-      </a>
-    </nav>
+        <a class="episode is-playable" href="episodes/rabbit-frontier/index.html">
+          <span class="ep-no">03</span>
+          <span class="ep-main">
+            <span class="ep-name">Rabbit at the Garden Frontier</span>
+            <span class="ep-sub">A border chase across the yard. Plays differently.</span>
+          </span>
+          <span class="ep-status playable">Playable</span>
+        </a>
 
-    <footer class="footer">
-      <p>Reports of vorg activity remain unconfirmed.</p>
-      <p>All rabbits are presumed suspicious.</p>
-      <p class="build-line">Stage 0.4.1 · Duck Hunt rebuilt · Patrol sector map · readable reports</p>
-    </footer>
+        <a class="episode is-playable" href="episodes/vorg-watch/index.html">
+          <span class="ep-no">04</span>
+          <span class="ep-main">
+            <span class="ep-name">Vorg Watch</span>
+            <span class="ep-sub">An evidence-board mystery. The Vorg remains unconfirmed.</span>
+          </span>
+          <span class="ep-status playable">Playable</span>
+        </a>
 
+        <a class="episode is-closing" href="episodes/for-tanisha/index.html">
+          <span class="ep-no">♥</span>
+          <span class="ep-main">
+            <span class="ep-name">For Tanisha</span>
+            <span class="ep-sub">The official witness. The reason this report exists.</span>
+          </span>
+          <span class="ep-status closing">A note</span>
+        </a>
+      </nav>
+
+      <footer class="index-foot">
+        <p>Confirmed squirrel catches to date: <strong>zero</strong>.</p>
+        <p class="legacy-line">Looking for the old build? <a href="legacy/index.html">Legacy modes (reference)</a></p>
+      </footer>
+    </main>
   </div>
-
-  <script>
-    // Confirm no console errors on load — no functionality yet
-    window.addEventListener('load', () => {
-      document.title = 'Sakura Kills Everything';
-    });
-  </script>
-
 </body>
 </html>

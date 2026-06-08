@@ -5,14 +5,31 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.4.1-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-rebuilt-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Version](https://img.shields.io/badge/version-1.1T-4a7c4e) ![Edition](https://img.shields.io/badge/Tanisha_Edition-d8b24a) ![Episodes](https://img.shields.io/badge/playable-4_episodes-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
-> **Stage 0.4.1 (rescue):** Stage 0.4 added strong usability *systems* but a human playtest
-> revealed the runtime felt bad — Duck Hunt was noisy and the real Sakura photo, animated as a
-> gameplay sprite, looked cursed. 0.4.1 rebuilt Duck Hunt as a clean target range, replaced the
-> in-game photo with symbolic "Sakura Strike" feedback + a HUD portrait, and made the report
-> readable. Systems success ≠ product success — that distinction is now tracked in
-> `docs/qa/stage-0.4.1-playtest-notes.md`.
+> **v1.1T — Tanisha Edition.** A polish / closing / cohesion pass over the four episodes (not a
+> new gameplay milestone). The *Backyard Incident Files* now open with a warmer framing, end on a
+> heartfelt **“For Tanisha”** closing (`episodes/for-tanisha/`), and share small delight touches
+> (beat transitions, richer bursts, an animated concern meter, extra witness lines). The four
+> episodes now read as one little collection — a gift, not a demo menu.
+>
+> <sub>v1.0E (prior): four playable episodes, each a different middle toy — Bird (timed strike),
+> Squirrel (monitoring), Rabbit (chase map), Vorg (evidence board). The episodic direction is proven.</sub>
+> **Sakura Kills Everything is a collection of authored comic episodes** — the *Backyard
+> Incident Files*. Open `index.html` (or `episodes/index.html`), pick an incident, play a 3–5
+> minute comic, get a screenshot-worthy official report. **Playable now:** *The Bird Incident*
+> (timed strike), *Squirrel Surveillance* (suspect monitoring), *Rabbit at the Garden Frontier*
+> (chase map), and *Vorg Watch* (an **evidence-board mystery** — collect clues, classify them
+> badly, watch the concern meter rise; the Vorg stays unconfirmed). v1.0E is v1.0 of the
+> *episodic prototype direction* — not a commercial release.
+>
+> The old mode-selector platform (Duck Hunt / Patrol / Canon Archive) is **demoted to
+> `legacy/index.html`** (reference only). The lore in `docs/canon/*` is now *source material*,
+> not architecture. The full rationale and the repeatable episode pattern live in
+> [`docs/design/episodic-direction.md`](docs/design/episodic-direction.md).
+>
+> <sub>Earlier history: Stage 0.4.1 rebuilt Duck Hunt and established the rule that systems
+> success ≠ product success (`docs/qa/stage-0.4.1-playtest-notes.md`).</sub>
 
 ---
 

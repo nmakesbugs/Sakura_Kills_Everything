@@ -1,0 +1,71 @@
+/* =============================================================
+   Episode 4 — Vorg Watch
+   Local styles for the evidence-board "toy". Builds on episode-shell.css.
+   Board-specific only; kept here to avoid bloating the shared shell.
+   ============================================================= */
+
+/* Far-corner panel — dusk + a corner that has not earned trust */
+.farcorner { position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 80% 90%, #0a0c10 0%, #161a16 36%, #20281f 70%, #2a3422 100%); }
+.farcorner .vignette { position: absolute; inset: 0; box-shadow: inset 0 0 80px 30px rgba(0,0,0,0.6); }
+.farcorner .corner-shadow { position: absolute; right: 12%; bottom: 16%; width: 86px; height: 70px; border-radius: 50% 50% 46% 54%;
+  background: radial-gradient(circle at 50% 40%, rgba(0,0,0,0.75), rgba(0,0,0,0.15)); filter: blur(2px); }
+.farcorner .qmark { position: absolute; right: 17%; bottom: 30%; font-size: 30px; color: var(--orange); opacity: 0.0;
+  animation: qpulse 2.4s ease-in-out infinite; text-shadow: 0 2px 6px rgba(0,0,0,0.7); }
+@keyframes qpulse { 0%,100% { opacity: 0; transform: translateY(2px); } 50% { opacity: 0.85; transform: translateY(-2px); } }
+.farcorner .rustle { position: absolute; right: 24%; bottom: 22%; font-size: 18px; opacity: 0.0; animation: qpulse 2.4s ease-in-out 0.6s infinite; }
+
+/* Case-file header */
+.case-file { background: rgba(216,178,74,0.06); border: 1px solid rgba(216,178,74,0.28); border-left: 4px solid var(--gold);
+  border-radius: 10px; padding: 0.5rem 0.7rem; }
+.case-file .cf-lab { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+.case-file .cf-line { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* Concern meter — comic, not scientific */
+.concern { margin: 0.1rem 0 0.2rem; }
+.concern .c-top { display: flex; justify-content: space-between; align-items: baseline; }
+.concern .c-lab { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.concern .c-val { font-size: 0.66rem; font-weight: 900; text-transform: uppercase; color: var(--orange); letter-spacing: 0.03em; }
+.concern .c-bar { display: flex; gap: 3px; margin-top: 4px; }
+.concern .c-seg { flex: 1; height: 7px; border-radius: 3px; background: rgba(255,255,255,0.07); border: 1px solid var(--line); transform-origin: left center; }
+.concern .c-seg.on { background: linear-gradient(90deg, var(--orange), var(--rust)); border-color: var(--rust); animation: seg-fill 0.45s ease both; }
+.concern .c-seg.max { background: linear-gradient(90deg, var(--gold), var(--orange)); box-shadow: 0 0 8px rgba(216,178,74,0.45); }
+@keyframes seg-fill { from { opacity: 0.25; transform: scaleX(0.35); } to { opacity: 1; transform: scaleX(1); } }
+
+/* Clue detail pops in when examined */
+.clue-detail { animation: clue-pop 0.3s ease both; }
+@keyframes clue-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+/* Evidence board — clue cards */
+.clue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.clue-card { text-align: left; font-family: var(--font); cursor: pointer; color: var(--ink);
+  background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 0.55rem 0.6rem;
+  display: flex; flex-direction: column; gap: 0.2rem; transition: border-color 0.12s, background 0.12s, transform 0.05s; }
+.clue-card:hover:not(:disabled) { border-color: var(--sage); background: #232717; }
+.clue-card:active:not(:disabled) { transform: translateY(1px); }
+.clue-card .cc-top { display: flex; align-items: center; gap: 0.35rem; }
+.clue-card .cc-glyph { font-size: 18px; }
+.clue-card .cc-name { font-size: 0.8rem; font-weight: 900; }
+.clue-card .cc-tag { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); }
+.clue-card.done { opacity: 0.62; cursor: default; border-style: dashed; border-left: 3px solid var(--gold); }
+.clue-card:disabled { cursor: default; }
+
+/* Clue detail — the card under examination */
+.clue-detail { background: var(--panel2); border: 1px solid var(--line); border-top: 3px solid var(--orange); border-radius: 12px; padding: 0.8rem; }
+.clue-detail .cd-head { display: flex; align-items: center; gap: 0.5rem; }
+.clue-detail .cd-glyph { font-size: 30px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5)); }
+.clue-detail .cd-name { font-size: 1.05rem; font-weight: 900; }
+.clue-detail .cd-fact { font-size: 0.86rem; color: var(--ink); margin-top: 0.5rem; line-height: 1.45; }
+.clue-detail .cd-sakura { font-size: 0.8rem; color: var(--muted); font-style: italic; margin-top: 0.4rem; }
+.clue-detail .cd-sakura b { color: var(--gold); font-style: normal; }
+
+/* Classification buttons reuse .choice from the shell (compact) */
+.classify { display: flex; flex-direction: column; gap: 0.4rem; }
+.classify .choice { border-left-color: var(--gold); padding: 0.6rem 0.7rem; }
+.classify .choice .ch-name { font-size: 0.9rem; }
+
+/* Theory choice */
+.theory { display: flex; flex-direction: column; gap: 0.45rem; }
+.theory .choice { border-left-color: var(--orange); }
+
+/* Vorg status in report renders via shell .r-status (orange) — fine as-is */
