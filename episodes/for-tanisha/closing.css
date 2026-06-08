@@ -1,0 +1,32 @@
+/* =============================================================
+   Sakura Kills Everything — For Tanisha (closing)
+   Small warm touches on top of the shared shell.
+   ============================================================= */
+
+.closing-panel { gap: 0.6rem; text-align: center; }
+
+.closing-portrait {
+  width: 116px; aspect-ratio: 1; margin: 0.6rem auto 0.1rem;
+  box-shadow: 0 0 0 6px rgba(216,178,74,0.14), 0 0 36px rgba(216,178,74,0.28), var(--shadow);
+  animation: glow 3.6s ease-in-out infinite;
+}
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(216,178,74,0.12), 0 0 26px rgba(216,178,74,0.22), var(--shadow); }
+  50%      { box-shadow: 0 0 0 6px rgba(216,178,74,0.20), 0 0 40px rgba(216,178,74,0.38), var(--shadow); }
+}
+
+.closing-kicker { color: var(--gold); }
+.closing-title {
+  font-size: 1.9rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em;
+  margin: 0.1rem 0 0.2rem;
+  background: linear-gradient(90deg, var(--gold), var(--orange));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.closing-copy { color: var(--ink); font-size: 0.92rem; }
+.closing-copy .em { color: var(--gold); }
+
+.closing-report { text-align: left; margin-top: 0.3rem; }
+.closing-report .r-witness p { font-style: italic; }
+
+.closing-panel .actions { margin-top: 0.8rem; }
+.closing-panel .actions .btn { text-decoration: none; }

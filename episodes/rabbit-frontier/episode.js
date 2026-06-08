@@ -258,9 +258,11 @@
 
   function bComplication() {
     // Mid-chase: Tanisha reaction + a leaf diversion that depends on the player.
+    var sc = mapScene({ round: 2 });
+    E.burst(sc, 30, 60, ['🍂', '🍃']);   // the famous moving leaf, with friends
     show({
       key: 'complication',
-      scene: mapScene({ round: 2 }),
+      scene: sc,
       kicker: 'A complication',
       copy: '“Sakura…” said Tanisha, from the window.<br>At that exact moment, near Sakura’s paw, <span class="em">a leaf moved</span>.',
       actions: [
@@ -305,9 +307,12 @@
   function bEvidence() {
     var o = OUTCOMES[pickOutcome()];
     state._evidence = rand(o.evidence);
+    var sc = mapScene({ round: 3, rabbitFlee: true });
+    // Payoff puff — dust on a catch, leaves on an escape.
+    E.burst(sc, 50, 56, state.caught ? ['💨', '✨'] : ['🍂', '💨']);
     show({
       key: 'evidence',
-      scene: mapScene({ round: 3 }),
+      scene: sc,
       kicker: 'The scene',
       copy: 'Evidence recovered: <span class="em">' + state._evidence + '</span>',
       actions: [{ label: 'File the report', onClick: bReaction }]

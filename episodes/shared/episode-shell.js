@@ -95,14 +95,15 @@
   }
   function burst(scene, x, y, glyphs) {
     glyphs = glyphs || ['🪶', '✨'];
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 9; i++) {
       var f = frag('<span class="feather">' + glyphs[i % glyphs.length] + '</span>');
       f.style.left = x + '%'; f.style.top = y + '%';
-      f.style.setProperty('--dx', (Math.random() * 90 - 45) + 'px');
-      f.style.setProperty('--dy', (-Math.random() * 70 - 10) + 'px');
-      f.style.setProperty('--rot', (Math.random() * 320 - 160) + 'deg');
-      f.style.animation = 'feather 0.9s ease-out forwards';
-      f.style.animationDelay = (Math.random() * 0.2) + 's';
+      f.style.fontSize = (13 + Math.random() * 10) + 'px';
+      f.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+      f.style.setProperty('--dy', (-Math.random() * 84 - 8) + 'px');
+      f.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
+      f.style.animation = 'feather ' + (0.8 + Math.random() * 0.4).toFixed(2) + 's ease-out forwards';
+      f.style.animationDelay = (Math.random() * 0.22) + 's';
       scene.appendChild(f);
     }
   }

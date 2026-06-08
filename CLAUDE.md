@@ -37,6 +37,10 @@ The first audience is the family — specifically Tanisha, the original Witness.
 >   (`episodes/squirrel-surveillance/` — suspect monitoring), Rabbit at the Garden Frontier
 >   (`episodes/rabbit-frontier/` — 5-node chase map), Vorg Watch (`episodes/vorg-watch/` —
 >   evidence-board classification + concern meter; the Vorg is never confirmed).
+> - **Closing:** `episodes/for-tanisha/` is the heartfelt dedication (the *Witness of Record*),
+>   linked as a gold "♥ For Tanisha" card on the index/root (class `is-closing`, NOT `is-playable`).
+>   The whole product is a gift for Tanisha — keep that warmth; she is witness / reality anchor in
+>   every episode.
 > - **Each episode plays differently — that's the rule.** The shell + report card are shared;
 >   the *middle toy* is per-episode and lives LOCAL to the episode folder (its own `episode.css`
 >   when it needs custom UI). Don't force episodes into one interaction; don't build generic

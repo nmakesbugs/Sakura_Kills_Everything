@@ -77,6 +77,15 @@ toys now, four rhythms — strike (Bird), monitoring (Squirrel), chase map (Rabb
 board (Vorg). That's the proof the direction is real. **v1.0E = v1.0 of the episodic prototype
 direction**, not a commercial release. Episode 5 should invent *its own* toy, not reuse one.
 
+## 10. The collection became a gift (v1.1T — Tanisha Edition)
+
+Once four episodes existed, the job stopped being "more toys" and became **cohesion + warmth**.
+v1.1T is a polish pass, not a gameplay milestone: a warmer index framing, shared delight (beat
+transitions, richer bursts, an animated concern meter, extra witness lines), and a heartfelt
+closing — **`episodes/for-tanisha/`**, the *Witness of Record* dedication. The rule going
+forward: the official/likely joke is the payoff, Sakura is the lovable star, and **Tanisha is
+the reason it exists**. Don't bury that under systems.
+
 ---
 
 ## How an episode is built (the repeatable pattern)

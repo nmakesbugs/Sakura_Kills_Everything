@@ -50,6 +50,14 @@ test.describe('Episode index — the product face', () => {
     await expect(page.locator('.episode.is-soon')).toHaveCount(0);
   });
 
+  test('the For Tanisha closing card is present and links to the closing', async ({ page }) => {
+    await page.goto(INDEX);
+    const card = page.locator('.episode.is-closing');
+    await expect(card).toBeVisible();
+    await expect(card).toContainText(/For Tanisha/i);
+    await expect(card).toHaveAttribute('href', /for-tanisha\/index\.html/);
+  });
+
   test('uses no "mode" language for primary navigation', async ({ page }) => {
     await page.goto(INDEX);
     const nav = await page.locator('.episode-list').innerText();

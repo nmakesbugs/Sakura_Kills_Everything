@@ -40,7 +40,7 @@
           : 'Sakura holds the stare for a heroic eleven seconds. The squirrel holds it for twelve. A line, somewhere, was crossed.';
       },
       evidence: ['One (1) acorn, consumed defiantly. Surveillance log: extensive.', 'Several minutes of uninterrupted, deeply personal eye contact.'],
-      tanisha: ['Tanisha confirms the staring was, in fact, intense.', 'Tanisha is not sure who was surveilling whom.'],
+      tanisha: ['Tanisha confirms the staring was, in fact, intense.', 'Tanisha is not sure who was surveilling whom.', 'Tanisha notes the squirrel left first, and slowly, as a statement.'],
       official: 'Sakura established visual dominance over a known fence-line offender.',
       likely: 'She stared at a squirrel until it got bored and left.',
       stamp: 'Surveillance Successful',
@@ -62,7 +62,7 @@
           : 'Sakura commits fully and arrives a heartbeat late, greeting the spot the squirrel occupied moments ago with tremendous enthusiasm.';
       },
       evidence: ['One fence, struck. One squirrel, absent. A small, professional cloud of dust.', 'Paw marks ending abruptly at a fence the squirrel cleared without effort.'],
-      tanisha: ['Tanisha heard the fence and chose not to ask.', 'Tanisha would like the record to show she warned everyone.'],
+      tanisha: ['Tanisha heard the fence and chose not to ask.', 'Tanisha would like the record to show she warned everyone.', 'Tanisha watched the squirrel clear the fence without hurrying.'],
       official: 'Sakura forced the suspect into immediate retreat across the jurisdictional boundary.',
       likely: 'The squirrel moved slightly faster than her entire plan.',
       stamp: 'Suspect Fled Jurisdiction',
@@ -84,7 +84,7 @@
           : 'Sakura lasts roughly two seconds before whipping around with a bark of pure betrayal. The cover is, at this point, fully blown.';
       },
       evidence: ['Zero (0) seconds of believable indifference. One spectacular reveal.', 'The act, undone by a single uncontainable look. Squirrel: unbothered.'],
-      tanisha: ['Tanisha does not believe Sakura was ever undercover.', 'Tanisha says the disguise fooled no one, least of all the squirrel.'],
+      tanisha: ['Tanisha does not believe Sakura was ever undercover.', 'Tanisha says the disguise fooled no one, least of all the squirrel.', 'Tanisha reports the squirrel looked, if anything, flattered.'],
       official: 'Sakura initiated a covert counter-squirrel maneuver to compromise the suspect.',
       likely: 'She looked away for two seconds and then physically could not stand it.',
       stamp: 'Undercover Operation Compromised',

@@ -251,5 +251,22 @@ body {
 .report .r-status .r-stat-val { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--orange); letter-spacing: 0.04em; }
 .report .r-case { text-align: right; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; }
 
+/* ---- Delight: subtle beat transitions (v1.1T) ----
+   New elements are created every render(), so these retrigger naturally. */
+@keyframes beat-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes beat-rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+.panel > .scene { animation: beat-fade 0.34s ease both; }
+.panel > .report { animation: beat-rise 0.4s ease both; }
+.panel > .kicker { animation: beat-rise 0.3s ease both; }
+.panel > .copy { animation: beat-rise 0.34s ease 0.04s both; }
+.panel > .actions { animation: beat-rise 0.4s ease 0.08s both; }
+
+/* Choice / clue cards gently stagger in */
+.choice, .clue-card, .episode { animation: beat-rise 0.34s ease both; }
+
+/* Button press feel */
+.btn { will-change: transform; }
+.btn:active { transform: translateY(1px) scale(0.995); }
+
 .center { text-align: center; }
 [hidden] { display: none !important; }

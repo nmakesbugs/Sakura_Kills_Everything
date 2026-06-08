@@ -27,9 +27,14 @@
 .concern .c-lab { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
 .concern .c-val { font-size: 0.66rem; font-weight: 900; text-transform: uppercase; color: var(--orange); letter-spacing: 0.03em; }
 .concern .c-bar { display: flex; gap: 3px; margin-top: 4px; }
-.concern .c-seg { flex: 1; height: 7px; border-radius: 3px; background: rgba(255,255,255,0.07); border: 1px solid var(--line); }
-.concern .c-seg.on { background: linear-gradient(90deg, var(--orange), var(--rust)); border-color: var(--rust); }
-.concern .c-seg.max { background: linear-gradient(90deg, var(--gold), var(--orange)); }
+.concern .c-seg { flex: 1; height: 7px; border-radius: 3px; background: rgba(255,255,255,0.07); border: 1px solid var(--line); transform-origin: left center; }
+.concern .c-seg.on { background: linear-gradient(90deg, var(--orange), var(--rust)); border-color: var(--rust); animation: seg-fill 0.45s ease both; }
+.concern .c-seg.max { background: linear-gradient(90deg, var(--gold), var(--orange)); box-shadow: 0 0 8px rgba(216,178,74,0.45); }
+@keyframes seg-fill { from { opacity: 0.25; transform: scaleX(0.35); } to { opacity: 1; transform: scaleX(1); } }
+
+/* Clue detail pops in when examined */
+.clue-detail { animation: clue-pop 0.3s ease both; }
+@keyframes clue-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
 
 /* Evidence board — clue cards */
 .clue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }

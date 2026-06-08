@@ -5,9 +5,16 @@
 >
 > Tiny predator. Historic consequences.
 
-![Version](https://img.shields.io/badge/version-1.0E-4a7c4e) ![Direction](https://img.shields.io/badge/direction-authored_episodes-d8b24a) ![Episodes](https://img.shields.io/badge/playable-4_episodes-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Version](https://img.shields.io/badge/version-1.1T-4a7c4e) ![Edition](https://img.shields.io/badge/Tanisha_Edition-d8b24a) ![Episodes](https://img.shields.io/badge/playable-4_episodes-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
-> **v1.0E — Four episodes, four different toys. The episodic direction is proven.**
+> **v1.1T — Tanisha Edition.** A polish / closing / cohesion pass over the four episodes (not a
+> new gameplay milestone). The *Backyard Incident Files* now open with a warmer framing, end on a
+> heartfelt **“For Tanisha”** closing (`episodes/for-tanisha/`), and share small delight touches
+> (beat transitions, richer bursts, an animated concern meter, extra witness lines). The four
+> episodes now read as one little collection — a gift, not a demo menu.
+>
+> <sub>v1.0E (prior): four playable episodes, each a different middle toy — Bird (timed strike),
+> Squirrel (monitoring), Rabbit (chase map), Vorg (evidence board). The episodic direction is proven.</sub>
 > **Sakura Kills Everything is a collection of authored comic episodes** — the *Backyard
 > Incident Files*. Open `index.html` (or `episodes/index.html`), pick an incident, play a 3–5
 > minute comic, get a screenshot-worthy official report. **Playable now:** *The Bird Incident*

@@ -28,7 +28,7 @@
           : 'A leaf moves. Sakura briefly opens a second investigation into the leaf. The bird is downgraded to “still a person of interest.”';
       },
       evidence: ['Three feathers, recovered. Grass: disturbed with intent.', 'Two feathers and one (1) deeply committed dog.'],
-      tanisha: ['Tanisha respected the commitment, if not the method.', 'Tanisha admits the stalking was, technically, impressive.'],
+      tanisha: ['Tanisha respected the commitment, if not the method.', 'Tanisha admits the stalking was, technically, impressive.', 'Tanisha has filed the stalk under “unsettling, but effective.”'],
       official: 'Sakura executed a disciplined airspace-denial operation with textbook patience.',
       likely: 'She crept three feet, paused for dramatic effect, and then simply exploded.',
       stamp: 'Disciplined Victory',
@@ -47,7 +47,7 @@
           : 'Sakura arrives a heartbeat early, overshoots the bird, and pivots so hard she invents a new sound.';
       },
       evidence: ['Feathers (several). Velocity: unreviewed.', 'One thump, on record. Witnesses: rattled.'],
-      tanisha: ['Tanisha would like advance notice before future launches.', 'Tanisha has requested a warning system be installed.'],
+      tanisha: ['Tanisha would like advance notice before future launches.', 'Tanisha has requested a warning system be installed.', 'Tanisha is still recovering and would like that on the record.'],
       official: 'Sakura responded to the violation with appropriate and immediate force.',
       likely: 'Tanisha saw a blur, heard a thump, and then the yard had feathers in it.',
       stamp: 'Immediate Force Authorized',
@@ -66,7 +66,7 @@
           : 'The warning is so thorough the bird leaves before Sakura finishes. Sakura finishes anyway. For the record.';
       },
       evidence: ['No feathers. The volume, however, is well-documented.', 'Evidence: airborne. Warning: extremely clear.'],
-      tanisha: ['Tanisha confirms the barking was real.', 'Tanisha heard the warning. So did the entire street.'],
+      tanisha: ['Tanisha confirms the barking was real.', 'Tanisha heard the warning. So did the entire street.', 'Tanisha confirms the neighbors are now, regrettably, aware.'],
       official: 'Sakura issued a lawful and unmistakable warning prior to engagement.',
       likely: 'The bird had already left, but the warning was, by all accounts, magnificent.',
       stamp: 'Victory By Announcement',
