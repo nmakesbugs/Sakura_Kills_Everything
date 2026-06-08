@@ -55,6 +55,18 @@ underway; she conducts surveillance; the squirrel escapes — *always*, per cano
 verbs (surveil / charge / pretend not to care), distinct report (squirrel status: **Uncaught**,
 forever). Same shell, same warmth, new story.
 
+## 8. Episode 3 proves the *toy* can change (v0.9E)
+
+**Rabbit at the Garden Frontier** keeps the episode structure (intro → witness → middle →
+report) but swaps the middle interaction: instead of a timed action it has a small **5-node
+chase map** (Patio / Garden / Grass / Bushes / Fence Line). The player picks Sakura's route
+each round, the rabbit flees on a simple weighted graph, and route choices + a leaf-diversion
+complication steer one of four outcome families. The lesson: **the shell is shared, but the
+"middle toy" is per-episode.** Each episode should make the player think *"oh, this one plays
+differently."* Keep new toys local to the episode folder (Rabbit's map lives in
+`episodes/rabbit-frontier/episode.{js,css}`) unless they're clearly reusable. Don't build a
+generic map/engine.
+
 ---
 
 ## How an episode is built (the repeatable pattern)

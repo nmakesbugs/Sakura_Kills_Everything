@@ -33,7 +33,12 @@ The first audience is the family — specifically Tanisha, the original Witness.
 > following the pattern in `docs/design/episodic-direction.md`.
 >
 > - **Playable episodes:** The Bird Incident (`episodes/bird-incident/`), Squirrel Surveillance
->   (`episodes/squirrel-surveillance/`).
+>   (`episodes/squirrel-surveillance/`), Rabbit at the Garden Frontier
+>   (`episodes/rabbit-frontier/` — a 5-node **chase map** "toy" instead of a timed action;
+>   map code is local to that episode, NOT in the shared shell).
+> - **Each episode should play a little differently.** The shell is shared; the *middle toy*
+>   (timed action, choice, chase map, …) is per-episode. Don't force every episode into one
+>   interaction. Keep new toys local to the episode folder unless clearly reusable.
 > - **The old mode platform is DEMOTED** to `legacy/index.html` (reference only). `src/modes/*`,
 >   `src/engine`, `src/data`, `src/ui`, `src/utils` still exist + are tested but are **not** the
 >   product. Do not extend them. Don't build Episode 3 on Duck Hunt/Patrol/the incident engine.

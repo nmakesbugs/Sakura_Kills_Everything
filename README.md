@@ -5,13 +5,14 @@
 >
 > Tiny predator. Historic consequences.
 
-![Version](https://img.shields.io/badge/version-0.8E-4a7c4e) ![Direction](https://img.shields.io/badge/direction-authored_episodes-d8b24a) ![Episodes](https://img.shields.io/badge/playable-2_episodes-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Version](https://img.shields.io/badge/version-0.9E-4a7c4e) ![Direction](https://img.shields.io/badge/direction-authored_episodes-d8b24a) ![Episodes](https://img.shields.io/badge/playable-3_episodes-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
-> **v0.8E — The game is now authored episodes.** After the Tanisha Cut (v0.7R) playtested well,
-> the product direction is settled: **Sakura Kills Everything is a collection of authored comic
-> episodes** — the *Backyard Incident Files*. Open `index.html` (or `episodes/index.html`),
-> pick an incident, play a 3–5 minute comic, get a screenshot-worthy official report.
-> **Playable now:** *The Bird Incident* and *Squirrel Surveillance*.
+> **v0.9E — Three episodes, and the format has range.** **Sakura Kills Everything is a
+> collection of authored comic episodes** — the *Backyard Incident Files*. Open `index.html`
+> (or `episodes/index.html`), pick an incident, play a 3–5 minute comic, get a screenshot-worthy
+> official report. **Playable now:** *The Bird Incident*, *Squirrel Surveillance*, and
+> *Rabbit at the Garden Frontier* — the last one swaps the timed-action "toy" for a small
+> 5-node **chase map**, proving each episode can play differently.
 >
 > The old mode-selector platform (Duck Hunt / Patrol / Canon Archive) is **demoted to
 > `legacy/index.html`** (reference only). The lore in `docs/canon/*` is now *source material*,

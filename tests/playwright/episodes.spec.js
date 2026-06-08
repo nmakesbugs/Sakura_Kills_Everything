@@ -28,9 +28,16 @@ test.describe('Episode index — the product face', () => {
     await expect(ep).toHaveAttribute('href', /squirrel-surveillance\/index\.html/);
   });
 
+  test('Rabbit at the Garden Frontier is listed and playable', async ({ page }) => {
+    await page.goto(INDEX);
+    const ep = page.locator('.episode', { hasText: 'Rabbit at the Garden Frontier' });
+    await expect(ep).toBeVisible();
+    await expect(ep).toContainText(/Playable/i);
+    await expect(ep).toHaveAttribute('href', /rabbit-frontier\/index\.html/);
+  });
+
   test('future episodes are shown as Coming Soon', async ({ page }) => {
     await page.goto(INDEX);
-    await expect(page.locator('.episode', { hasText: 'Rabbit at the Garden Frontier' })).toContainText(/Coming Soon/i);
     await expect(page.locator('.episode', { hasText: 'Vorg Watch' })).toContainText(/Coming Soon/i);
   });
 
