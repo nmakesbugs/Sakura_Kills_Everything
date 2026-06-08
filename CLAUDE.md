@@ -25,6 +25,23 @@ The first audience is the family — specifically Tanisha, the original Witness.
 
 ## Current Status (Stage 0.4.1)
 
+> ## ⮕ DIRECTION (v0.8E) — READ THIS BEFORE BUILDING
+>
+> **The game is authored comic episodes — the *Backyard Incident Files*.** Not a mode platform.
+> The product face is `index.html` → `episodes/index.html`. Build new gameplay as **episodes**
+> under `episodes/<name>/` using the shared shell (`episodes/shared/episode-shell.{css,js}`),
+> following the pattern in `docs/design/episodic-direction.md`.
+>
+> - **Playable episodes:** The Bird Incident (`episodes/bird-incident/`), Squirrel Surveillance
+>   (`episodes/squirrel-surveillance/`).
+> - **The old mode platform is DEMOTED** to `legacy/index.html` (reference only). `src/modes/*`,
+>   `src/engine`, `src/data`, `src/ui`, `src/utils` still exist + are tested but are **not** the
+>   product. Do not extend them. Don't build Episode 3 on Duck Hunt/Patrol/the incident engine.
+> - **`docs/canon/*` lore is source material, not architecture** — seasoning, never homework.
+> - The Sakura visual policy still holds (static framed photo only; symbolic Sakura in scenes).
+>
+> The table below is project *history*. The active model is the episode pattern above.
+
 | Stage | Status | Scope |
 |---|---|---|
 | 0.1 — Foundation | ✅ Complete | Repo, home screen, real Sakura photo, theme/engine helpers, Duck Hunt shell, smoke tests |

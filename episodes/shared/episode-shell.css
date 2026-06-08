@@ -1,6 +1,7 @@
 /* =============================================================
-   Sakura Kills Everything — The Bird Incident · Tanisha Cut v0.7R
-   Standalone. A handcrafted mobile comic. No dependencies.
+   Sakura Kills Everything — Episode Shell (shared)
+   The handcrafted mobile-comic look, shared by every episode.
+   Born from the Tanisha Cut (v0.7R). Standalone. No dependencies.
    ============================================================= */
 
 :root {
@@ -48,9 +49,11 @@ body {
 }
 
 /* HUD */
-.hud { display: flex; align-items: baseline; justify-content: space-between; padding: 0.7rem 0.95rem 0.5rem; }
+.hud { display: flex; align-items: baseline; justify-content: space-between; padding: 0.7rem 0.95rem 0.5rem; gap: 0.5rem; }
 .hud-title { font-size: 0.78rem; font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); }
-.hud-ver { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
+.hud-title a { color: inherit; text-decoration: none; }
+.hud-title a:hover { color: var(--gold); }
+.hud-ver { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); text-align: right; white-space: nowrap; }
 
 .progress { height: 3px; background: var(--line); margin: 0 0.95rem; border-radius: 2px; overflow: hidden; }
 .progress > span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--sage), var(--gold)); transition: width 0.35s ease; }
@@ -108,16 +111,39 @@ body {
 .yard .patio { position: absolute; left: 8%; right: 8%; bottom: 4%; height: 12%; border-radius: 8px;
   background: linear-gradient(180deg, #2e2c22, #211f18); border: 1px solid #3a3424; }
 
-/* Bird token */
-.bird { position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%);
+/* Generic creature token (bird / squirrel / etc.) */
+.token { position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%);
   display: flex; flex-direction: column; align-items: center; z-index: 5; }
-.bird .glyph { font-size: 46px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5)); transform: rotate(8deg); }
-.bird .tag { margin-top: 4px; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--orange); background: rgba(20,18,12,0.8); border: 1px solid var(--rust); border-radius: 999px; padding: 2px 7px; }
+.token .glyph { font-size: 46px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5)); }
+.token .tag { margin-top: 4px; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--orange); background: rgba(20,18,12,0.8); border: 1px solid var(--rust); border-radius: 999px; padding: 2px 7px; white-space: nowrap; }
+
+/* Bird */
+.token.bird .glyph { transform: rotate(8deg); }
 @keyframes bird-in { from { transform: translate(-50%,-160%); opacity: 0; } to { transform: translate(-50%,-50%); opacity: 1; } }
-.bird.enter { animation: bird-in 0.6s ease-out; }
-@keyframes bird-bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
-.bird.idle .glyph { animation: bird-bob 1.8s ease-in-out infinite; }
+.token.enter { animation: bird-in 0.6s ease-out; }
+@keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+.token.idle .glyph { animation: bob 1.8s ease-in-out infinite; }
+
+/* Squirrel — perched on the fence, smug */
+.token.squirrel { top: 62%; }
+.token.squirrel .glyph { font-size: 40px; transform: rotate(-4deg); }
+@keyframes squirrel-in { from { transform: translate(-50%,-50%) scale(0.4); opacity: 0; } to { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+.token.squirrel.enter { animation: squirrel-in 0.5s ease-out; }
+@keyframes smug { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(-9deg) translateY(-1px); } }
+.token.squirrel.idle .glyph { animation: smug 2.4s ease-in-out infinite; }
+.token.squirrel .tag { color: var(--gold); border-color: var(--gold); }
+
+/* Eye-contact beam — the unnecessary stare */
+.eye { position: absolute; z-index: 7; font-size: 16px; opacity: 0; animation: eye 1.8s ease-in-out infinite; }
+@keyframes eye { 0%,100% { opacity: 0; } 50% { opacity: 0.9; } }
+
+/* Surveillance vignette (binoculars overlay) */
+.surveil { position: absolute; inset: 0; z-index: 8; pointer-events: none;
+  background: radial-gradient(circle at 32% 50%, transparent 0 64px, rgba(8,8,6,0.72) 70px),
+              radial-gradient(circle at 68% 50%, transparent 0 64px, rgba(8,8,6,0.72) 70px); }
+.surveil::after { content: 'REC ●'; position: absolute; top: 8px; left: 10px; font-size: 0.5rem; font-weight: 800;
+  letter-spacing: 0.14em; color: var(--orange); }
 
 /* Paw marks */
 .paw { position: absolute; font-size: 20px; opacity: 0; color: #d8c7a8; z-index: 4; transform: translate(-50%,-50%) rotate(var(--r,0deg)); animation: paw-in 0.4s ease-out forwards; }
@@ -132,6 +158,10 @@ body {
   background: linear-gradient(90deg, transparent, var(--gold)); animation: streak 0.5s ease-in forwards; }
 @keyframes streak { from { left: -30%; opacity: 0; } 40% { opacity: 1; } to { left: 80%; opacity: 0; } }
 
+/* Dust puff (fence impact) */
+.dust { position: absolute; z-index: 6; font-size: 26px; opacity: 0; animation: dust 0.7s ease-out forwards; }
+@keyframes dust { 0% { opacity: 0; transform: scale(0.4); } 40% { opacity: 0.9; } 100% { opacity: 0; transform: scale(1.6) translateY(-8px); } }
+
 /* Bark bubble */
 .bark { position: absolute; left: 24%; top: 30%; transform: translate(-50%,-50%); z-index: 6;
   background: var(--paper); color: #1a1712; font-weight: 900; font-size: 0.9rem; padding: 0.4rem 0.7rem; border-radius: 14px;
@@ -139,7 +169,7 @@ body {
 .bark::after { content: ''; position: absolute; right: -8px; bottom: 6px; border: 7px solid transparent; border-left-color: var(--paper); }
 @keyframes bark { from { transform: translate(-50%,-50%) scale(0.4); opacity: 0; } to { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
 
-/* Feather burst */
+/* Feather / debris burst */
 .feather { position: absolute; z-index: 6; font-size: 18px; will-change: transform, opacity; }
 @keyframes feather { to { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; } }
 
@@ -169,6 +199,15 @@ body {
 .thought.t2 { animation-delay: 0.5s; color: var(--ink); }
 .thought.t3 { animation-delay: 1.0s; color: var(--orange); border-color: var(--rust); }
 @keyframes think { to { opacity: 1; transform: translateX(0); } }
+
+/* Evidence cards (intelligence briefing) */
+.evidence-cards { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; padding: 1rem; }
+.ev-card { background: rgba(20,18,12,0.78); border: 1px solid var(--line); border-left: 3px solid var(--orange); border-radius: 10px;
+  padding: 0.5rem 0.7rem; font-size: 0.78rem; opacity: 0; transform: translateY(6px); animation: think 0.4s ease-out forwards; }
+.ev-card:nth-child(1) { animation-delay: 0.1s; }
+.ev-card:nth-child(2) { animation-delay: 0.45s; }
+.ev-card:nth-child(3) { animation-delay: 0.8s; }
+.ev-card .ev-lab { display: block; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.1rem; }
 
 /* Witness card */
 .witness { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 1rem; }
@@ -206,6 +245,10 @@ body {
 .report .r-witness p { font-size: 0.88rem; font-style: italic; color: var(--ink); }
 .report .r-evidence { font-size: 0.82rem; color: var(--muted); margin-top: 0.6rem; }
 .report .r-evidence strong { color: var(--ink); font-style: normal; }
+.report .r-status { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+  margin-top: 0.7rem; padding: 0.5rem 0.7rem; border: 1px solid var(--rust); border-radius: 10px; background: rgba(138,59,30,0.1); }
+.report .r-status .r-stat-lab { font-size: 0.54rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.report .r-status .r-stat-val { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--orange); letter-spacing: 0.04em; }
 .report .r-case { text-align: right; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; }
 
 .center { text-align: center; }

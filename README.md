@@ -5,14 +5,21 @@
 >
 > Tiny predator. Historic consequences.
 
-![Stage](https://img.shields.io/badge/stage-0.4.1-4a7c4e) ![Duck Hunt](https://img.shields.io/badge/Duck_Hunt-rebuilt-4a7c4e) ![Patrol](https://img.shields.io/badge/Patrol-prototype+-c97c3a) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
+![Version](https://img.shields.io/badge/version-0.8E-4a7c4e) ![Direction](https://img.shields.io/badge/direction-authored_episodes-d8b24a) ![Episodes](https://img.shields.io/badge/playable-2_episodes-4a7c4e) ![Tests](https://img.shields.io/badge/tests-Playwright-blue)
 
-> **Stage 0.4.1 (rescue):** Stage 0.4 added strong usability *systems* but a human playtest
-> revealed the runtime felt bad — Duck Hunt was noisy and the real Sakura photo, animated as a
-> gameplay sprite, looked cursed. 0.4.1 rebuilt Duck Hunt as a clean target range, replaced the
-> in-game photo with symbolic "Sakura Strike" feedback + a HUD portrait, and made the report
-> readable. Systems success ≠ product success — that distinction is now tracked in
-> `docs/qa/stage-0.4.1-playtest-notes.md`.
+> **v0.8E — The game is now authored episodes.** After the Tanisha Cut (v0.7R) playtested well,
+> the product direction is settled: **Sakura Kills Everything is a collection of authored comic
+> episodes** — the *Backyard Incident Files*. Open `index.html` (or `episodes/index.html`),
+> pick an incident, play a 3–5 minute comic, get a screenshot-worthy official report.
+> **Playable now:** *The Bird Incident* and *Squirrel Surveillance*.
+>
+> The old mode-selector platform (Duck Hunt / Patrol / Canon Archive) is **demoted to
+> `legacy/index.html`** (reference only). The lore in `docs/canon/*` is now *source material*,
+> not architecture. The full rationale and the repeatable episode pattern live in
+> [`docs/design/episodic-direction.md`](docs/design/episodic-direction.md).
+>
+> <sub>Earlier history: Stage 0.4.1 rebuilt Duck Hunt and established the rule that systems
+> success ≠ product success (`docs/qa/stage-0.4.1-playtest-notes.md`).</sub>
 
 ---
 
