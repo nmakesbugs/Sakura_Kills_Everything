@@ -67,6 +67,16 @@ differently."* Keep new toys local to the episode folder (Rabbit's map lives in
 `episodes/rabbit-frontier/episode.{js,css}`) unless they're clearly reusable. Don't build a
 generic map/engine.
 
+## 9. Episode 4 proves the toy can be a *mystery* (v1.0E)
+
+**Vorg Watch** swaps the toy again: an **evidence board**. The player examines 3 of 5 clues,
+**classifies** each (badly), and a comic **Concern Level** meter climbs (Calm → … → Vorg Watch
+Activated) no matter what — then files one of four official theories. The point is not to solve
+anything: **the Vorg is never confirmed** (status is always an "Unconfirmed" variant). Four
+toys now, four rhythms — strike (Bird), monitoring (Squirrel), chase map (Rabbit), investigation
+board (Vorg). That's the proof the direction is real. **v1.0E = v1.0 of the episodic prototype
+direction**, not a commercial release. Episode 5 should invent *its own* toy, not reuse one.
+
 ---
 
 ## How an episode is built (the repeatable pattern)

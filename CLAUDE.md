@@ -32,13 +32,15 @@ The first audience is the family — specifically Tanisha, the original Witness.
 > under `episodes/<name>/` using the shared shell (`episodes/shared/episode-shell.{css,js}`),
 > following the pattern in `docs/design/episodic-direction.md`.
 >
-> - **Playable episodes:** The Bird Incident (`episodes/bird-incident/`), Squirrel Surveillance
->   (`episodes/squirrel-surveillance/`), Rabbit at the Garden Frontier
->   (`episodes/rabbit-frontier/` — a 5-node **chase map** "toy" instead of a timed action;
->   map code is local to that episode, NOT in the shared shell).
-> - **Each episode should play a little differently.** The shell is shared; the *middle toy*
->   (timed action, choice, chase map, …) is per-episode. Don't force every episode into one
->   interaction. Keep new toys local to the episode folder unless clearly reusable.
+> - **Playable episodes (each a DIFFERENT middle toy):** The Bird Incident
+>   (`episodes/bird-incident/` — timed strike), Squirrel Surveillance
+>   (`episodes/squirrel-surveillance/` — suspect monitoring), Rabbit at the Garden Frontier
+>   (`episodes/rabbit-frontier/` — 5-node chase map), Vorg Watch (`episodes/vorg-watch/` —
+>   evidence-board classification + concern meter; the Vorg is never confirmed).
+> - **Each episode plays differently — that's the rule.** The shell + report card are shared;
+>   the *middle toy* is per-episode and lives LOCAL to the episode folder (its own `episode.css`
+>   when it needs custom UI). Don't force episodes into one interaction; don't build generic
+>   engines (no map engine, no mystery engine). Episode 5 should invent its OWN toy.
 > - **The old mode platform is DEMOTED** to `legacy/index.html` (reference only). `src/modes/*`,
 >   `src/engine`, `src/data`, `src/ui`, `src/utils` still exist + are tested but are **not** the
 >   product. Do not extend them. Don't build Episode 3 on Duck Hunt/Patrol/the incident engine.

@@ -36,9 +36,18 @@ test.describe('Episode index — the product face', () => {
     await expect(ep).toHaveAttribute('href', /rabbit-frontier\/index\.html/);
   });
 
-  test('future episodes are shown as Coming Soon', async ({ page }) => {
+  test('Vorg Watch is listed and playable', async ({ page }) => {
     await page.goto(INDEX);
-    await expect(page.locator('.episode', { hasText: 'Vorg Watch' })).toContainText(/Coming Soon/i);
+    const ep = page.locator('.episode', { hasText: 'Vorg Watch' });
+    await expect(ep).toBeVisible();
+    await expect(ep).toContainText(/Playable/i);
+    await expect(ep).toHaveAttribute('href', /vorg-watch\/index\.html/);
+  });
+
+  test('all four episodes are marked playable', async ({ page }) => {
+    await page.goto(INDEX);
+    await expect(page.locator('.episode.is-playable')).toHaveCount(4);
+    await expect(page.locator('.episode.is-soon')).toHaveCount(0);
   });
 
   test('uses no "mode" language for primary navigation', async ({ page }) => {
